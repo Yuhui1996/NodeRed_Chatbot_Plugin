@@ -6,3 +6,5 @@ Node-red is based on Node.js, so to run this you need:
 2. Node-Red, https://nodered.org
 
 To run the plugin, follow https://nodered.org/docs/creating-nodes/first-node. You should be able to see the new node,'lowercase' on the function subsection of Node-Red.
+
+....................
