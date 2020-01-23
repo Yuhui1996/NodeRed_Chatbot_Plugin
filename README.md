@@ -16,7 +16,7 @@ To run the plugin, follow https://nodered.org/docs/creating-nodes/first-node. Yo
 - When you start a new story/task
 - Create a Branch with the following format:
 
-  <Developer initials>_<Story_name>_<Sprint_Number>
+  <developer_initials>_<Story_name>_<Sprint_Number>
 
 Pull Request into development when the story is done. This pull request must be reviewed by
 at least 1 other developer before being merged.
