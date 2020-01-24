@@ -24,7 +24,8 @@
   "homepage": "https://github.com/Yuhui1996/NodeRed_Chatbot_Plugin#readme",
   "node-red": {
     "nodes": {
-      "lowercase": "lowercase.js"
+      "lowercase": "lowercase.js",
+      "metadata":"metadata.js"
     }
   },
   "devDependencies": {
