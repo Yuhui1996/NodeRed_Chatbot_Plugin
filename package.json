@@ -8,7 +8,7 @@
   "description": "hiya",
   "main": "hiya",
   "scripts": {
-    "test": "mocha \"test/_spec.js\""
+    "test": "mocha \"tests/_spec.js\""
   },
   "repository": {
     "type": "git",
@@ -17,7 +17,7 @@
   "keywords": [
     "Chatbot"
   ],
-  "author": "Ethan Lin",
+  "author": "IBM Group 2",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/Yuhui1996/NodeRed_Chatbot_Plugin/issues"
@@ -25,9 +25,8 @@
   "homepage": "https://github.com/Yuhui1996/NodeRed_Chatbot_Plugin#readme",
   "node-red": {
     "nodes": {
-      "lowercase": "lowercase.js",
-      "hello": "hello.js",
-      "createWatson": "createWatson.js"
+      "lowercase": "nodes/lower_case/lowercase.js",
+      "createWatson": "nodes/create_watson/createWatson.js"
     }
   },
   "devDependencies": {
