@@ -25,8 +25,8 @@
   "homepage": "https://github.com/Yuhui1996/NodeRed_Chatbot_Plugin#readme",
   "node-red": {
     "nodes": {
-      "lowercase": "nodes/lowercase/lowercase.js",
-      "createWatson": "nodes/CreateWatson/createWatson.js"
+      "lowercase": "nodes/lower_case/lowercase.js",
+      "createWatson": "nodes/create_watson/createWatson.js"
     }
   },
   "devDependencies": {
