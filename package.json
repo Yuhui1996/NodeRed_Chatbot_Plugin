@@ -26,7 +26,8 @@
   "node-red": {
     "nodes": {
       "lowercase": "nodes/lower_case/lowercase.js",
-      "createWatson": "nodes/create_watson/createWatson.js"
+      "createWatson": "nodes/create_watson/createWatson.js",
+      "deleteWatson":"nodes/delete_watson/deleteWatson.js"
     }
   },
   "devDependencies": {
