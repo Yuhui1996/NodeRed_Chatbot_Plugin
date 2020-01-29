@@ -1,0 +1,156 @@
+<script type="text/html" data-template-name="metadata">
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Node Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+
+    <div class="form-row">
+        <label for="node-input-payload"><i class="icon-tag"></i>Chatbot Name</label>
+        <input type="text" id="node-input-payload" placeholder="Name">
+    </div>
+
+
+    <div class="form-row">
+        <label for="hosting_instance"><i class="icon-tag"></i>Instance</label>
+        <input type="text" id="hosting_instance" placeholder="Instance">
+    </div>
+    <div class="form-row" style="margin-bottom:12px">
+        <button type="button" style="float:right; margin-right:8%; margin-bottom:12px" class="ui-button ui-corner-all ui-widget" name="Instance">Generate Instance</button>
+    </div>
+
+    <div class="form-row">
+        <label for="wa-api-key">Watson</label>
+        <input type="text" id="wa-api-key" placeholder="API-key">
+    </div>
+    <div class="form-row" style="margin-bottom:12px">
+        <button type="button" style="float:right; margin-right:8%; margin-bottom:12px" class="ui-button ui-corner-all ui-widget" name="Watson_Key">Generate Key</button>
+    </div>
+    <div class="form-row">
+        <label for="ta-api-key"><i class="icon-tag"></i>Tone Analyser</label>
+        <input type="text" id="ta-api-key" placeholder="API-key">
+
+    </div>
+    <div class="form-row" style="margin-bottom:12px">
+        <button type="button" style="float:right; margin-right:8%; margin-bottom:12px" class=" ui-button ui-corner-all ui-widget" name="TA_Key">Generate Key</button>
+    </div>
+    <div class="form-row">
+        <label for="discovery-api-key"><i class="icon-tag"></i>Discovery </label>
+        <input type="text" id="discovery-api-key" placeholder="API-key">
+    </div>
+    <div class="form-row">
+        <button type="button" style="float:right; margin-right:8%; margin-bottom:12px" class="ui-button ui-corner-all ui-widget" name="Discovery_Key">Generate Key</button>
+    </div>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('metadata', {
+        category: 'Watson Designer',
+        color: "#a6bbcf",
+        defaults: {
+            name: {
+                value: ""
+            },
+            topic: {
+                value: ""
+            },
+            payload: {
+                value: "",
+                validate: RED.validators.typedInput("payloadType")
+            },
+            payloadType: {
+                value: "string"
+            },
+        },
+        icon: "inject.svg",
+        inputs: 0,
+        outputs: 1,
+        outputLabels: function(index) {
+            var lab = this.payloadType;
+            if (lab === "json") {
+                try {
+                    lab = typeof JSON.parse(this.payload);
+                    if (lab === "object") {
+                        if (Array.isArray(JSON.parse(this.payload))) {
+                            lab = "Array";
+                        }
+                    }
+                } catch (e) {
+                    return this._("inject.label.invalid");
+                }
+            }
+            var name = "inject.label." + lab;
+            var label = this._(name);
+            if (name !== label) {
+                return label;
+            }
+            return lab;
+        },
+        label: function() {
+            return "metadata";
+        },
+        labelStyle: function() {
+            return this.name ? "node_label_italic" : "";
+        },
+        oneditprepare: function() {
+            if (this.payloadType === 'string' || this.payloadType === 'none') {
+                this.payloadType = "str";
+            }
+            $("#node-input-payloadType").val(this.payloadType);
+
+            $("#node-input-payload").typedInput('type', this.payloadType);
+        },
+        button: {
+            enabled: function() {
+                return !this.changed
+            },
+            onclick: function() {
+                if (this.changed) {
+                    return RED.notify(RED._("notification.warning", {
+                        message: RED._("notification.warnings.undeployedChanges")
+                    }), "warning");
+                }
+                var payload = this.payload;
+                var label = this._def.label.call(this);
+                if (label.length > 30) {
+                    label = label.substring(0, 50) + "...";
+                }
+                label = label.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                var node = this;
+                $.ajax({
+                    url: "metadata/" + this.id,
+                    type: "POST",
+                    success: function(resp) {
+                        RED.notify(node._("data Key passed", {
+                            label: label
+                        }), {
+                            type: "success",
+                            id: "inject"
+                        });
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        if (jqXHR.status == 404) {
+                            RED.notify(node._("common.notification.error", {
+                                message: node._("common.notification.errors.not-deployed")
+                            }), "error");
+                        } else if (jqXHR.status == 500) {
+                            RED.notify(node._("common.notification.error", {
+                                message: node._("inject.errors.failed")
+                            }), "error");
+                        } else if (jqXHR.status == 0) {
+                            RED.notify(node._("common.notification.error", {
+                                message: node._("common.notification.errors.no-response")
+                            }), "error");
+                        } else {
+                            RED.notify(node._("common.notification.error", {
+                                message: node._("common.notification.errors.unexpected", {
+                                    status: jqXHR.status,
+                                    message: textStatus
+                                })
+                            }), "error");
+                        }
+                    }
+                });
+            }
+        }
+    });
+</script>
