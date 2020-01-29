@@ -1,37 +1,39 @@
 {
-  "name": "chatbot",
-  "version": "1.0.0",
-  "dependencies": {
-    "ibm-watson": "^5.3.0",
-    "mocha": "^7.0.0"
-  },
-  "description": "hiya",
-  "main": "hiya",
-  "scripts": {
-    "test": "mocha \"tests/_spec.js\""
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Yuhui1996/NodeRed_Chatbot_Plugin.git"
-  },
-  "keywords": [
-    "Chatbot"
-  ],
-  "author": "IBM Group 2",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Yuhui1996/NodeRed_Chatbot_Plugin/issues"
-  },
-  "homepage": "https://github.com/Yuhui1996/NodeRed_Chatbot_Plugin#readme",
-  "node-red": {
-    "nodes": {
-      "lowercase": "nodes/lower_case/lowercase.js",
-      "createWatson": "nodes/create_watson/createWatson.js",
-      "deleteWatson":"nodes/delete_watson/deleteWatson.js"
+
+    "name": "chatbot",
+    "version": "1.0.0",
+    "dependencies": {
+        "ibm-watson": "^5.3.0",
+        "mocha": "^7.0.0"
+    },
+    "description": "hiya",
+    "main": "hiya",
+    "scripts": {
+        "test": "mocha \"tests/_spec.js\""
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Yuhui1996/NodeRed_Chatbot_Plugin.git"
+    },
+    "keywords": [
+        "Chatbot"
+    ],
+    "author": "IBM Group 2",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/Yuhui1996/NodeRed_Chatbot_Plugin/issues"
+    },
+    "homepage": "https://github.com/Yuhui1996/NodeRed_Chatbot_Plugin#readme",
+    "node-red": {
+        "nodes": {
+            "lowercase": "nodes/lower_case/lowercase.js",
+            "meta": "nodes/metadata/metadata.js",
+            "createWatson": "nodes/create_watson/createWatson.js",
+           "deleteWatson":"nodes/delete_watson/deleteWatson.js"
+        }
+    },
+    "devDependencies": {
+        "node-red": "^1.0.3",
+        "node-red-node-test-helper": "^0.2.3"
     }
-  },
-  "devDependencies": {
-    "node-red": "^1.0.3",
-    "node-red-node-test-helper": "^0.2.3"
-  }
 }
