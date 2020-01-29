@@ -1,8 +1,14 @@
 <script type="text/html" data-template-name="metadata">
     <div class="form-row">
-        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <label for="node-input-name"><i class="icon-tag"></i> Node Name</label>
         <input type="text" id="node-input-name" placeholder="Name">
     </div>
+
+    <div class="form-row">
+        <label for="node-input-payload"><i class="icon-tag"></i>Chatbot Name</label>
+        <input type="text" id="node-input-payload" placeholder="Name">
+    </div>
+
 
     <div class="form-row">
         <label for="hosting_instance"><i class="icon-tag"></i>Instance</label>
@@ -13,8 +19,8 @@
     </div>
 
     <div class="form-row">
-        <label for="node-input-payload">Watson</label>
-        <input type="text" id="node-input-payload" placeholder="API-key">
+        <label for="wa-api-key">Watson</label>
+        <input type="text" id="wa-api-key" placeholder="API-key">
     </div>
     <div class="form-row" style="margin-bottom:12px">
         <button type="button" style="float:right; margin-right:8%; margin-bottom:12px" class="ui-button ui-corner-all ui-widget" name="Watson_Key">Generate Key</button>
@@ -114,7 +120,7 @@
                     url: "metadata/" + this.id,
                     type: "POST",
                     success: function(resp) {
-                        RED.notify(node._("API Key passed", {
+                        RED.notify(node._("data Key passed", {
                             label: label
                         }), {
                             type: "success",
