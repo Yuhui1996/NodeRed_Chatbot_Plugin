@@ -1,4 +1,5 @@
 {
+
     "name": "chatbot",
     "version": "1.0.0",
     "dependencies": {
@@ -27,7 +28,8 @@
         "nodes": {
             "lowercase": "nodes/lower_case/lowercase.js",
             "meta": "nodes/metadata/metadata.js",
-            "createWatson": "nodes/create_watson/createWatson.js"
+            "createWatson": "nodes/create_watson/createWatson.js",
+           "deleteWatson":"nodes/delete_watson/deleteWatson.js"
         }
     },
     "devDependencies": {
