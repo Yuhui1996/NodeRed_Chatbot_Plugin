@@ -1,9 +1,11 @@
 const Watson_API = require('../scripts/chatbot_fuctions.js');
 
-
+const api_origional = 'NYLBfhff5TKngBCwOxjfRp7dIipvFPm_v1yo_XlR_K7W';
+const instance_origional = 'https://api.eu-gb.assistant.watson.cloud.ibm.com/instances/a20b257b-83f7-44a4-8093-2553e67aa381';
 module.exports = function(RED) {
 
     // let wa = new Watson_API(n.wa_api_key, n.instance);
+
 
 
     function MetadataNode(node_data) {
@@ -12,14 +14,12 @@ module.exports = function(RED) {
         RED.nodes.createNode(this, node_data);
         var node = this;
 
-        let wa_api = new Watson_API()
-
         this.on("input", function(msg) {
 
             msg.payload = {
-                waapikey: node_data.wa,
+                name: node_data.chatbotName,
+                api_key: node_data.wa,
                 instance: node_data.instance,
-                api_object: wa_api
 
             }
 

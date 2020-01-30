@@ -5,14 +5,14 @@
     </div>
 
     <div class="form-row">
-        <label for="node-input-payload"><i class="icon-tag"></i>Chatbot Name</label>
-        <input type="text" id="node-input-payload" placeholder="Name">
+        <label for="node-input-chatbotName"><i class="icon-tag"></i>Chatbot Name</label>
+        <input type="text" id="node-input-chatbotName" placeholder="Name">
     </div>
 
 
     <div class="form-row">
         <label for="node-input-instance"><i class="icon-tag"></i>Instance</label>
-        <input type="text" id="node-input-instance" placeholder="Instance">
+        <input type="text" id="node-input-instance" value="https://api.eu-gb.assistant.watson.cloud.ibm.com/instances/a20b257b-83f7-44a4-8093-2553e67aa381">
     </div>
     <div class="form-row" style="margin-bottom:12px">
         <button type="button" style="float:right; margin-right:8%; margin-bottom:12px" class="ui-button ui-corner-all ui-widget" name="Instance">Generate Instance</button>
@@ -20,7 +20,7 @@
 
     <div class="form-row">
         <label for="node-input-wa">Watson</label>
-        <input type="text" id="node-input-wa" placeholder="API-key">
+        <input type="text" id="node-input-wa" value="NYLBfhff5TKngBCwOxjfRp7dIipvFPm_v1yo_XlR_K7W"></input>
     </div>
     <div class="form-row" style="margin-bottom:12px">
         <button type="button" style="float:right; margin-right:8%; margin-bottom:12px" class="ui-button ui-corner-all ui-widget" name="Watson_Key">Generate Key</button>
@@ -65,6 +65,9 @@
             discovery: {
                 value: ""
             },
+            chatbotName: {
+                value: ""
+            },
             payloadtype: {
                 value: "json"
             }
@@ -107,8 +110,8 @@
 
             console.log(WAHTS);
             $("#node-input-instance").val(this.instance);
-
-            $("#node-input-wa").val(this.instance);
+            $("#node-input-chatbotName").val(this.chatbotName);
+            $("#node-input-wa").val(this.wa);
 
         },
         button: {
