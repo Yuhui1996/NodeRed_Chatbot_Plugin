@@ -29,7 +29,7 @@
             "lowercase": "nodes/lower_case/lowercase.js",
             "meta": "nodes/metadata/metadata.js",
             "createWatson": "nodes/create_watson/createWatson.js",
-           "deleteWatson":"nodes/delete_watson/deleteWatson.js"
+           "deleteWatson":"nodes/delete_watson/deleteWatson.js",
 		   "createIntent": "nodes/create_intent/createIntent.js"
         }
     },
