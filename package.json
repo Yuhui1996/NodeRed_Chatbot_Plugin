@@ -30,6 +30,7 @@
             "meta": "nodes/metadata/metadata.js",
             "createWatson": "nodes/create_watson/createWatson.js",
            "deleteWatson":"nodes/delete_watson/deleteWatson.js"
+		   "createIntent": "nodes/create_intent/createIntent.js"
         }
     },
     "devDependencies": {
