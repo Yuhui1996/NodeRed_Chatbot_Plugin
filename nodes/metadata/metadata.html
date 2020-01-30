@@ -11,31 +11,31 @@
 
 
     <div class="form-row">
-        <label for="hosting_instance"><i class="icon-tag"></i>Instance</label>
-        <input type="text" id="hosting_instance" placeholder="Instance">
+        <label for="node-input-instance"><i class="icon-tag"></i>Instance</label>
+        <input type="text" id="node-input-instance" placeholder="Instance">
     </div>
     <div class="form-row" style="margin-bottom:12px">
         <button type="button" style="float:right; margin-right:8%; margin-bottom:12px" class="ui-button ui-corner-all ui-widget" name="Instance">Generate Instance</button>
     </div>
 
     <div class="form-row">
-        <label for="wa-api-key">Watson</label>
-        <input type="text" id="wa-api-key" placeholder="API-key">
+        <label for="node-input-wa">Watson</label>
+        <input type="text" id="node-input-wa" placeholder="API-key">
     </div>
     <div class="form-row" style="margin-bottom:12px">
         <button type="button" style="float:right; margin-right:8%; margin-bottom:12px" class="ui-button ui-corner-all ui-widget" name="Watson_Key">Generate Key</button>
     </div>
     <div class="form-row">
-        <label for="ta-api-key"><i class="icon-tag"></i>Tone Analyser</label>
-        <input type="text" id="ta-api-key" placeholder="API-key">
+        <label for="node-input-ta"><i class="icon-tag"></i>Tone Analyser</label>
+        <input type="text" id="node-input-ta" placeholder="API-key">
 
     </div>
     <div class="form-row" style="margin-bottom:12px">
         <button type="button" style="float:right; margin-right:8%; margin-bottom:12px" class=" ui-button ui-corner-all ui-widget" name="TA_Key">Generate Key</button>
     </div>
     <div class="form-row">
-        <label for="discovery-api-key"><i class="icon-tag"></i>Discovery </label>
-        <input type="text" id="discovery-api-key" placeholder="API-key">
+        <label for="node-input-discovery"><i class="icon-tag"></i>Discovery </label>
+        <input type="text" id="node-input-discovery" placeholder="API-key">
     </div>
     <div class="form-row">
         <button type="button" style="float:right; margin-right:8%; margin-bottom:12px" class="ui-button ui-corner-all ui-widget" name="Discovery_Key">Generate Key</button>
@@ -50,16 +50,25 @@
             name: {
                 value: ""
             },
-            topic: {
+            payload: {
                 value: ""
             },
-            payload: {
-                value: "",
-                validate: RED.validators.typedInput("payloadType")
+            wa: {
+                value: ""
             },
-            payloadType: {
-                value: "string"
+            instance: {
+                value: ""
             },
+            ta: {
+                value: ""
+            },
+            discovery: {
+                value: ""
+            },
+            payloadtype: {
+                value: "json"
+            }
+
         },
         icon: "inject.svg",
         inputs: 0,
@@ -95,9 +104,12 @@
             if (this.payloadType === 'string' || this.payloadType === 'none') {
                 this.payloadType = "str";
             }
-            $("#node-input-payloadType").val(this.payloadType);
 
-            $("#node-input-payload").typedInput('type', this.payloadType);
+            console.log(WAHTS);
+            $("#node-input-instance").val(this.instance);
+
+            $("#node-input-wa").val(this.instance);
+
         },
         button: {
             enabled: function() {

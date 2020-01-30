@@ -1,5 +1,5 @@
 const Watson_API = require('../scripts/chatbot_fuctions.js');
-let wa = new Watson_API();
+
 let json;
 let workspaceid;
 
