@@ -20,7 +20,6 @@ describe('create Watson Node', function () {
                 const object = JSON.parse(json);
                 for (let i = 0; i < object.result.workspaces.length; i++) {
                     if (object.result.workspaces[i].name == testNode) {
-                        console.log(object.result.workspaces[i].name);
                         const params = {
                             workspaceId: object.result.workspaces[i].workspace_id,
                         };
@@ -74,9 +73,6 @@ describe('create Watson Node', function () {
                     n1.receive({ payload: testNode });
                     var listOfWorkSpaces = JSON.parse(JSON.stringify(res, null, 2));
                     for(var workspace in listOfWorkSpaces['result']['workspaces']){
-                        console.log("hey its ya boi");
-                        console.log(listOfWorkSpaces['result']['workspaces'][workspace]['name']);
-                        console.log(testNode);
                         if (listOfWorkSpaces['result']['workspaces'][workspace]['name'] === testNode){
                             found = true;
                         }

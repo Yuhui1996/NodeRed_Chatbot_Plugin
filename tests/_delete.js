@@ -14,29 +14,6 @@ describe('create Watson Node', function () {
     });
 
     afterEach(function (done) {
-        wa.assistant.listWorkspaces()
-            .then(res => {
-                json = JSON.stringify(res, null, 2);
-                const object = JSON.parse(json);
-                for (let i = 0; i < object.result.workspaces.length; i++) {
-                    if (object.result.workspaces[i].name == testNode) {
-                        console.log(object.result.workspaces[i].name);
-                        const params = {
-                            workspaceId: object.result.workspaces[i].workspace_id,
-                        };
-                        wa.assistant.deleteWorkspace(params)
-                            .then(res => {
-                                console.log(JSON.stringify(res, null, 2));
-                            })
-                            .catch(err => {
-                                console.log(err)
-                            });
-                    }
-                }
-            })
-            .catch(err => {
-                console.log(err);
-            });
         helper.unload();
         helper.stopServer(done);
     });
@@ -69,24 +46,35 @@ describe('create Watson Node', function () {
         var flow = [{ id: "n1", type: "deleteWatson", name: testNode }];
         helper.load(deleteWatsonNode, flow, function () {
             var n1 = helper.getNode("n1");
-            wa.assistant.listWorkspaces()
+
+            wa.assistant.createWorkspace({
+                name: testNode,
+                description: 'for testing delete'
+            })
                 .then(res => {
-                    n1.receive({ payload: testNode });
-                    var listOfWorkSpaces = JSON.parse(JSON.stringify(res, null, 2));
-                    for(var workspace in listOfWorkSpaces['result']['workspaces']){
-                        console.log("hey its ya boi");
-                        console.log(listOfWorkSpaces['result']['workspaces'][workspace]['name']);
-                        console.log(testNode);
-                        if (listOfWorkSpaces['result']['workspaces'][workspace]['name'] === testNode){
-                            found = true;
-                        }
-                    }
-                    should.equal(found, true);
-                    done();
+                    wa.assistant.listWorkspaces()
+                        .then(res => {
+                            n1.receive({ payload: testNode });
+                            var listOfWorkSpaces = JSON.parse(JSON.stringify(res, null, 2));
+                            for(var workspace in listOfWorkSpaces['result']['workspaces']){
+                                console.log(listOfWorkSpaces['result']['workspaces'][workspace]['name']);
+                                console.log(testNode)
+                                if (listOfWorkSpaces['result']['workspaces'][workspace]['name'] === testNode){
+                                    found = true;
+                                }
+                            }
+                            should.equal(found, false);
+                            done();
+                        })
+                        .catch(err => {
+                            done(err);
+                        });
                 })
                 .catch(err => {
-                    done(err);
+                    console.log(err)
                 });
+
+
         });
 
     });
