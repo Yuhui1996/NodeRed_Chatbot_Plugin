@@ -5,6 +5,15 @@
         defaults: {
             name: {
                 value: ""
+            },
+			description: {
+                value: ""
+            },
+			example1: {
+                value: ""
+            },
+			example2: {
+                value: ""
             }
         },
         inputs: 1,
@@ -18,9 +27,23 @@
 
 <script type="text/html" data-template-name="createIntent">
     <div class="form-row">
-        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
-        <input type="text" id="node-input-name" placeholder="Please input the name of this intent" value="UnamedIntent">
-
+        <label for="node-input-name"><i class="icon-tag"></i> Intent Name</label>
+        <input type="text" id="node-input-name" placeholder="Name your intent to match a customer's question or goal" value="UnamedIntent">
+    </div>
+	
+	<div class="form-row">
+        <label for="node-input-description"><i class="icon-tag"></i> Intent Description</label>
+        <input type="text" id="node-input-description" placeholder="Please input the description of this intent" value="EmptyDescription">
+    </div>
+	
+	<div class="form-row">
+        <label for="node-input-example1"><i class="icon-tag"></i> User example 1</label>
+        <input type="text" id="node-input-example1" placeholder="Add unique examples of what the user might say.">
+    </div>
+	
+	<div class="form-row">
+        <label for="node-input-example2"><i class="icon-tag"></i> User example 2</label>
+        <input type="text" id="node-input-example2" placeholder="Add unique examples of what the user might say.">
     </div>
 </script>
 

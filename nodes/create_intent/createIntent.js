@@ -21,12 +21,13 @@ module.exports = function(RED) {
                             const params = {
 								workspaceId: object.result.workspaces[i].workspace_id,
 								intent: config.name,
+								description: config.description,
 								examples: [
 										{
-										  text: 'Good morning'
+										  text: config.example1
 										},
 										{
-										  text: 'Hi there'
+										  text: config.example2
 										}
 									]
 								};
