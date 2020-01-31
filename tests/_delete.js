@@ -7,6 +7,11 @@ let wa = new Watson_API();
 
 helper.init(require.resolve('node-red'));
 
+function waitFor(time){
+    // wait time and resolve
+    return new Promise(resolve => setTimeout(resolve, time))
+}
+
 describe('create Watson Node', function () {
 
     beforeEach(function (done) {
@@ -42,33 +47,35 @@ describe('create Watson Node', function () {
 
 
     it('workspace should not exist', function (done) {
+        this.timeout(4000);
         var found = false;
         var flow = [{ id: "n1", type: "deleteWatson", name: testNode }];
         helper.load(deleteWatsonNode, flow, function () {
             var n1 = helper.getNode("n1");
-
             wa.assistant.createWorkspace({
                 name: testNode,
                 description: 'for testing delete'
             })
                 .then(res => {
-                    wa.assistant.listWorkspaces()
-                        .then(res => {
-                            n1.receive({ payload: testNode });
-                            var listOfWorkSpaces = JSON.parse(JSON.stringify(res, null, 2));
-                            for(var workspace in listOfWorkSpaces['result']['workspaces']){
-                                console.log(listOfWorkSpaces['result']['workspaces'][workspace]['name']);
-                                console.log(testNode)
-                                if (listOfWorkSpaces['result']['workspaces'][workspace]['name'] === testNode){
-                                    found = true;
+                    n1.receive({payload: testNode}); //not really working? how to ensure this node finish the api call?
+                    waitFor(2000).then(() => {//wait for internal api call from node red. currently no way of accessing promise from n1
+                        wa.assistant.listWorkspaces()
+                            .then(res => {
+
+                                var listOfWorkSpaces = JSON.parse(JSON.stringify(res, null, 2));
+                                for (var workspace in listOfWorkSpaces['result']['workspaces']) {
+                                    if (listOfWorkSpaces['result']['workspaces'][workspace]['name'] === testNode) {
+                                        found = true;
+                                    }
                                 }
-                            }
-                            should.equal(found, false);
-                            done();
-                        })
-                        .catch(err => {
-                            done(err);
-                        });
+                                should.equal(found, false);
+                                done();
+                            })
+                            .catch(err => {
+                                done(err);
+                            });
+
+                    })
                 })
                 .catch(err => {
                     console.log(err)
