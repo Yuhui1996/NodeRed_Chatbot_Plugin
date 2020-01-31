@@ -20,7 +20,7 @@ module.exports = function(RED) {
                             console.log(object.result.workspaces[i].name);
                             const params = {
 								workspaceId: object.result.workspaces[i].workspace_id,
-								intent: 'hello',
+								intent: config.name,
 								examples: [
 										{
 										  text: 'Good morning'
