@@ -18,9 +18,18 @@
         },
         inputs: 1,
         outputs: 1,
-      icon: "comment.svg",
+        icon: "comment.svg",
         label: function () {
             return this.name || "create intent";
+        },
+		oneditprepare: function() {
+            if (this.payloadType === 'string' || this.payloadType === 'none') {
+                this.payloadType = "str";
+            }
+            $("#node-input-name").val(this.name);
+            $("#node-input-description").val(this.description);
+			$("#node-input-example1").val(this.example1);
+			$("#node-input-example2").val(this.example2);
         }
     });
 </script>
