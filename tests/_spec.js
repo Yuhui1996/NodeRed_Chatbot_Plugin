@@ -1,6 +1,6 @@
 var should = require("should");
 var helper = require("node-red-node-test-helper");
-var lowerNode = require("../lowercase.js");
+var lowerNode = require("../nodes/lower_case/lowercase.js");
 
 helper.init(require.resolve('node-red'));
 

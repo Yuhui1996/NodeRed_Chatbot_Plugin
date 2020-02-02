@@ -1,5 +1,4 @@
 {
-
     "name": "chatbot",
     "version": "1.0.0",
     "dependencies": {
@@ -9,7 +8,7 @@
     "description": "hiya",
     "main": "hiya",
     "scripts": {
-        "test": "mocha \"tests/_spec.js\""
+        "test": "mocha \"tests/_spec.js\" && mocha \"tests/_createIntent.js\""
     },
     "repository": {
         "type": "git",
@@ -29,8 +28,8 @@
             "lowercase": "nodes/lower_case/lowercase.js",
             "meta": "nodes/metadata/metadata.js",
             "createWatson": "nodes/create_watson/createWatson.js",
-           "deleteWatson":"nodes/delete_watson/deleteWatson.js",
-		   "createIntent": "nodes/create_intent/createIntent.js"
+            "deleteWatson": "nodes/delete_watson/deleteWatson.js",
+            "createIntent": "nodes/create_intent/createIntent.js"
         }
     },
     "devDependencies": {
