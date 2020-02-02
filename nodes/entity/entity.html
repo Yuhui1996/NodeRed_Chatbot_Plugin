@@ -18,10 +18,36 @@
 
 <script type="text/html" data-template-name="entity">
   <div class="form-row">
-        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
-        <input type="text" id="node-input-name" placeholder="Name">
-    </div>
+        <label for="node-input-name"><i class="icon-tag"></i>Entity name</label>
+        <input type="text" id="node-input-name" placeholder="Type entity name here, e.g. account_type">
+  </div>
+  <div class="form-row">
+    <label for="node-input-value"><i class="icon-tag"></i>Value</label>
+    <input type="text" id="node-input-name" placeholder="Type value here, e.g. Checking">
+  </div>
+  <div class="form-row-select">
+    <select class="dropdown" id="node-input-select">
+      <option value="synonym">Synonym</option>
+      <option value="pattern">Pattern</option>
+    </select>
+    <input class="select" type="text" id="node-input-synonym" placeholder="Type synonym here, e.g. Depo">
+    <button type="button">&#43;</button>
+  </div>  
 </script>
+
+<style>
+  .form-row-select {
+    display: flex;
+  }
+  .dropdown{
+    width: auto;
+    margin-right: 10px;
+  }
+  .select{
+    flex-grow: 1;
+    margin-right: 10px;
+  }
+</style>
 
 <script type="text/html" data-help-name="entity">
   <p>A node to create a chatbot entity</p>
