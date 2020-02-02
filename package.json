@@ -28,6 +28,7 @@
             "lowercase": "nodes/lower_case/lowercase.js",
             "meta": "nodes/metadata/metadata.js",
             "intent": "nodes/intent/intent.js",
+            "entity": "nodes/entity/entity.js",
             "createWatson": "nodes/create_watson/createWatson.js",
             "deleteWatson": "nodes/delete_watson/deleteWatson.js"
         }
