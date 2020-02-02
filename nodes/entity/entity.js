@@ -1,10 +1,25 @@
 module.exports = function(RED) {
-    function EntityNode(config) {
-        RED.nodes.createNode(this,config);
+    function EntityNode(n) {
+        RED.nodes.createNode(this,n);
         var node = this;
+        this.name = n.name;
         node.on('input', function(msg) {
-            assistant.createEntity(params)
+            assistant.createEntity(
+                {
+                    workspaceId: 'fc400c02-18f5-46d5-b5a0-46d605b32898',
+                    entity: this.name,
+                    values: [
+                    {
+                        value: 'test1'
+                    },
+                    {
+                        value: 'test2'
+                    }
+                    ]
+                }
+            )
                 .then(res => {
+                console.log("name: " + this.name)
                 console.log(JSON.stringify(res, null, 2));
                 })
             .catch(err => {
@@ -14,6 +29,7 @@ module.exports = function(RED) {
             node.send(msg);
         });
     }
+
     RED.nodes.registerType("entity",EntityNode);
 
     const AssistantV1 = require('ibm-watson/assistant/v1');
@@ -26,17 +42,4 @@ module.exports = function(RED) {
         }),
         url: 'https://gateway-lon.watsonplatform.net/assistant/api',
     });
-
-    const params = {
-        workspaceId: 'fc400c02-18f5-46d5-b5a0-46d605b32898',
-        entity: 'test_entity',
-        values: [
-        {
-            value: 'test1'
-        },
-        {
-            value: 'test2'
-        }
-        ]
-    };
 }
