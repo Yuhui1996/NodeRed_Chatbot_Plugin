@@ -39,21 +39,73 @@
     <input class="select" type="text" id="node-input-synonym" placeholder="Type synonym here, e.g. Depo">
     <button type="button">&#43;</button>
   </div>  
+  <div class="buttons">
+    <button onclick="addToList()">Add value</button>
+    <button>Recommend synonyms</button>
+  </div>
+  <ul id="values" class="values"></ul>
 </script>
 
 <style>
   .form-row-select {
     display: flex;
   }
-  .dropdown{
+  .dropdown {
     width: auto;
     margin-right: 10px;
   }
-  .select{
+  .select {
     flex-grow: 1;
     margin-right: 10px;
   }
+  .buttons {
+    display: flex;
+    margin-top: 10px;
+  }
+  .buttons > * {
+    padding: 10px;
+  }
 </style>
+
+<script type="text/javascript">
+    function addToList() {
+      var ul = document.getElementById("values");
+      var value = document.getElementById("node-input-value");
+      var li = document.createElement("li");
+      var text = el("span", "list-value", null);
+      text.innerHTML = value.value;
+      li.appendChild(text);
+      var button = el("button", "list-button", deleteFromList);
+      button.innerHTML = "X";
+      li.appendChild(button);
+      ul.appendChild(li);
+    }
+
+    function deleteFromList(e) {
+      const parent = e.target.parentNode;
+
+      const text = parent.querySelector('.list-value');
+      const button = parent.querySelector('.list-button');
+
+      button.removeEventListener('click', deleteFromList);
+
+      parent.parentNode.removeChild(parent);
+    }
+
+  function el(type, className, clickHandler) {
+    const element = document.createElement(type);
+
+    if (className) {
+      element.classList.add(className);
+    }
+
+    if (clickHandler) {
+      element.addEventListener('click', clickHandler)
+    }
+
+    return element;
+  }
+</script>
 
 <script type="text/html" data-help-name="entity">
   <p>A node to create a chatbot entity</p>
