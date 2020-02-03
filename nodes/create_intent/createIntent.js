@@ -9,7 +9,7 @@ module.exports = function(RED) {
         node.on('input', function(msg) {
 			console.log(msg.payload);
 			const params = {
-				workspaceId: msg.payload,
+				workspaceId: msg,
 				intent: config.name,
 				description: config.description,
 				examples: [
@@ -27,7 +27,8 @@ module.exports = function(RED) {
 				node.send(msg.payload);
 			  })
 			  .catch(err => {
-				console.log(err)
+				node.error("Error",err);
+				console.log(err);
 			  });
         });
     }
