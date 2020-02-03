@@ -7,6 +7,7 @@ module.exports = function(RED) {
         RED.nodes.createNode(this, config);
         var node = this;
         node.on('input', function(msg) {
+			console.log(msg.payload);
 			const params = {
 				workspaceId: msg.payload,
 				intent: config.name,
@@ -19,7 +20,7 @@ module.exports = function(RED) {
 						  text: config.example2
 						}
 					]
-			}
+			};
 			wa.assistant.createIntent(params)
 			  .then(res => {
 				console.log(JSON.stringify(res, null, 2));
