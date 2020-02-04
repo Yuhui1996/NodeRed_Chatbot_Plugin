@@ -1,3 +1,5 @@
+const Watson_API = require('../scripts/chatbot_fuctions.js');
+let wa = new Watson_API();
 let json;
 let workspaceid;
 
@@ -8,9 +10,8 @@ module.exports = function(RED) {
     function deleteWatson(config) {
         RED.nodes.createNode(this, config);
         var node = this;
-        this.assistant = this.context().flow.get("assistant")
         node.on('input', function(msg) {
-            this.assistant.listWorkspaces()
+            wa.assistant.listWorkspaces()
                 .then(res => {
                     json = JSON.stringify(res, null, 2);
                     const object = JSON.parse(json);
@@ -20,7 +21,7 @@ module.exports = function(RED) {
                             const params = {
                                 workspaceId: object.result.workspaces[i].workspace_id,
                             };
-                            this.assistant.deleteWorkspace(params)
+                            wa.assistant.deleteWorkspace(params)
                                 .then(res => {
                                     console.log(JSON.stringify(res, null, 2));
                                 })
