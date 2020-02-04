@@ -1,4 +1,4 @@
-const Watson_API = require('../scripts/chatbot_fuctions.js');
+// const Watson_API = require('../scripts/chatbot_fuctions.js');
 const AssistantV1 = require('ibm-watson/assistant/v1');
 
 const {
@@ -27,7 +27,7 @@ module.exports = function(RED) {
             url: node_data.instance
         });
         // var myCount = flow.get("assistant");
-        // var old = this.context().flow.get("assistant");  
+        // var old = this.context().flow.get("assistant");
         this.context().flow.set("assistant", assistant);
 
         this.on("input", function(msg) {
