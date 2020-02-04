@@ -8,17 +8,15 @@ const {
 
 class Watson_API {
 
-    constructor(key, instance) {
-        this.assistant = new AssistantV1({
-            version: '2019-02-08',
-            authenticator: new IamAuthenticator({
-                apikey: key, //change this api key to your to modify your own workspace
-            }),
-            url: instance
-        });
-    }
 
 
+    this.assistant = new AssistantV1({
+        version: '2019-02-08',
+        authenticator: new IamAuthenticator({
+            apikey: 'NYLBfhff5TKngBCwOxjfRp7dIipvFPm_v1yo_XlR_K7W', //change this api key to your to modify your own workspace
+        }),
+        url: 'https://api.eu-gb.assistant.watson.cloud.ibm.com/instances/a20b257b-83f7-44a4-8093-2553e67aa381'
+    });
 
     set assistant(assis) {
         this.assistant = assis;
