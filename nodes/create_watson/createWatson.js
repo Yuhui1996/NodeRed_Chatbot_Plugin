@@ -1,3 +1,4 @@
+
 let workspaceid;
 let json;
 module.exports = function(RED) {
@@ -14,10 +15,11 @@ module.exports = function(RED) {
             }
             this.assistant.createWorkspace(workspace)
                 .then(res => {
-                    json = JSON.stringify(res, null, 2);
+                    json= JSON.stringify(res, null, 2);
                     let object = JSON.parse(json);
                     workspaceid = object.result.workspace_id;
-                    node.send(workspaceid); //send workspace id to next
+                    node.send(workspaceid);//send workspace id to next
+
                 })
                 .catch(err => {
                     console.log(err)
