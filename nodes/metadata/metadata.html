@@ -12,7 +12,7 @@
 
     <div class="form-row">
         <label for="node-input-instance"><i class="icon-tag"></i>Instance</label>
-        <input type="text" id="node-input-instance" value="https://api.eu-gb.assistant.watson.cloud.ibm.com/instances/a20b257b-83f7-44a4-8093-2553e67aa381">
+        <input type="text" id="node-input-instance"><span data-i18n="[placeholder]metadata.wa"></span>
     </div>
     <div class="form-row" style="margin-bottom:12px">
         <button type="button" style="float:right; margin-right:8%; margin-bottom:12px" class="ui-button ui-corner-all ui-widget" name="Instance">Generate Instance</button>
@@ -20,7 +20,7 @@
 
     <div class="form-row">
         <label for="node-input-wa">Watson</label>
-        <input type="text" id="node-input-wa" value="NYLBfhff5TKngBCwOxjfRp7dIipvFPm_v1yo_XlR_K7W"></input>
+        <input type="text" id="node-input-wa"></input>
     </div>
     <div class="form-row" style="margin-bottom:12px">
         <button type="button" style="float:right; margin-right:8%; margin-bottom:12px" class="ui-button ui-corner-all ui-widget" name="Watson_Key">Generate Key</button>
@@ -54,10 +54,13 @@
                 value: ""
             },
             wa: {
-                value: ""
+                value: "NYLBfhff5TKngBCwOxjfRp7dIipvFPm_v1yo_XlR_K7W",
+                required: true
             },
             instance: {
-                value: ""
+                value: "https://api.eu-gb.assistant.watson.cloud.ibm.com/instances/a20b257b-83f7-44a4-8093-2553e67aa381",
+                required: true
+
             },
             ta: {
                 value: ""
@@ -66,7 +69,8 @@
                 value: ""
             },
             chatbotName: {
-                value: ""
+                value: "Default Name",
+                required: true
             },
             payloadtype: {
                 value: "json"
@@ -104,14 +108,11 @@
             return this.name ? "node_label_italic" : "";
         },
         oneditprepare: function() {
-            if (this.payloadType === 'string' || this.payloadType === 'none') {
-                this.payloadType = "str";
-            }
 
-            console.log(WAHTS);
+            $("#node-input-wa").text(this.wa);
             $("#node-input-instance").val(this.instance);
             $("#node-input-chatbotName").val(this.chatbotName);
-            $("#node-input-wa").val(this.wa);
+
 
         },
         button: {

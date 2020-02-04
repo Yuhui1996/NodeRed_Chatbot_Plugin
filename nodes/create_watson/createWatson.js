@@ -1,37 +1,32 @@
-const Watson_API = require('../scripts/chatbot_fuctions.js');
-
-
+let workspaceid;
+let json;
 module.exports = function(RED) {
 
 
     function createWatson(config) {
         RED.nodes.createNode(this, config);
         var node = this;
-        console.log(config);
+        this.assistant = this.context().flow.get("assistant")
         node.on('input', function(msg) {
-            // let wa = new Watson_API(msg.payload.api_key, msg.payload.instance);
-            console.log(wa);
-            //
-            //     const workspace = {
-            //         name: msg.payload.chatbotName,
-            //         description: 'this is the first chatbot created using node.js'
-            //
-            //     }
-            //
-            //     this.wa.assistant.createWorkspace(workspace)
-            //         .then(res => {
-            //             console.log(JSON.stringify(res, null, 2));
-            //         })
-            //         .catch(err => {
-            //             console.log(err)
-            //         });
-            //     node.send('success');
-            //
+            const workspace = {
+                name: msg.payload.chatbot_name,
+                description: 'this is the first chatbot created using node.js'
+            }
+            this.assistant.createWorkspace(workspace)
+                .then(res => {
+                    json = JSON.stringify(res, null, 2);
+                    let object = JSON.parse(json);
+                    workspaceid = object.result.workspace_id;
+                    node.send(workspaceid); //send workspace id to next
+                })
+                .catch(err => {
+                    console.log(err)
+                });
         });
-
-
-
     }
 
     RED.nodes.registerType("createWatson", createWatson);
+
+
+
 }
