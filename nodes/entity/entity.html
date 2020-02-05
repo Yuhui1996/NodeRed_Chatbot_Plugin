@@ -23,6 +23,13 @@
     icon: "comment.svg",
     label: function() {
       return this.name || "entity";
+    },
+    oneditprepare: function() {
+      $("#node-input-value-container").editableList({
+    addItem: function(row, index, data) {
+        $(row).html("Item "+index);
+    }
+});
     }
   });
 </script>
@@ -50,6 +57,7 @@
   </div>
   <ul id="node-input-values" class="values">
   </ul>
+  <ol id="node-input-value-container"></ol>
 </script>
 
 <style>
