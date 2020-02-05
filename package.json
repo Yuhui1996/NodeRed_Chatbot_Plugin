@@ -8,9 +8,7 @@
     "description": "hiya",
     "main": "hiya",
     "scripts": {
-
         "test": "mocha \"tests/_spec.js\" && mocha \"tests/_create.js\" && mocha \"tests/_delete.js\""
-
     },
     "repository": {
         "type": "git",
