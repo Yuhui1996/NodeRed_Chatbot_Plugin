@@ -31,7 +31,6 @@ module.exports = function(RED) {
         this.context().flow.set("assistant", assistant);
 
         this.on("input", function(msg) {
-
             msg.payload = {
                 chatbot_name: node_data.chatbotName,
                 wa_api_key: node_data.wa,
@@ -39,6 +38,7 @@ module.exports = function(RED) {
                 discovery_api_key: node_data.discovery,
                 instance_url: node_data.instance,
             }
+
 
             // console.log(msg);
             this.send(msg);
