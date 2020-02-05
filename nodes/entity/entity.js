@@ -3,6 +3,9 @@ module.exports = function(RED) {
         RED.nodes.createNode(this,n);
         var node = this;
         this.name = n.name;
+        this.value = n.value;
+        this.values = n.values || ["test"];
+        console.log("values: " + this.values)
         node.on('input', function(msg) {
             assistant.createEntity(
                 {
@@ -10,10 +13,7 @@ module.exports = function(RED) {
                     entity: this.name,
                     values: [
                     {
-                        value: 'test1'
-                    },
-                    {
-                        value: 'test2'
+                        value: this.value
                     }
                     ]
                 }

@@ -9,6 +9,11 @@
       value: {
         value: ""
       },
+      values: {
+        value:[{
+          v:""
+        }],
+      },
       synonym: {
         value: ""
       },
@@ -43,7 +48,8 @@
     <button onclick="addToList()">Add value</button>
     <button>Recommend synonyms</button>
   </div>
-  <ul id="values" class="values"></ul>
+  <ul id="node-input-values" class="values">
+  </ul>
 </script>
 
 <style>
@@ -69,7 +75,7 @@
 
 <script type="text/javascript">
     function addToList() {
-      var ul = document.getElementById("values");
+      var ul = document.getElementById("node-input-values");
       var value = document.getElementById("node-input-value");
       var li = document.createElement("li");
       var text = el("span", "list-value", null);
