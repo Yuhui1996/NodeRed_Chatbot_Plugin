@@ -69,7 +69,7 @@ describe('Delete Watson Node', function() {
 
 
     it('workspace should not exist', function(done) {
-        this.timeout(4000);
+        this.timeout(10000);
         var found = false;
         var flow = [{
             id: "n1",

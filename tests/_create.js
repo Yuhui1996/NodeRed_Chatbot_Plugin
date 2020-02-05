@@ -102,7 +102,7 @@ describe('create Watson Node', function() {
 
 
     it('workspace should be created', function(done) {
-        this.timeout(4000);
+        this.timeout(10000);
         var found = false;
         var flow = [{
                 id: "n1",
