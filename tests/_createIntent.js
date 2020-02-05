@@ -4,8 +4,8 @@ var createIntent = require("../nodes/create_intent/createIntent.js");
 
 const AssistantV1 = require('ibm-watson/assistant/v1');
 
-const apikey = "NYLBfhff5TKngBCwOxjfRp7dIipvFPm_v1yo_XlR_K7W";
-const urlHost = "https://api.eu-gb.assistant.watson.cloud.ibm.com/instances/a20b257b-83f7-44a4-8093-2553e67aa381";
+const apikey = "iaPZHdbsoWlThg8IWVFXM1m3IWuIbJ-vyPa9DstoRT5G";
+const urlHost = "https://api.eu-gb.assistant.watson.cloud.ibm.com/instances/0ccb889d-9dc1-4098-93e7-2be9f027d0d6";
 
 
 const {
@@ -39,8 +39,6 @@ function waitFor(time) {
 helper.init(require.resolve('node-red'));
 
 describe('create Intent', function() {
-
-
 
 
     beforeEach(function(done) {
@@ -105,7 +103,7 @@ describe('create Intent', function() {
 
     it('Intent should be created', function(done) {
         //this.timeout(2000);
-        var found = false;
+        //var found = false;
         var flow = [{
                 id: "n1",
                 type: "createIntent",
@@ -133,10 +131,10 @@ describe('create Intent', function() {
                 helper.load(createIntent, flow, function() {
                     var n1 = helper.getNode("n1");
                     var n2 = helper.getNode("n2");
-                    console.log(JSON.stringify(n1, null, 2));
-                    console.log(JSON.stringify(testNode, null, 2));
+
                     n1.receive({
-                        payload: {
+                        payload: //testNodeId
+                        {
                             chatbot_name: testNode,
                             wa_api_key: apikey,
                             ta_api_key: "",
@@ -145,8 +143,10 @@ describe('create Intent', function() {
                             workspaceId: testNodeId
                         }
                     });
+
                     n2.on("input", function(msg) {
                         //waitFor(2000).then(() => {//wait for internal api call from node red. currently no way of accessing promise from n1
+
                         const params = {
                             workspaceId: testNodeId,
                             intent: testIntent,
@@ -163,7 +163,7 @@ describe('create Intent', function() {
                         //})
                     });
                 });
-                done();
+                //done();
             })
             .catch(err => {
                 done(err);
