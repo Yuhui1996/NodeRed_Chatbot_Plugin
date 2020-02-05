@@ -29,7 +29,7 @@ module.exports = function(RED) {
 
             console.log(msg);
             const params = {
-                workspaceId: msg,
+                workspaceId: msg.payload.workspaceId,
                 intent: config.name,
                 description: config.description,
                 examples: [{

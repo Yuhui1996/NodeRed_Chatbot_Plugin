@@ -136,7 +136,14 @@ describe('create Intent', function() {
                     console.log(JSON.stringify(n1, null, 2));
                     console.log(JSON.stringify(testNode, null, 2));
                     n1.receive({
-                        payload: testNode
+                        payload: {
+                            chatbot_name: testNode,
+                            wa_api_key: apikey,
+                            ta_api_key: "",
+                            discovery_api_key: "",
+                            instance_url: urlHost,
+                            workspaceId: testNodeId
+                        }
                     });
                     n2.on("input", function(msg) {
                         //waitFor(2000).then(() => {//wait for internal api call from node red. currently no way of accessing promise from n1

@@ -43,7 +43,8 @@ module.exports = function(RED) {
                     json = JSON.stringify(res, null, 2);
                     let object = JSON.parse(json);
                     workspaceid = object.result.workspace_id;
-                    node.send(workspaceid); //send workspace id to next
+                    msg.payload.workspaceId = workspaceid;
+                    node.send(msg); //send workspace id to next
                 })
                 .catch(err => {
                     console.log(err)
