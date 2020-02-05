@@ -1,6 +1,7 @@
 const Watson_API = require('../scripts/chatbot_fuctions.js');
 let wa = new Watson_API();
-
+let workspaceid;
+let json;
 module.exports = function(RED) {
 
 
@@ -8,26 +9,25 @@ module.exports = function(RED) {
         RED.nodes.createNode(this, config);
         var node = this;
         node.on('input', function(msg) {
-
             const workspace = {
                 name: msg.payload,
                 description: 'this is the first chatbot created using node.js'
-
             }
             wa.assistant.createWorkspace(workspace)
                 .then(res => {
-                    console.log(JSON.stringify(res, null, 2));
+                    json= JSON.stringify(res, null, 2);
+                    let object = JSON.parse(json);
+                    workspaceid = object.result.workspace_id;
+                    node.send(workspaceid);//send workspace id to next
                 })
                 .catch(err => {
                     console.log(err)
                 });
-            node.send('success');
-
         });
-
-
-
     }
 
     RED.nodes.registerType("createWatson", createWatson);
+
+
+
 }
