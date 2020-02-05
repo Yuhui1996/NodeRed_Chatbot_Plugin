@@ -4,19 +4,11 @@ const {
 } = require('ibm-watson/auth');
 
 let workspaceid;
-let json;
+
 module.exports = function(RED) {
-
-
-
-    function createWatson(config) {
+    function createIntent(config) {
         RED.nodes.createNode(this, config);
         var node = this;
-
-
-
-
-
         node.on('input', function(msg) {
 
             try {
@@ -34,25 +26,31 @@ module.exports = function(RED) {
                     });
                 }
             }
-            const workspace = {
-                name: msg.payload.chatbot_name,
-                description: 'this is the first chatbot created using node.js'
-            }
-            this.assistant.createWorkspace(workspace)
+
+            console.log(msg);
+            const params = {
+                workspaceId: msg,
+                intent: config.name,
+                description: config.description,
+                examples: [{
+                        text: config.example1
+                    },
+                    {
+                        text: config.example2
+                    }
+                ]
+            };
+            this.assistant.createIntent(params)
                 .then(res => {
-                    json = JSON.stringify(res, null, 2);
-                    let object = JSON.parse(json);
-                    workspaceid = object.result.workspace_id;
-                    node.send(workspaceid); //send workspace id to next
+                    console.log(JSON.stringify(res, null, 2));
+                    node.send(msg);
                 })
                 .catch(err => {
-                    console.log(err)
+                    node.error("Error", err);
+                    console.log(err);
                 });
         });
     }
 
-    RED.nodes.registerType("createWatson", createWatson);
-
-
-
+    RED.nodes.registerType("createIntent", createIntent);
 }

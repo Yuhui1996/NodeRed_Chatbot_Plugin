@@ -9,6 +9,8 @@ const {
 } = require('ibm-watson/auth');
 
 
+const apikey = "NYLBfhff5TKngBCwOxjfRp7dIipvFPm_v1yo_XlR_K7W";
+const urlHost = "https://api.eu-gb.assistant.watson.cloud.ibm.com/instances/a20b257b-83f7-44a4-8093-2553e67aa381";
 
 let json;
 
@@ -16,9 +18,9 @@ let json;
 const watson_assistant = new AssistantV1({
     version: '2019-02-08',
     authenticator: new IamAuthenticator({
-        apikey: 'NYLBfhff5TKngBCwOxjfRp7dIipvFPm_v1yo_XlR_K7W', //change this api key to your to modify your own workspace
+        apikey: apikey, //change this api key to your to modify your own workspace
     }),
-    url: 'https://api.eu-gb.assistant.watson.cloud.ibm.com/instances/a20b257b-83f7-44a4-8093-2553e67aa381'
+    url: urlHost
 });
 
 helper.init(require.resolve('node-red'));
@@ -83,7 +85,11 @@ describe('Delete Watson Node', function() {
                 .then(res => {
                     n1.receive({
                         payload: {
-                            chatbot_name: testNode
+                            chatbot_name: testNode,
+                            wa_api_key: apikey,
+                            ta_api_key: "",
+                            discovery_api_key: "",
+                            instance_url: urlHost,
                         }
                     }); //not really working? how to ensure this node finish the api call?
                     waitFor(2000).then(() => { //wait for internal api call from node red. currently no way of accessing promise from n1
