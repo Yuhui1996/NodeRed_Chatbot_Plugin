@@ -1,3 +1,7 @@
+const Watson_API = require('../scripts/chatbot_fuctions.js');
+let assistant = new Watson_API().assistant;
+
+
 module.exports = function(RED) {
     function EntityNode(n) {
         RED.nodes.createNode(this,n);
@@ -5,11 +9,11 @@ module.exports = function(RED) {
         this.name = n.name;
         this.value = n.value;
         this.values = n.values || ["test"];
-        console.log("values: " + this.values)
         node.on('input', function(msg) {
+            console.log("msg: " + msg);
             assistant.createEntity(
                 {
-                    workspaceId: 'fc400c02-18f5-46d5-b5a0-46d605b32898',
+                    workspaceId: msg,
                     entity: this.name,
                     values: [
                     {
@@ -31,15 +35,4 @@ module.exports = function(RED) {
     }
 
     RED.nodes.registerType("entity",EntityNode);
-
-    const AssistantV1 = require('ibm-watson/assistant/v1');
-    const { IamAuthenticator } = require('ibm-watson/auth');
-
-    const assistant = new AssistantV1({
-        version: '2019-02-28',
-        authenticator: new IamAuthenticator({
-            apikey: 'NmIp0EQCOGVRA4dAoni9NosPWYsgG3b9c-xJgD3Iu4qq',
-        }),
-        url: 'https://gateway-lon.watsonplatform.net/assistant/api',
-    });
 }
