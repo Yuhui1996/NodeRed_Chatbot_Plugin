@@ -1,0 +1,61 @@
+<script type="text/javascript">
+    RED.nodes.registerType('createIntent', {
+        category: 'Watson Designer',
+        color: '#a6bbcf',
+        defaults: {
+            name: {
+                value: ""
+            },
+			description: {
+                value: ""
+            },
+			example1: {
+                value: ""
+            },
+			example2: {
+                value: ""
+            }
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "comment.svg",
+        label: function () {
+            return this.name || "create intent";
+        },
+		oneditprepare: function() {
+            if (this.payloadType === 'string' || this.payloadType === 'none') {
+                this.payloadType = "str";
+            }
+            $("#node-input-name").val(this.name);
+            $("#node-input-description").val(this.description);
+			$("#node-input-example1").val(this.example1);
+			$("#node-input-example2").val(this.example2);
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="createIntent">
+	<div class="form-row">
+        <label for="node-input-description"><i class="icon-tag"></i> Intent Name</label>
+        <input type="text" id="node-input-name" value="UnamedIntent" placeholder="Name your intent to match a customer's question or goal">
+    </div>
+	
+	<div class="form-row">
+        <label for="node-input-description"><i class="icon-tag"></i> Intent Description</label>
+        <input type="text" id="node-input-description" value="EmptyDescription" placeholder="Please input the description of this intent">
+    </div>
+	
+	<div class="form-row">
+        <label for="node-input-example1"><i class="icon-tag"></i> User example 1</label>
+        <input type="text" id="node-input-example1" placeholder="Add unique examples of what the user might say.">
+    </div>
+	
+	<div class="form-row">
+        <label for="node-input-example2"><i class="icon-tag"></i> User example 2</label>
+        <input type="text" id="node-input-example2" placeholder="Add unique examples of what the user might say.">
+    </div>
+</script>
+
+<script type="text/html" data-help-name="createIntent">
+    <p>Implementation with this node enable user to create default intent to the given workspace. Name can only contain alphabetic characters (A-Z,a-z), numeric characters (0-9), underscores (_), dashes (-) and periods (.).</p>
+</script>
