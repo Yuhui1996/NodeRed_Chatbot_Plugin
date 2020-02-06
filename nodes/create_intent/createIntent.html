@@ -44,6 +44,11 @@
 				removable: true
 			
 			});
+			
+			for (var i=0; i<this.data.length; i++) {
+                var data = this.data[i];
+                $("#node-input-example-container").editableList('addItem',data);
+            }
         },
 		oneditsave: function() {
 			this.name = $("#node-input-name").val();
