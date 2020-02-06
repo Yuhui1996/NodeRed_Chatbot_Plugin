@@ -53,7 +53,7 @@
 
                     //Synonyms
                     var syn = $('<div/>', {class: "synonym_row"}).appendTo(row2);
-                    syn.css('min-height', '82px').editableList({
+                    syn.css('height', '100px').editableList({
                         header: $("<div>").append($.parseHTML("<div style='display: inline-grid'>Synonyms</div>")),
                         addItem: function (syn, index_sym, opt_syn) {
                             if (!opt_syn.hasOwnProperty('r')) {
@@ -134,29 +134,6 @@
 
 <script type="text/html" data-template-name="entity">
 
-    <style>
-        .form-row-select {
-            display: flex;
-        }
-
-        .dropdown {
-            width: auto;
-            margin-right: 10px;
-        }
-
-        .select {
-            margin-right: 10px;
-        }
-
-        /*.buttons {*/
-        /*  display: flex;*/
-        /*  margin-top: 10px;*/
-        /*}*/
-        .buttons > * {
-            padding: 10px;
-        }
-
-    </style>
 
     <div class="form-row">
         <label for="node-input-name"><i class="icon-tag"></i>Entity name</label>
