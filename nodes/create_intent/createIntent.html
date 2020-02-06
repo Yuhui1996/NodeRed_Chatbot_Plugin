@@ -33,7 +33,7 @@
 			$("#node-input-example1").val(this.example1);
 			$("#node-input-example2").val(this.example2);
 			
-			$('#node-input-example-container').editableList({
+			$('#node-input-example-container').css('min-height','300px').editableList({
 				addItem: function(row, index, data) {
 					$(row).html("Item "+index);
 				},
