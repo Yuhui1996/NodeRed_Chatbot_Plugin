@@ -15,7 +15,7 @@
 			example2: {
 				value: ""
 			},
-			data: {}
+			data: {value:[]}
 		},
 		inputs: 1,
 		outputs: 1,
@@ -39,6 +39,7 @@
                         whiteSpace: 'nowrap'
                     });
 					var element = $('<input/>',{class:"node-input-example",type:"text"}).appendTo(row);
+					element.typedInput('value',data);
 				},
 				sortable: true,
 				removable: true
@@ -46,8 +47,8 @@
 			});
 			
 			for (var i=0; i<this.data.length; i++) {
-                var data = this.data[i];
-                $("#node-input-example-container").editableList('addItem',data);
+                var example = this.data[i];
+                $("#node-input-example-container").editableList('addItem',example);
             }
         },
 		oneditsave: function() {
