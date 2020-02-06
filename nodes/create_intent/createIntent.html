@@ -4,15 +4,18 @@
 		color: '#a6bbcf',
 		defaults: {
 			name: {
-				value: ""
+				value: "UnamedIntent"
 			},
 			description: {
-				value: ""
+				value: "EmptyDescription"
 			},
 			example1: {
 				value: ""
 			},
 			example2: {
+				value: ""
+			},
+			example-container: {
 				value: ""
 			}
 		},
@@ -49,12 +52,12 @@
 <script type="text/html" data-template-name="createIntent">
 	<div class="form-row">
 		<label for="node-input-description"><i class="icon-tag"></i> Intent Name</label>
-		<input type="text" id="node-input-name" value="UnamedIntent" placeholder="Name your intent to match a customer's question or goal">
+		<input type="text" id="node-input-name" placeholder="Name your intent to match a customer's question or goal">
 	</div>
 
 	<div class="form-row">
 		<label for="node-input-description"><i class="icon-tag"></i> Intent Description</label>
-		<input type="text" id="node-input-description" value="EmptyDescription" placeholder="Please input the description of this intent">
+		<input type="text" id="node-input-description"placeholder="Please input the description of this intent">
 	</div>
 
 	<div class="form-row">
