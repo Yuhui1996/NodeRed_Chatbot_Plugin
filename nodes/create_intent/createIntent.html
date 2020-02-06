@@ -14,7 +14,8 @@
 			},
 			example2: {
 				value: ""
-			}
+			},
+			data: {}
 		},
 		inputs: 1,
 		outputs: 1,
@@ -43,7 +44,18 @@
 				removable: true
 			
 			});
-        }
+        },
+		oneditsave: function() {
+			this.name = $("#node-input-name").val();
+			this.description = $("#node-input-description").val();
+			var exampleList = $('#node-input-example-container').editableList('items');
+			this.data = [];
+			exampleList.each(function(i) {
+				var exampleElement = $(this);
+				var example = exampleElement.find(".node-input-example").val();
+				this.data.push(example);
+			});
+		}
     });
 </script>
 

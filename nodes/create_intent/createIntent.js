@@ -28,6 +28,10 @@ module.exports = function(RED) {
             }
 
             console.log(msg);
+			for (var i=0;i<config.data.length;i++) {
+				example = config.data[i];
+				console.log(example);
+			}
             const params = {
                 workspaceId: msg.payload.workspaceId,
                 intent: config.name,
