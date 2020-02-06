@@ -33,7 +33,11 @@
 			
 			$('#node-input-example-container').css('min-height','300px').editableList({
 				addItem: function(row, index, data) {
-					$(row).html("Item "+index);
+					row.css({
+                        overflow: 'hidden',
+                        whiteSpace: 'nowrap'
+                    });
+					var element = $('<input/>',{class:"node-input-example",type:"text"}).appendTo(row);
 				},
 				sortable: true,
 				removable: true
