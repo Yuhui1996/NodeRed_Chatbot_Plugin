@@ -38,10 +38,10 @@
                         overflow: 'hidden',
                         whiteSpace: 'nowrap'
                     });
-					if (data=={}) {
+					if (!data.hasOwnProperty('exampleContent')) {
 						var element = $('<input/>',{class:"node-input-example",type:"text"}).appendTo(row);
 					} else {
-						var element = $('<input/>',{class:"node-input-example",type:"text",value:data}).appendTo(row);
+						var element = $('<input/>',{class:"node-input-example",type:"text",value:data.exampleContent}).appendTo(row);
 					}
 				},
 				sortable: true,
@@ -51,7 +51,7 @@
 			
 			for (var i=0; i<this.examples.length; i++) {
                 var example = this.examples[i];
-                $("#node-input-example-container").editableList('addItem',example.exampleContent);
+                $("#node-input-example-container").editableList('addItem',example);
             }
         },
 		oneditsave: function() {
