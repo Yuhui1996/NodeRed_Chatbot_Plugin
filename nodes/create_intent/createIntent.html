@@ -15,7 +15,7 @@
 			example2: {
 				value: ""
 			},
-			data: {value:[]}
+			examples: {value:[]}
 		},
 		inputs: 1,
 		outputs: 1,
@@ -46,9 +46,9 @@
 			
 			});
 			
-			for (var i=0; i<this.data.length; i++) {
-                var example = this.data[i];
-                $("#node-input-example-container").editableList('addItem',example);
+			for (var i=0; i<this.examples.length; i++) {
+                var example = this.examples[i];
+                $("#node-input-example-container").editableList('addItem',example.exampleContent);
             }
         },
 		oneditsave: function() {
@@ -56,11 +56,14 @@
 			this.description = $("#node-input-description").val();
 			var exampleList = $('#node-input-example-container').editableList('items');
 			var node = this;
-			node.data = [];
+			node.examples = [];
 			exampleList.each(function(i) {
 				var exampleElement = $(this);
 				var example = exampleElement.find(".node-input-example").val();
-				node.data.push(example);
+				var listElement = {
+					exampleContent: example
+				};
+				node.examples.push(listElement);
 			});
 		}
     });

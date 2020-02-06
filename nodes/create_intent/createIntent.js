@@ -29,8 +29,8 @@ module.exports = function(RED) {
 
             console.log(msg);
 			for (var i=0;i<config.data.length;i++) {
-				example = config.data[i];
-				console.log(example);
+				var example = config.data[i];
+				console.log(example.exampleContent);
 			}
             const params = {
                 workspaceId: msg.payload.workspaceId,
