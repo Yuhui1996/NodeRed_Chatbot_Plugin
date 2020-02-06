@@ -49,6 +49,7 @@
 			for (var i=0; i<this.examples.length; i++) {
                 var example = this.examples[i];
                 $("#node-input-example-container").editableList('addItem',example.exampleContent);
+				console.log(example.exampleContent);
             }
         },
 		oneditsave: function() {
