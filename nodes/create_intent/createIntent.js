@@ -28,8 +28,8 @@ module.exports = function(RED) {
             }
 
             console.log(msg);
-			for (var i=0;i<config.data.length;i++) {
-				var example = config.data[i];
+			for (var i=0;i<config.examples.length;i++) {
+				var example = config.examples[i];
 				console.log(example.exampleContent);
 			}
             const params = {
