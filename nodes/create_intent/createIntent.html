@@ -37,16 +37,12 @@
 				addItem: function(row, index, data) {
 					$(row).html("Item "+index);
 				}
-				resize: function() {
-					console.log("List changed");
-				}
 				sortable: true;
 				removable: true;
 			
 			});
 			
-			var data = {}
-			$("#node-input-example-container").editableList('addItem',data);
+			$("#node-input-example-container").editableList('addItem',this.data);
         }
     });
 </script>
