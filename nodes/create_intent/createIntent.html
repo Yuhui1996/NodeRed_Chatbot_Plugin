@@ -31,17 +31,6 @@
 			$("#node-input-example1").val(this.example1);
 			$("#node-input-example2").val(this.example2);
 			
-			$('#node-input-example-container').editableList({
-				addItem: function(row, index, data) {
-					$(row).html("Item "+index);
-				}
-				resize: function() {
-					console.log("List changed");
-				}
-				sortable: true;
-				removable: true;
-			
-			});
         }
     });
 </script>
@@ -67,9 +56,6 @@
 		<input type="text" id="node-input-example2" placeholder="Add unique examples of what the user might say.">
 	</div>
 
-	<div class="form-row node-input-example-container-row">
-		<ol id="node-input-example-container"></ol>
-	</div>
 </script>
 
 <script type="text/html" data-help-name="createIntent">
