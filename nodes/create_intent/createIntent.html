@@ -38,8 +38,7 @@
                         overflow: 'hidden',
                         whiteSpace: 'nowrap'
                     });
-					var element = $('<input/>',{class:"node-input-example",type:"text"}).appendTo(row);
-					$("#node-input-example").val(data);
+					var element = $('<input/>',{class:"node-input-example",type:"text",value:data}).appendTo(row);
 				},
 				sortable: true,
 				removable: true
