@@ -1,128 +1,232 @@
 <script type="text/javascript">
-  RED.nodes.registerType('entity', {
-    category: 'Watson Designer',
-    color: '#a6bbcf',
-    defaults: {
-      name: {
-        value: ""
-      },
-      value: {
-        value: ""
-      },
-      values: {
-        value:[{
-          v:""
-        }],
-      },
-      synonym: {
-        value: ""
-      },
-    },
-    inputs: 1,
-    outputs: 1,
-    icon: "comment.svg",
-    label: function() {
-      return this.name || "entity";
-    },
-    oneditprepare: function() {
-      $("#node-input-value-container").editableList({
-    addItem: function(row, index, data) {
-        $(row).html("Item "+index);
-    }
-});
-    }
-  });
+    RED.nodes.registerType('entity', {
+        category: 'Watson Designer',
+        color: '#a6bbcf',
+        defaults: {
+            name: {
+                value: ""
+            },
+            value: {
+                value: ""
+            },
+            values: {
+                value: [{
+                    v: ""
+                }],
+            },
+            synonym: {
+                value: ""
+            },
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "comment.svg",
+        label: function () {
+            return this.name || "entity";
+        },
+        oneditprepare: function () {
+            $("#node-input-value-container").css('min-height', '300px').css('min-width', '450px').editableList({
+                addItem: function (container, i, opt) {
+                    if (!opt.hasOwnProperty('r')) {
+                        opt.r = {};
+                    }
+                    var rule = opt.r;
+                    var row = $('<div/>', {class: 'form-row'}).appendTo(container);
+                    var row2 = $('<div/>', {
+                        class: 'form-row',
+                        style: "padding-top: 5px;"
+                    }).appendTo(container);
+
+                    //Value Entry
+                    var val_label = $('<label>Value</label>', {
+                        class: "node-input-rule-value",
+                        style: " margin-left: 5px; text-align: center;"
+                    }).appendTo(row);
+                    var selectField = $('<input/>', {
+                        class: "node-input-rule-value",
+                        style: "text-align: center;"
+                    }).appendTo(row);
+
+
+                    var finalspan = $('<span/>', {style: "float: right;margin-top: 6px;"}).appendTo(row);
+                    finalspan.append(' &#8594; <span class="node-input-rule-index">' + (i + 1) + '</span> ');
+
+
+                    //Synonyms
+                    var syn = $('<div/>').appendTo(row2);
+                    syn.css('min-height', '60px').editableList({
+                        header: $("<div>").append($.parseHTML("<div style='width:40%; display: inline-grid'>Name</div><div style='display: inline-grid'>Synonyms</div>")),
+                        addItem: function (syn, index_sym, opt_syn) {
+                            if (!opt_syn.hasOwnProperty('r')) {
+                              opt_syn.r = {};
+                            }
+                            var rule = opt_syn.r;
+                            var row_syn = $('<div/>', {class: 'form-row'}).appendTo(syn);
+
+                            var selectField = $('<input/>', {
+                                class: "node-input-rule-value",
+                                style: "text-align: center;"
+                            }).appendTo(row_syn);
+
+                            var syn_count = $('<span/>', {style: "float: right;margin-top: 6px;"}).appendTo(row_syn);
+                            syn_count.append(' &#8594; <span class="node-input-rule-index">' + (index_sym + 1) + '</span> ');
+                        },
+                        removeItem: function (opt_syn) {
+                            var currentOutputs = JSON.parse(outputCount.val() || "{}");
+                            if (opt_syn.hasOwnProperty('i')) {
+                                currentOutputs[opt.i] = -1;
+                            } else {
+                                delete currentOutputs[opt._i];
+                            }
+                            var rules = $("#node-input-rule-container").editableList('items');
+                            rules.each(function (i) {
+                                $(this).find(".node-input-rule-index").html(index_sym + 1);
+                                var data = $(this).data('data');
+                                currentOutputs[data.hasOwnProperty('i') ? data.index_sym : data._i] = index_sym;
+                            });
+                            outputCount.val(JSON.stringify(currentOutputs));
+                        },
+                        sortItems: function (rules) {
+                            var currentOutputs = JSON.parse(outputCount.val() || "{}");
+                            var rules = $("#node-input-rule-container").editableList('items');
+                            rules.each(function (i) {
+                                $(this).find(".node-input-rule-index").html(index_sym + 1);
+                                var data = $(this).data('data');
+                                currentOutputs[data.hasOwnProperty('i') ? data.index_sym : data._i] = index_sym;
+                            });
+                            outputCount.val(JSON.stringify(currentOutputs));
+                        },
+                        sortable: true,
+                        removable: true
+                    });
+                },
+                removeItem: function (opt) {
+                    var currentOutputs = JSON.parse(outputCount.val() || "{}");
+                    if (opt.hasOwnProperty('i')) {
+                        currentOutputs[opt.i] = -1;
+                    } else {
+                        delete currentOutputs[opt._i];
+                    }
+                    var rules = $("#node-input-rule-container").editableList('items');
+                    rules.each(function (i) {
+                        $(this).find(".node-input-rule-index").html(i + 1);
+                        var data = $(this).data('data');
+                        currentOutputs[data.hasOwnProperty('i') ? data.i : data._i] = i;
+                    });
+                    outputCount.val(JSON.stringify(currentOutputs));
+                },
+                sortItems: function (rules) {
+                    var currentOutputs = JSON.parse(outputCount.val() || "{}");
+                    var rules = $("#node-input-rule-container").editableList('items');
+                    rules.each(function (i) {
+                        $(this).find(".node-input-rule-index").html(i + 1);
+                        var data = $(this).data('data');
+                        currentOutputs[data.hasOwnProperty('i') ? data.i : data._i] = i;
+                    });
+                    outputCount.val(JSON.stringify(currentOutputs));
+                },
+                sortable: true,
+                removable: true
+            });
+        }
+    })
+    ;
 </script>
 
 <script type="text/html" data-template-name="entity">
-  <div class="form-row">
+
+    <style>
+        .form-row-select {
+            display: flex;
+        }
+
+        .dropdown {
+            width: auto;
+            margin-right: 10px;
+        }
+
+        .select {
+            margin-right: 10px;
+        }
+
+        /*.buttons {*/
+        /*  display: flex;*/
+        /*  margin-top: 10px;*/
+        /*}*/
+        .buttons > * {
+            padding: 10px;
+        }
+
+    </style>
+
+    <div class="form-row">
         <label for="node-input-name"><i class="icon-tag"></i>Entity name</label>
         <input type="text" id="node-input-name" placeholder="Type entity name here, e.g. account_type">
-  </div>
-  <div class="form-row">
-    <label for="node-input-value"><i class="icon-tag"></i>Value</label>
-    <input type="text" id="node-input-value" placeholder="Type value here, e.g. Checking">
-  </div>
-  <div class="form-row-select">
-    <select class="dropdown" id="node-input-select">
-      <option value="synonym">Synonym</option>
-      <option value="pattern">Pattern</option>
-    </select>
-    <input class="select" type="text" id="node-input-synonym" placeholder="Type synonym here, e.g. Depo">
-    <button type="button">&#43;</button>
-  </div>  
-  <div class="buttons">
-    <button onclick="addToList()">Add value</button>
-    <button>Recommend synonyms</button>
-  </div>
-  <ul id="node-input-values" class="values">
-  </ul>
-  <ol id="node-input-value-container"></ol>
+    </div>
+    <div class="form-row">
+        <label for="node-input-value"><i class="icon-tag"></i>Value</label>
+        <input type="text" id="node-input-value" placeholder="Type value here, e.g. Checking">
+    </div>
+    <div class="form-row-select">
+        <select class="dropdown" id="node-input-select">
+            <option value="synonym">Synonym</option>
+            <option value="pattern">Pattern</option>
+        </select>
+        <input class="select" type="text" id="node-input-synonym" placeholder="Type synonym here, e.g. Depo">
+        <button type="button">&#43;</button>
+    </div>
+    <div class="buttons" style="margin-top: 10px">
+        <button onclick="addToList()" style="padding: 10px">Add value</button>
+        <button>Recommend synonyms</button>
+    </div>
+    <ul id="node-input-values" class="values">
+    </ul>
+    <ol id="node-input-value-container"></ol>
 
 
 </script>
 
-<script type="text/scss" data-template-name="entity">
-  .form-row-select {
-    display: flex;
-  }
-  .dropdown {
-    width: auto;
-    margin-right: 10px;
-  }
-  .select {
-    flex-grow: 1;
-    margin-right: 10px;
-  }
-  .buttons {
-    display: flex;
-    margin-top: 10px;
-  }
-  .buttons > * {
-    padding: 10px;
-  }
-</script>
 
 <script type="text/javascript">
     function addToList() {
-      var ul = document.getElementById("node-input-values");
-      var value = document.getElementById("node-input-value");
-      var li = document.createElement("li");
-      var text = el("span", "list-value", null);
-      text.innerHTML = value.value;
-      li.appendChild(text);
-      var button = el("button", "list-button", deleteFromList);
-      button.innerHTML = "&#x2717";
-      li.appendChild(button);
-      ul.appendChild(li);
+        var ul = document.getElementById("node-input-values");
+        var value = document.getElementById("node-input-value");
+        var li = document.createElement("li");
+        var text = el("span", "list-value", null);
+        text.innerHTML = value.value;
+        li.appendChild(text);
+        var button = el("button", "list-button", deleteFromList);
+        button.innerHTML = "&#x2717";
+        li.appendChild(button);
+        ul.appendChild(li);
     }
 
     function deleteFromList(e) {
-      const parent = e.target.parentNode;
+        const parent = e.target.parentNode;
 
-      const text = parent.querySelector('.list-value');
-      const button = parent.querySelector('.list-button');
+        const text = parent.querySelector('.list-value');
+        const button = parent.querySelector('.list-button');
 
-      button.removeEventListener('click', deleteFromList);
+        button.removeEventListener('click', deleteFromList);
 
-      parent.parentNode.removeChild(parent);
+        parent.parentNode.removeChild(parent);
     }
 
-  function el(type, className, clickHandler) {
-    const element = document.createElement(type);
+    function el(type, className, clickHandler) {
+        const element = document.createElement(type);
 
-    if (className) {
-      element.classList.add(className);
+        if (className) {
+            element.classList.add(className);
+        }
+
+        if (clickHandler) {
+            element.addEventListener('click', clickHandler)
+        }
+
+        return element;
     }
-
-    if (clickHandler) {
-      element.addEventListener('click', clickHandler)
-    }
-
-    return element;
-  }
 </script>
 
 <script type="text/html" data-help-name="entity">
-  <p>A node to create a chatbot entity</p>
+    <p>A node to create a chatbot entity</p>
 </script>
