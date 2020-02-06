@@ -25,7 +25,9 @@
             return this.name || "entity";
         },
         oneditprepare: function () {
-            $("#node-input-value-container").css('min-height', '300px').css('min-width', '450px').editableList({
+            $("#node-input-value-container").css('min-height', '190px').css('min-width', '450px').editableList({
+
+                header: $("<div>").append($.parseHTML("<div style='display: inline-grid'>Values</div>")),
                 addItem: function (container, i, opt) {
                     if (!opt.hasOwnProperty('r')) {
                         opt.r = {};
@@ -38,13 +40,10 @@
                     }).appendTo(container);
 
                     //Value Entry
-                    var val_label = $('<label>Value</label>', {
+                    var selectField = $('<input/>',{
                         class: "node-input-rule-value",
-                        style: " margin-left: 5px; text-align: center;"
-                    }).appendTo(row);
-                    var selectField = $('<input/>', {
-                        class: "node-input-rule-value",
-                        style: "text-align: center;"
+                        style: "text-align: center;",
+                        placeholder: "Example Value"
                     }).appendTo(row);
 
 
@@ -53,15 +52,15 @@
 
 
                     //Synonyms
-                    var syn = $('<div/>').appendTo(row2);
-                    syn.css('min-height', '60px').editableList({
-                        header: $("<div>").append($.parseHTML("<div style='width:40%; display: inline-grid'>Name</div><div style='display: inline-grid'>Synonyms</div>")),
+                    var syn = $('<div/>', {class: "synonym_row"}).appendTo(row2);
+                    syn.css('min-height', '82px').editableList({
+                        header: $("<div>").append($.parseHTML("<div style='display: inline-grid'>Synonyms</div>")),
                         addItem: function (syn, index_sym, opt_syn) {
                             if (!opt_syn.hasOwnProperty('r')) {
                               opt_syn.r = {};
                             }
                             var rule = opt_syn.r;
-                            var row_syn = $('<div/>', {class: 'form-row'}).appendTo(syn);
+                            var row_syn = $('<div/>').appendTo(syn);
 
                             var selectField = $('<input/>', {
                                 class: "node-input-rule-value",
@@ -163,24 +162,24 @@
         <label for="node-input-name"><i class="icon-tag"></i>Entity name</label>
         <input type="text" id="node-input-name" placeholder="Type entity name here, e.g. account_type">
     </div>
-    <div class="form-row">
-        <label for="node-input-value"><i class="icon-tag"></i>Value</label>
-        <input type="text" id="node-input-value" placeholder="Type value here, e.g. Checking">
-    </div>
-    <div class="form-row-select">
-        <select class="dropdown" id="node-input-select">
-            <option value="synonym">Synonym</option>
-            <option value="pattern">Pattern</option>
-        </select>
-        <input class="select" type="text" id="node-input-synonym" placeholder="Type synonym here, e.g. Depo">
-        <button type="button">&#43;</button>
-    </div>
-    <div class="buttons" style="margin-top: 10px">
-        <button onclick="addToList()" style="padding: 10px">Add value</button>
-        <button>Recommend synonyms</button>
-    </div>
-    <ul id="node-input-values" class="values">
-    </ul>
+<!--    <div class="form-row">-->
+<!--        <label for="node-input-value"><i class="icon-tag"></i>Value</label>-->
+<!--        <input type="text" id="node-input-value" placeholder="Type value here, e.g. Checking">-->
+<!--    </div>-->
+<!--    <div class="form-row-select">-->
+<!--        <select class="dropdown" id="node-input-select">-->
+<!--            <option value="synonym">Synonym</option>-->
+<!--            <option value="pattern">Pattern</option>-->
+<!--        </select>-->
+<!--        <input class="select" type="text" id="node-input-synonym" placeholder="Type synonym here, e.g. Depo">-->
+<!--        <button type="button">&#43;</button>-->
+<!--    </div>-->
+<!--    <div class="buttons" style="margin-top: 10px">-->
+<!--        <button onclick="addToList()" style="padding: 10px">Add value</button>-->
+<!--        <button>Recommend synonyms</button>-->
+<!--    </div>-->
+<!--    <ul id="node-input-values" class="values">-->
+<!--    </ul>-->
     <ol id="node-input-value-container"></ol>
 
 
