@@ -34,10 +34,14 @@
             var outputCount = $("#node-input-outputs").val("{}");
 
 
+            //Create a dynamic list that contains values and sub dynamic lists that contains synonyms
             $("#node-input-rule-container").css('min-height', '300px').css('min-width', '450px').editableList({
 
                 header: $("<div>").append($.parseHTML("<div style='display: inline-grid'>Values</div>")),
                 addItem: function (container, i, opt) {
+
+                    // If a new value is being created create the data structures to hold them.
+                    // Otherwise these variable will exists when the function is called.
 
                     console.log(opt)
                     if (!opt.hasOwnProperty('r')) {
@@ -58,6 +62,9 @@
 
 
 
+                    //Create HTML row in the list item.
+                    //Row 1 = value line
+                    // Row 2 = synonyms line
 
                     var row = $('<div/>', {class: 'form-row'}).appendTo(container);
                     var row2 = $('<div/>', {
@@ -65,6 +72,7 @@
                         style: "padding-top: 5px;"
                     }).appendTo(container);
 
+                    // Vars for each row
                     var entityValue = null;
                     var entitySyns = null;
 
@@ -79,25 +87,28 @@
                         }).appendTo(row);
                     }
 
+                    //Function to create sub list for synonyms
                     function createSynonymField() {
 
+                        //Create list.
                         var syn = $('<div/>', {class: "node-input-rule-synonyms synonym_row"}).appendTo(row2);
                         syn.css('height', '140px').editableList({
 
                             header: $("<div>").append($.parseHTML("<div style='display: inline-grid'>Synonyms</div>")),
                             addItem: function (syn, index_sym, opt_syn) {
 
-                                console.log("OPt" + opt_syn)
+                                // console.log("OPt" + opt_syn)
 
                                 if (!opt_syn.hasOwnProperty('i')) {
                                     opt_syn._i = Math.floor((0x99999 - 0x10000) * Math.random()).toString();
                                 }
+
                                 var syn_value = null;
                                 var row_syn = $('<div/>', {class: 'form-row'}).appendTo(syn);
 
 
 
-
+                                //Create list item input.
                                 function createSynonymField() {
                                     return $('<input/>', {
                                         class: "node-input-rule-syn-value",
@@ -111,12 +122,16 @@
                                     syn_value = createSynonymField();
                                 }
 
+                                // Link value to attribute passed in if exists
                                 syn_value.val(opt_syn.s);
 
+
+                                //Add index counters
                                 var syn_count = $('<span/>', {style: "float: right;margin-top: 6px;"}).appendTo(row_syn);
                                 syn_count.append(' &#8594; <span class="node-input-rule-index">' + (index_sym + 1) + '</span> ');
                             },
                             removeItem: function (opt_syn) {
+                                //Remove item from the list
                                 var currentOutputs = JSON.parse(outputCount.val() || "{}");
                                 if (opt_syn.hasOwnProperty('i')) {
                                     currentOutputs[opt_syn.i] = -1;
@@ -132,6 +147,7 @@
                                 outputCount.val(JSON.stringify(currentOutputs));
                             },
                             sortItems: function (rules) {
+                                //Change indexes on sorting
                                 var currentOutputs = JSON.parse(outputCount.val() || "{}");
                                 var rules = $("#node-input-rule-container").editableList('items');
                                 rules.each(function (i) {
@@ -149,9 +165,11 @@
                     }
 
 
+                    //Add index counter to main list
                     var finalspan = $('<span/>', {style: "float: right;margin-top: 6px;"}).appendTo(row);
                     finalspan.append(' &#8594; <span class="node-input-rule-index">' + (i + 1) + '</span> ');
 
+                    // Create items in the list item
                     if (entityValue == null) {
                         entityValue = createValueField();
                     }
@@ -166,14 +184,15 @@
 
 
 
-                    console.log(rule.s.length);
+                    //If the items is built from saved values then loop through value to create
+                    // the synonym lists
                     for (var i = 0; i < rule.s.length; i++) {
                         console.log(rule.s[i]);
                         var rule_S = rule.s[i];
                         entitySyns.editableList('addItem', {s: rule_S, i: i});
                     }
-                    //Synonyms
 
+                    //Manage outputs
                     var currentOutputs = JSON.parse(outputCount.val() || "{}");
                     currentOutputs[opt.hasOwnProperty('i') ? opt.i : opt._i] = i;
                     outputCount.val(JSON.stringify(currentOutputs));
@@ -207,6 +226,7 @@
                 removable: true
             });
 
+            //Read values from node default and build lists.
             for (var i = 0; i < this.rules.length; i++) {
                 var rule = this.rules[i];
                 $("#node-input-rule-container").editableList('addItem', {r: rule, i: i});
@@ -214,27 +234,36 @@
         },
         oneditsave: function () {
 
+            //Get Items in the values list
             var rules = $("#node-input-rule-container").editableList('items');
 
             var node = this;
             node.rules = [];
-            console.log(rules.length);
+
+            //Loop through Items to save the data
             rules.each(function (i) {
 
+                //crete data variable
                 var ruleData = $(this).data('data');
                 var rule = $(this);
                 var r = {};
+                //get list of synonyms from within this list item
+
                 var list = rule.find(".node-input-rule-synonyms").editableList('items');
                 r.s = [];
+
+                //loop through synonymn item
                 list.each(function (j) {
                     var syn_value = $(this);
                     var next_value = syn_value.find(".node-input-rule-syn-value").val();
                     r.s.push(next_value);
                 });
 
+                //get value
                 r.v = rule.find(".node-input-rule-value").val();
                 console.log("RULE");
                 console.log(r)
+                //Save values to node default
                 node.rules.push(r);
             });
 
