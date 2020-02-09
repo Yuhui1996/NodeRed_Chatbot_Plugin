@@ -1,0 +1,107 @@
+<script type="text/javascript">
+
+var options = [
+        {v:"text",t:"Text"},
+        {v:"option",t:"Option"},
+        {v:"pause",t:"Pause"},
+        {v:"image",t:"Image"},
+    ];
+
+  RED.nodes.registerType('dialog', {
+    category: 'Watson Designer',
+    color: '#a6bbcf',
+    defaults: {
+      name: {
+        value: ""
+      },
+      value: {
+        value: ""
+      },
+      values: {
+        value:[{
+          v:""
+        }],
+      },
+      synonym: {
+        value: ""
+      },
+    },
+    inputs: 1,
+    outputs: 1,
+    icon: "comment.svg",
+    label: function() {
+      return this.name || "dialog";
+    },
+    oneditprepare: function() {
+      $("#node-input-value-container").editableList({
+        addButton: "Add assistant response",
+        addItem: function(container, i, data) {
+          container.css({
+                        overflow: 'hidden',
+                        whiteSpace: 'nowrap',
+                        display: 'flex'
+                    });
+          var row = $('<div/>').appendTo(container);
+          var row2 = $('<div/>',{style:"padding-left: 10px; display: flex; flex-direction: column;"}).appendTo(container);
+          var row3 = $('<div/>',{style:"padding-left: 10px; display: flex; margin-bottom: 2px;"}).appendTo(container);
+          var selectField = $('<select/>',{style:"width:120px; margin-left: 5px; text-align: center;"}).appendTo(row);
+          var group0 = $('<optgroup/>', { label: "Response type" }).appendTo(selectField);
+          for (var d in options) {
+            group0.append($("<option></option>").val(options[d].v).text(/^switch/.test(options[d].t)?node._(options[d].t):options[d].t));
+          }
+          var textInput = $('<input/>',{id:"node-input-case-"+i,class:"node-input-case",type:"text", placeholder: "Enter response text"}).appendTo(row2);
+          var addVariationButton =  $('<button/>',{id:"node-button-add-variation"+i, type: "button", style:"margin-top: auto; height: 30px"}).appendTo(row3);
+          addVariationButton.text('+');
+          addVariationButton.on("click", function() {
+            console.log("takki");
+            $('<input/>',{id:"node-input-case-"+i,class:"node-input-case",type:"text", placeholder: "Enter response text"}).appendTo(row2)
+          });
+          selectField.on("change", function() {
+                        var type = selectField.val();
+                        console.log(type);
+                        if(type === "text"){
+                          textInput.show();
+                        }
+                    });
+        }
+    });
+    },
+  });
+</script>
+
+<script type="text/html" data-template-name="dialog">
+  <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i>Node name</label>
+        <input type="text" id="node-input-name" placeholder="Enter node name">
+  </div>
+  <div class="form-row">
+    <label for="node-input-condition"><i class="icon-tag"></i>If assistant recognizes</label>
+    <input type="text" id="node-input-condition" placeholder="Enter condition">
+  </div>
+  <ol id="node-input-value-container"></ol>
+</script>
+
+<style>
+  .form-row-select {
+    display: flex;
+  }
+  .dropdown {
+    width: auto;
+    margin-right: 10px;
+  }
+  .select {
+    flex-grow: 1;
+    margin-right: 10px;
+  }
+  .buttons {
+    display: flex;
+    margin-top: 10px;
+  }
+  .buttons > * {
+    padding: 10px;
+  }
+</style>
+
+<script type="text/html" data-help-name="dialog">
+  <p>A node to create a chatbot dialog</p>
+</script>
