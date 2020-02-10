@@ -28,10 +28,24 @@ module.exports = function(RED) {
             }
 
             console.log(msg);
+			
+			
+			const params1 = {
+                workspaceId: msg.payload.workspaceId,
+                intent: config.name,
+                description: config.description,
+                examples: []
+            };
 			for (var i=0;i<config.examples.length;i++) {
 				var example = config.examples[i];
+				params1.examples.push({
+                        text: example.exampleContent
+                    });
 				console.log(example.exampleContent);
-			}
+			};
+			
+			
+			
             const params = {
                 workspaceId: msg.payload.workspaceId,
                 intent: config.name,
@@ -44,6 +58,12 @@ module.exports = function(RED) {
                     }
                 ]
             };
+			
+			console.log(">>>>>>>>>>>>>>>>>>test example<<<<<<<<<<<<<<<<");
+			console.log(params1.examples);
+			console.log(params.examples);
+			console.log(">>>>>>>>>>>>>>>>>>test end<<<<<<<<<<<<<<<<");
+			
             this.assistant.createIntent(params)
                 .then(res => {
                     console.log(JSON.stringify(res, null, 2));
