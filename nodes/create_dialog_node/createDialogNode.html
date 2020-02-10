@@ -1,0 +1,663 @@
+
+<script type="text/javascript">
+    RED.nodes.registerType('Dialog', {
+        category: 'Watson Designer',
+        color: '#a6bbcf',
+        defaults: {
+            name: {//title & dialog node
+                value: ""
+            },
+            parent: {
+                value: ""
+            },
+            condition: {
+                value: ""
+            },
+            response_type: {
+                value: "text"
+            },
+            output: {
+                value: []
+            },
+            selection_policy: {
+                value: "sequential"
+            },
+
+
+            rules: {
+                value: [{
+                    v: "", //name
+                    con: "", //condition
+                    re: "",//should do
+                    res: [{
+                        t: "",//type
+                        o: [],//output
+                        se: "",//set
+                    }],
+                }]
+            }
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "comment.svg",
+        label: function () {
+            return "Dialog";
+        },
+        oneditprepare: function () {
+            var outputCount = $("#node-input-outputs").val("{}");
+
+
+            //Create a dynamic list that contains values and sub dynamic lists that contains synonyms
+            $("#node-input-rule-container").css('min-height', '300px').css('min-width', '450px').editableList({
+
+                header: $("<div>").append($.parseHTML("<div style='display: inline-grid'>Dialog Nodes</div>")),
+                addItem: function (container, i, opt) {
+
+                    // If a new value is being created create the data structures to hold them.
+                    // Otherwise these variable will exists when the function is called.
+                    console.log("opt:" + opt);
+
+                    if (!opt.hasOwnProperty('r')) {
+                        opt.r = {};
+                    }
+                    var rule = opt.r;//rules
+
+                    if (!rule.hasOwnProperty('v')) {
+                        rule.v = null;//value
+                    }
+                    if (!rule.hasOwnProperty('con')) {
+                        rule.con = null;//condition
+                    }
+                    if (!rule.hasOwnProperty('re')) {
+                        rule.re = null;//assistant should do
+                    }
+                    if (!rule.hasOwnProperty('res')) {
+                        rule.res = [];//respond output
+                    }
+
+                    if (!opt.hasOwnProperty('i')) {
+                        opt._i = Math.floor((0x99999 - 0x10000) * Math.random()).toString();//id
+                    }
+
+
+                    //Create HTML row in the list item.
+                    //Row 1 = node name line
+                    // Row 3= conditions line
+                    // Row 2 = responds line
+                    // Row 4 = assistant reaction
+
+                    var row = $('<div/>', {class: 'form-row'}).appendTo(container);
+
+                    var row3 = $('<div/>', {
+                        class: 'form-row',
+                        style: "padding-top: 5px;"
+                    }).appendTo(container);
+
+                    var row2 = $('<div/>', {
+                        class: 'form-row',
+                        style: "padding-top: 5px;"
+                    }).appendTo(container);
+
+                    var row4 = $('<div/>', {
+                        class: 'form-row',
+                        style: "padding-top: 5px;"
+                    }).appendTo(container);
+
+
+
+                    // Vars for each row
+                    var nodeName = null;
+                    var nodeCondition = null;
+                    var assistantReaction = null;
+                    var nodeOutput = null;
+
+                    //Node Name Entry
+                    function createValueField() {
+                        return $('<input/>', {
+                            class: "node-input-rule-value",
+                            id : "node-input-name",
+                            type: "text",
+                            style: "margin-left: 5px; ",
+                            placeholder: "Enter Node Name, e.g. Welcome"
+                        }).appendTo(row);
+                    }
+
+                    //recognize Entry
+                    function createRecogField() {
+
+                        $('<label>',{
+                            style: "margin-left: 5px; ",
+                            text:"If assistant"
+                        }).appendTo(row3);
+
+                        //cant show within one row
+                        $('<label>',{
+                            text:"recognizes"
+                        }).appendTo(row3);
+
+                        $('<br>').appendTo(row3);
+
+                        //initial condition types list
+                        var dlist=$('<datalist />',{
+                            id: "conditionType",
+                        });
+
+                        var optgroup1=$('<optgroup />',{
+                            label : "Filter by"
+                        });
+
+                        $('<option>',{
+                            class: "acquireInfo",
+                            value:"#",
+                            text : " intents"
+                        }).appendTo(optgroup1);
+
+                        $('<option>',{
+                            value:"@",
+                            class: "acquireInfo",
+                            text : " entities"
+                        }).appendTo(optgroup1);
+
+
+                        $('<option>',{
+                            value:"$",
+                            text : " context variables"
+                        }).appendTo(optgroup1);
+
+                        var optgroup2=$('<optgroup />',{
+                            label : "Common conditions"
+                        });
+
+                        $('<option>',{
+                            value: "welcome",
+                            text : "triggers when a conversation is started by the system"
+                        }).appendTo(optgroup2);
+
+                        $('<option>',{
+                            value: "anything_else",
+                            text : "triggers when user input does not match"
+                        }).appendTo(optgroup2);
+
+                        $(optgroup1).appendTo(dlist);
+                        $(optgroup2).appendTo(dlist);
+
+
+
+                        var input= $('<input/>', {
+                            class: "node-input-rule-condition",
+                            id : "node-input-condition",
+                            type: "text",
+                            style: "margin-left: 5px; ",
+                            placeholder: "Enter Condition",
+                            onchange: "showIntent()",
+                            list: "conditionType"
+                        });
+
+                        $(dlist).appendTo(input);
+                        $(input).appendTo(row3);
+
+                    }
+
+                    //Function to create sub list for synonyms
+                    function createOutputField() {
+
+                        //Create list.
+                        var syn = $('<div/>', {class: "node-input-rule-outputs synonym_row"}).appendTo(row2);
+                        syn.css('height', '200px').editableList({
+
+                            header: $("<div>").append($.parseHTML("<div style='display: inline-grid'>Assistant responds</div>")),
+                            addItem: function (syn, index_sym, opt_syn) {
+
+                                // console.log("OPt" + opt_syn)
+
+                                if (!opt_syn.hasOwnProperty('i')) {
+                                    opt_syn._i = Math.floor((0x99999 - 0x10000) * Math.random()).toString();
+                                }
+
+                                if (!opt_syn.hasOwnProperty('s')) {
+                                    opt_syn.s = {};
+                                }
+                                var response = opt_syn.s;//respond output
+
+                                if (!response.hasOwnProperty('t')) {
+                                    response.t = null;//type
+                                }
+
+                                if (!response.hasOwnProperty('se')) {
+                                    response.se = null;//policy
+                                }
+
+                                if (!response.hasOwnProperty('o')) {
+                                    response.o = [];//text
+                                }
+
+                                var resp_tpye = null;
+                                var resp_policy = null;
+                                var resp_output = null;
+
+                                var row_syn = $('<div/>', {class: 'form-row'}).appendTo(syn);
+                                var row_text = $('<div/>', {
+                                    class: 'form-row',
+                                    style: "padding-top: 5px;"
+                                }).appendTo(syn);
+                                var row_policy = $('<div/>', {
+                                    class: 'form-row',
+                                    style: "padding-top: 5px;"
+                                }).appendTo(syn);
+
+                                //Create list item input.
+                                function createTypeField() {
+                                    //response type list
+                                    var typesel=$('<select />',{
+                                        class: "node-input-rule-res-type",
+                                        id: "node-input-response_type",
+                                        style: "margin-left: 5px;",
+                                        name:"response type"
+                                    });
+
+                                    $('<option>',{
+                                        val:"text",
+                                        text:"Text",
+                                        selected:"selected"
+                                    }).appendTo(typesel);
+
+                                    $('<option>',{
+                                        val:"option",
+                                        text:"Option"
+                                    }).appendTo(typesel);
+
+                                    $('<option>',{
+                                        val:"pause",
+                                        text:"Pause"
+                                    }).appendTo(typesel);
+
+                                    $('<option>',{
+                                        val:"img",
+                                        text:"Image"
+                                    }).appendTo(typesel);
+
+                                    $(typesel).appendTo(row_syn);
+                                }
+
+                                //Create list item input.
+                                function createResText() {
+                                    //set response text
+                                    $('<input/>', {
+                                        class: "node-input-rule-res-text",
+                                        id : "node-input-output",
+                                        type: "text",
+                                        style: "margin-left: 5px; margin-top: 5px;",
+                                        placeholder: "Enter response text"
+                                    }).appendTo(row_text);
+
+
+                                }
+
+
+                                function createResPolicy() {
+                                    //Response variations are set to
+                                    $('<label>',{
+                                        style: "margin-left: 5px;",
+                                        //style: "margin-top: 5px;",
+                                        text:"Response"
+                                    }).appendTo(row_policy);
+
+                                    $('<label>',{
+                                        //style: "margin-top: 5px;",
+                                        text:"variations are"
+                                    }).appendTo(row_policy);
+
+                                    $('<label>',{
+                                        //style: "margin-top: 5px;",
+                                        text:"set to"
+                                    }).appendTo(row_policy);
+
+                                    $('<br>').appendTo(row_policy);
+
+                                    var setsel=$('<select />',{
+                                        //style: "margin-top: 5px;",
+                                        style: "margin-left: 5px;",
+                                        class: "node-input-rule-res-policy",
+                                        id : "node-input-selection_policy",
+                                        name:"Response variations setting"
+                                    });
+
+                                    $('<option>',{
+                                        val:"sequential",
+                                        text:"Sequential",
+                                        selected:"selected"
+                                    }).appendTo(setsel);
+
+                                    $('<option>',{
+                                        val:"random",
+                                        text:"Random"
+                                    }).appendTo(setsel);
+
+                                    $('<option>',{
+                                        val:"multiline",
+                                        text:"Multiline"
+                                    }).appendTo(setsel);
+
+                                    $(setsel).appendTo(row_policy);
+                                }
+
+                                if(resp_tpye == null){
+                                    resp_tpye = createTypeField();
+                                }
+                                if(response.t != null){
+                                    $(".node-input-rule-res-type").val(response.t);
+                                    resp_tpye = "";
+                                }
+
+                                if(resp_policy == null){
+                                    resp_policy = createResPolicy();
+                                }
+                                if(response.se != null){
+                                    $(".node-input-rule-res-policy").val(response.se);
+                                    resp_tpye = "";
+                                }
+
+                                if(resp_output == null){
+                                    resp_output = createResText();
+                                }
+                                if(response.o[0] != null){
+                                    $(".node-input-rule-res-text").val(response.o[0]);
+                                    resp_output ="";
+                                }
+
+                                //Add index counters
+                                var syn_count = $('<span/>', {style: "float: right;margin-top: 6px;"}).appendTo(row_syn);
+                                syn_count.append(' &#8594; <span class="node-input-rule-output-index">' + (index_sym + 1) + '</span> ');
+                            },
+                            removeItem: function (opt_syn) {
+                                //Remove item from the list
+                                var currentOutputs = JSON.parse(outputCount.val() || "{}");
+                                if (opt_syn.hasOwnProperty('i')) {
+                                    currentOutputs[opt_syn.i] = -1;
+                                } else {
+                                    delete currentOutputs[opt_syn._i];
+                                }
+                                var rules = $("#node-input-rule-outputs").editableList('items');
+                                rules.each(function (i) {
+                                    $(this).find(".node-input-rule-output-index").html(i + 1);
+                                    var data = $(this).data('data');
+                                    currentOutputs[data.hasOwnProperty('i') ? data.i : data._i] = i;
+                                });
+                                outputCount.val(JSON.stringify(currentOutputs));
+                            },
+                            sortItems: function (rules) {
+                                //Change indexes on sorting
+                                var currentOutputs = JSON.parse(outputCount.val() || "{}");
+                                var rules = $("#node-input-rule-outputs").editableList('items');
+                                rules.each(function (i) {
+                                    $(this).find(".node-input-rule-output-index").html(index_sym + 1);
+                                    var data = $(this).data('data');
+                                    currentOutputs[data.hasOwnProperty('i') ? data.i : data._i] = i;
+                                });
+                                outputCount.val(JSON.stringify(currentOutputs));
+                            },
+                            sortable: true,
+                            removable: true
+                        });
+
+                        return syn;
+                    }
+
+                    //assistant reaction Entry
+                    function createReactField() {
+
+                        $('<label>',{
+                            for :"node-input-rule-recog",
+                            style: "margin-left: 5px; ",
+                            text:"Then assistant"
+                        }).appendTo(row4);
+
+                        //cant show within one row
+                        $('<label>',{
+                            for :"node-input-rule-recog",
+                            text:"should"
+                        }).appendTo(row4);
+
+                        $('<br>').appendTo(row4);
+
+                        //initial reaction types list
+                        var sel=$('<select />',{
+                            class: "node-input-rule-should",
+                            name:"react"
+                        });
+
+                        $('<option>',{
+                            val:"wait",
+                            text:"Wait for reply",
+                            selected:"selected"
+                        }).appendTo(sel);
+
+                        $('<option>',{
+                            val:"jump",
+                            text:"Jump to"
+                        }).appendTo(sel);
+
+                        $(sel).appendTo(row4);
+                    }
+
+                    //Add index counter to main list
+                    var finalspan = $('<span/>', {style: "float: right;margin-top: 6px;"}).appendTo(row);
+                    finalspan.append(' &#8594; <span class="node-input-rule-index">' + (i + 1) + '</span> ');
+
+                    // Create items in the list item
+                    if (nodeName == null) {
+                        nodeName = createValueField();
+                    }
+                    if (rule.v != null){
+                        nodeName.val(rule.v);
+                    }
+
+                    if(nodeCondition == null){
+                        nodeCondition = createRecogField();
+                    }
+                    if(rule.con != null){
+                        //nodeCondition.val();
+                        $(".node-input-rule-condition").val(rule.con);
+                        nodeCondition = "";
+                    }
+
+                    if(assistantReaction == null){
+                        assistantReaction =createReactField();
+                    }
+                    if(rule.re != null){
+                        $(".node-input-rule-should").val(rule.re);
+                        assistantReaction ="";
+                    }
+
+                    if (nodeOutput == null) {
+                        nodeOutput = createOutputField();
+                    }
+
+                    //If the items is built from saved values then loop through value to create
+                    for (var i = 0; i < rule.res.length; i++){
+                        var rule_Res =rule.res[i];
+                        nodeOutput.editableList('addItem', {s: rule_Res, i: i});
+                    }
+
+                    //Manage outputs
+                    var currentOutputs = JSON.parse(outputCount.val() || "{}");
+                    currentOutputs[opt.hasOwnProperty('i') ? opt.i : opt._i] = i;
+                    outputCount.val(JSON.stringify(currentOutputs));
+                },
+                removeItem: function (opt) {
+                    var currentOutputs = JSON.parse(outputCount.val() || "{}");
+                    if (opt.hasOwnProperty('i')) {
+                        currentOutputs[opt.i] = -1;
+                    } else {
+                        delete currentOutputs[opt._i];
+                    }
+                    var rules = $("#node-input-rule-container").editableList('items');
+                    rules.each(function (i) {
+                        $(this).find(".node-input-rule-index").html(i + 1);
+                        var data = $(this).data('data');
+                        currentOutputs[data.hasOwnProperty('i') ? data.i : data._i] = i;
+                    });
+                    outputCount.val(JSON.stringify(currentOutputs));
+                },
+                sortItems: function (rules) {
+                    var currentOutputs = JSON.parse(outputCount.val() || "{}");
+                    var rules = $("#node-input-rule-container").editableList('items');
+                    rules.each(function (i) {
+                        $(this).find(".node-input-rule-index").html(i + 1);
+                        var data = $(this).data('data');
+                        currentOutputs[data.hasOwnProperty('i') ? data.i : data._i] = i;
+                    });
+                    outputCount.val(JSON.stringify(currentOutputs));
+                },
+                sortable: true,
+                removable: true
+            });
+
+            //Read values from node default and build lists.
+            for (var i = 0; i < this.rules.length; i++) {
+                var rule = this.rules[i];
+                $("#node-input-rule-container").editableList('addItem', {r: rule, i: i});
+            }
+        },
+        oneditsave: function () {
+
+            //Get Items in the nodes list
+            var rules = $("#node-input-rule-container").editableList('items');
+
+            var node = this;
+            node.rules = [];
+
+            //Loop through Items to save the data
+            rules.each(function (i) {
+
+                //crete data variable
+                var ruleData = $(this).data('data');
+                var rule = $(this);
+                var r = {};
+
+                //get list of responds from within this list item
+                var list = rule.find(".node-input-rule-outputs").editableList('items');
+                r.res = [];
+
+                //loop through synonymn item
+                list.each(function (j) {
+                    var syn_value = $(this);
+
+                    var respo ={};
+                    respo.o =[];
+                    respo.t = syn_value.find(".node-input-rule-res-type").val();
+                    var respo_outout = syn_value.find(".node-input-rule-res-text").val();
+                    respo.o.push(respo_outout);
+                    respo.se = syn_value.find(".node-input-rule-res-policy").val();
+                    r.res.push(respo);
+
+
+                });
+
+                //get value
+                r.v = rule.find(".node-input-rule-value").val();
+                r.con = rule.find("#node-input-condition").val();
+                r.re = rule.find(".node-input-rule-should").val();
+
+                console.log("RULE");
+                console.log(r);
+                //Save values to node default
+                node.rules.push(r);
+            });
+
+            console.log(node.rules);
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="Dialog">
+
+    <ol id="node-input-rule-container"></ol>
+
+</script>
+
+
+
+<script type="text/javascript">
+
+    function showIntent() {
+        var condition =$(".node-input-rule-condition").val();
+
+        if(condition == '#'){
+            //alert('intent');
+            //findIntent();
+            //alert('excute findIntent()!');
+        }else if(condition == '@'){
+            //alert('entity');
+        }
+
+
+        var date = new Date();
+        var hour = date.getHours();
+        var min = date.getMinutes();
+        var sec = date.getSeconds();
+        var time = hour + ":" + min + ":" + sec;
+        console.log(time + "changed condition:");
+        console.log(condition);
+    }
+
+    function addToList() {
+        var ul = document.getElementById("node-input-values");
+        var value = document.getElementById("node-input-value");
+        var li = document.createElement("li");
+        var text = el("span", "list-value", null);
+        text.innerHTML = value.value;
+        li.appendChild(text);
+        var button = el("button", "list-button", deleteFromList);
+        button.innerHTML = "&#x2717";
+        li.appendChild(button);
+        ul.appendChild(li);
+    }
+
+    function deleteFromList(e) {
+        const parent = e.target.parentNode;
+
+        const text = parent.querySelector('.list-value');
+        const button = parent.querySelector('.list-button');
+
+        button.removeEventListener('click', deleteFromList);
+
+        parent.parentNode.removeChild(parent);
+    }
+
+    function el(type, className, clickHandler) {
+        const element = document.createElement(type);
+
+        if (className) {
+            element.classList.add(className);
+        }
+
+        if (clickHandler) {
+            element.addEventListener('click', clickHandler)
+        }
+
+        return element;
+    }
+    function addOutput() {
+
+        $('<input/>', {
+            class: "node-input-rule-res-text",
+            id : "node-input-output",
+            type: "text",
+            style: "margin-left: 5px; margin-top: 5px;",
+            placeholder: "Enter response text"
+        }).appendTo(row_text);
+
+        $('<button/>',{
+            class: "addtext",
+            text: "+",
+            onclick: addOutput(),
+        }).appendTo(row_text);
+    }
+</script>
+
+
+
+<script type="text/html" data-help-name="Dialog">
+    <p>A node to create chatbot Dialog nodes</p>
+</script>
