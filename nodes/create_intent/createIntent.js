@@ -29,8 +29,7 @@ module.exports = function(RED) {
 
             console.log(msg);
 			
-			
-			const params1 = {
+			const params = {
                 workspaceId: msg.payload.workspaceId,
                 intent: config.name,
                 description: config.description,
@@ -38,31 +37,10 @@ module.exports = function(RED) {
             };
 			for (var i=0;i<config.examples.length;i++) {
 				var example = config.examples[i];
-				params1.examples.push({
+				params.examples.push({
                         text: example.exampleContent
                     });
-				console.log(example.exampleContent);
 			};
-			
-			
-			
-            const params = {
-                workspaceId: msg.payload.workspaceId,
-                intent: config.name,
-                description: config.description,
-                examples: [{
-                        text: config.example1
-                    },
-                    {
-                        text: config.example2
-                    }
-                ]
-            };
-			
-			console.log(">>>>>>>>>>>>>>>>>>test example<<<<<<<<<<<<<<<<");
-			console.log(params1.examples);
-			console.log(params.examples);
-			console.log(">>>>>>>>>>>>>>>>>>test end<<<<<<<<<<<<<<<<");
 			
             this.assistant.createIntent(params)
                 .then(res => {
