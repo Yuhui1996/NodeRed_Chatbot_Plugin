@@ -9,12 +9,6 @@
 			description: {
 				value: "EmptyDescription"
 			},
-			example1: {
-				value: ""
-			},
-			example2: {
-				value: ""
-			},
 			examples: {value:[{exampleContent:"Default example"}]}
 		},
 		inputs: 1,
@@ -29,8 +23,6 @@
 			}
 			$("#node-input-name").val(this.name);
 			$("#node-input-description").val(this.description);
-			$("#node-input-example1").val(this.example1);
-			$("#node-input-example2").val(this.example2);
 			
 			$('#node-input-example-container').css('min-height','300px').editableList({
 				addItem: function(row, index, data) {
@@ -81,16 +73,6 @@
 	<div class="form-row">
 		<label for="node-input-description"><i class="icon-tag"></i> Intent Description</label>
 		<input type="text" id="node-input-description"placeholder="Please input the description of this intent">
-	</div>
-
-	<div class="form-row">
-		<label for="node-input-example1"><i class="icon-tag"></i> User example 1</label>
-		<input type="text" id="node-input-example1" placeholder="Add unique examples of what the user might say.">
-	</div>
-
-	<div class="form-row">
-		<label for="node-input-example2"><i class="icon-tag"></i> User example 2</label>
-		<input type="text" id="node-input-example2" placeholder="Add unique examples of what the user might say.">
 	</div>
 
 	<div class="form-row">
