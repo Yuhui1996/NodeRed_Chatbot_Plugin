@@ -29,6 +29,7 @@
             "meta": "nodes/metadata/metadata.js",
             "intent": "nodes/intent/intent.js",
             "entity": "nodes/entity/entity.js",
+            "dialog": "nodes/dialog/dialog.js",
             "createWatson": "nodes/create_watson/createWatson.js",
             "deleteWatson": "nodes/delete_watson/deleteWatson.js",
             "createIntent": "nodes/create_intent/createIntent.js"
