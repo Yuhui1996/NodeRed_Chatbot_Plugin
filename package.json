@@ -31,8 +31,7 @@
             "entity": "nodes/entity/entity.js",
             "createWatson": "nodes/create_watson/createWatson.js",
             "deleteWatson": "nodes/delete_watson/deleteWatson.js",
-            "createIntent": "nodes/create_intent/createIntent.js",
-            "createDialog": "nodes/create_dialog_node/createDialogNode.js"
+            "createIntent": "nodes/create_intent/createIntent.js"
         }
     },
     "devDependencies": {

@@ -48,8 +48,8 @@ module.exports = function(RED) {
 
             console.log(msg);
             const params = {
-                workspaceId: '9d74b2b9-1973-4ab8-90ec-bc45ed12622e',
-                //workspaceId: msg.payload.workspaceId,
+                //workspaceId: '9d74b2b9-1973-4ab8-90ec-bc45ed12622e',
+                workspaceId: msg.payload.workspaceId,
                 intent: config.name,
                 description: config.description,
                 examples: [{
@@ -66,8 +66,8 @@ module.exports = function(RED) {
                     node.send(msg);
 
                     this.assistant.listDialogNodes({
-                        workspaceId: '9d74b2b9-1973-4ab8-90ec-bc45ed12622e'
-                        //workspaceId: msg.payload.workspaceId,
+                        //workspaceId: '9d74b2b9-1973-4ab8-90ec-bc45ed12622e'
+                        workspaceId: msg.payload.workspaceId,
                     })
                         .then(res =>{
                             var json = JSON.stringify(res, null, 2);
@@ -81,8 +81,8 @@ module.exports = function(RED) {
                             }
 
                             this.assistant.createDialogNode({
-                                workspaceId: '9d74b2b9-1973-4ab8-90ec-bc45ed12622e',
-                                //workspaceId: msg.payload.workspaceId,
+                                //workspaceId: '9d74b2b9-1973-4ab8-90ec-bc45ed12622e',
+                                workspaceId: msg.payload.workspaceId,
                                 dialogNode : nodeId,
                                 conditions: condition,
                                 //parent: n.parent,
@@ -114,17 +114,10 @@ module.exports = function(RED) {
                                     node.send(msg);
                                 });
 
-
                         })
                         .catch(err =>{
                             console.log(err);
                         });
-
-
-
-
-
-
 
                 })
                 .catch(err => {
