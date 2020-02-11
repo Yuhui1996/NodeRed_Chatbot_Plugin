@@ -14,7 +14,18 @@
             },
 			example2: {
                 value: ""
-            }
+            },
+            //dialog variables
+            dialogName: { //title & dialog node
+                value: ""
+            },
+            output: {
+                value: ""
+            },
+            selection_policy: {
+                value: "sequential"
+            },
+
         },
         inputs: 1,
         outputs: 1,
@@ -30,11 +41,18 @@
             $("#node-input-description").val(this.description);
 			$("#node-input-example1").val(this.example1);
 			$("#node-input-example2").val(this.example2);
+
+			//dialog
+			$("#node-input-dialogName").val(this.dialogName);
+			$("#node-input-output").val(this.output);
+			$("#node-input-selection_policy").val(this.selection_policy);
+
         }
     });
 </script>
 
 <script type="text/html" data-template-name="createIntent">
+
 	<div class="form-row">
         <label for="node-input-description"><i class="icon-tag"></i> Intent Name</label>
         <input type="text" id="node-input-name" value="UnamedIntent" placeholder="Name your intent to match a customer's question or goal">
@@ -53,6 +71,26 @@
 	<div class="form-row">
         <label for="node-input-example2"><i class="icon-tag"></i> User example 2</label>
         <input type="text" id="node-input-example2" placeholder="Add unique examples of what the user might say.">
+    </div>
+    <hr />
+    <div>
+        <div class="form-row">
+            <label for="node-input-dialogName"><i class="icon-tag"></i> DialogNode Name</label>
+            <input type="text" id="node-input-dialogName" placeholder="Enter Node Name, e.g. Welcome">
+        </div>
+
+        <div class="form-row">
+            <label for="node-input-output"><i class="icon-tag"></i> Assistant responds</label>
+            <input type="text" id="node-input-output" placeholder="Enter respond text, e.g. What can I do for you?">
+        </div>
+        <div>
+            <label for="node-input-selection_policy"><i class="icon-tag"></i>Response texts are set to </label>
+            <select id="node-input-selection_policy">
+                <option value="sequential" selected="selected">Sequential</option>
+                <option value="random">Random</option>
+                <option value="multiline">Multiline</option>
+            </select>
+        </div>
     </div>
 </script>
 
