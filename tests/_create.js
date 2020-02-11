@@ -8,8 +8,8 @@ const {
     IamAuthenticator
 } = require('ibm-watson/auth');
 
-const apikey = "NYLBfhff5TKngBCwOxjfRp7dIipvFPm_v1yo_XlR_K7W";
-const urlHost = "https://api.eu-gb.assistant.watson.cloud.ibm.com/instances/a20b257b-83f7-44a4-8093-2553e67aa381";
+const apikey = "mHBe7hP3EvS--SAOe8fBSDRhTp78W__ZOL7iqfjMzUvf";
+const urlHost = "https://api.eu-gb.assistant.watson.cloud.ibm.com/instances/4cc1d037-5230-4352-b3e4-dd74ede3951c";
 
 const watson_assistant = new AssistantV1({
     version: '2019-02-08',
@@ -87,22 +87,10 @@ describe('create Watson Node', function() {
         });
     });
 
-    it('should be connected', function(done) {
-        var statusCode;
-        watson_assistant.listWorkspaces()
-            .then(res => {
-                statusCode = JSON.parse(JSON.stringify(res, null, 2))['status'];
-                should.equal(statusCode, 200);
-                done();
-            })
-            .catch(err => {
-                done(err);
-            });
-    });
 
 
     it('workspace should be created', function(done) {
-        this.timeout(10000);
+        this.timeout(20000);
         var found = false;
         var flow = [{
                 id: "n1",
@@ -130,7 +118,7 @@ describe('create Watson Node', function() {
                 }
             });
             n2.on("input", function(msg) {
-                waitFor(2000).then(() => { //wait for internal api call from node red. currently no way of accessing promise from n1
+                waitFor(10000).then(() => { //wait for internal api call from node red. currently no way of accessing promise from n1
                     watson_assistant.listWorkspaces()
                         //.then(res => {n1.receive({ payload: testNode }); return res;})//not really working. does not wait for node red
                         .then(res => {
