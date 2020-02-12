@@ -1,20 +1,16 @@
 <script type="text/javascript">
-    RED.nodes.registerType('createIntent', {
-        category: 'Watson Designer',
-        color: '#a6bbcf',
-        defaults: {
-            name: {
-                value: ""
-            },
+	RED.nodes.registerType('createIntent', {
+		category: 'Watson Designer',
+		color: '#a6bbcf',
+		defaults: {
+			name: {
+				value: "UnamedIntent"
+			},
 			description: {
-                value: ""
-            },
-			example1: {
-                value: ""
-            },
-			example2: {
-                value: ""
-            },
+            value: "EmptyDescription"
+        },
+            examples: {value:[{exampleContent:"Default example"}]},
+
             //dialog variables
             dialogName: { //title & dialog node
                 value: ""
@@ -33,44 +29,74 @@
         label: function () {
             return this.name || "create intent";
         },
+
 		oneditprepare: function() {
-            if (this.payloadType === 'string' || this.payloadType === 'none') {
-                this.payloadType = "str";
+			if (this.payloadType === 'string' || this.payloadType === 'none') {
+				this.payloadType = "str";
+			}
+			$("#node-input-name").val(this.name);
+			$("#node-input-description").val(this.description);
+
+            //dialog
+            $("#node-input-dialogName").val(this.dialogName);
+            $("#node-input-output").val(this.output);
+            $("#node-input-selection_policy").val(this.selection_policy);
+			
+			$('#node-input-example-container').css('min-height','300px').editableList({
+				addItem: function(row, index, data) {
+					row.css({
+                        overflow: 'hidden',
+                        whiteSpace: 'nowrap'
+                    });
+					if (!data.hasOwnProperty('exampleContent')) {
+						var element = $('<input/>',{class:"node-input-example",type:"text"}).appendTo(row);
+					} else {
+						var element = $('<input/>',{class:"node-input-example",type:"text",value:data.exampleContent}).appendTo(row);
+					}
+				},
+				sortable: true,
+				removable: true
+			
+			});
+			
+			for (var i=0; i<this.examples.length; i++) {
+                var example = this.examples[i];
+                $("#node-input-example-container").editableList('addItem',example);
             }
-            $("#node-input-name").val(this.name);
-            $("#node-input-description").val(this.description);
-			$("#node-input-example1").val(this.example1);
-			$("#node-input-example2").val(this.example2);
+        },
 
-			//dialog
-			$("#node-input-dialogName").val(this.dialogName);
-			$("#node-input-output").val(this.output);
-			$("#node-input-selection_policy").val(this.selection_policy);
-
-        }
+		oneditsave: function() {
+			this.name = $("#node-input-name").val();
+			this.description = $("#node-input-description").val();
+			var exampleList = $('#node-input-example-container').editableList('items');
+			var node = this;
+			node.examples = [];
+			exampleList.each(function(i) {
+				var exampleElement = $(this);
+				var example = exampleElement.find(".node-input-example").val();
+				var listElement = {
+					exampleContent: example
+				};
+				node.examples.push(listElement);
+			});
+		}
     });
 </script>
 
 <script type="text/html" data-template-name="createIntent">
 
 	<div class="form-row">
-        <label for="node-input-description"><i class="icon-tag"></i> Intent Name</label>
-        <input type="text" id="node-input-name" value="UnamedIntent" placeholder="Name your intent to match a customer's question or goal">
-    </div>
-	
+		<label for="node-input-description"><i class="icon-tag"></i> Intent Name</label>
+		<input type="text" id="node-input-name" placeholder="Name your intent to match a customer's question or goal">
+	</div>
+
 	<div class="form-row">
-        <label for="node-input-description"><i class="icon-tag"></i> Intent Description</label>
-        <input type="text" id="node-input-description" value="EmptyDescription" placeholder="Please input the description of this intent">
-    </div>
-	
+		<label for="node-input-description"><i class="icon-tag"></i> Intent Description</label>
+		<input type="text" id="node-input-description"placeholder="Please input the description of this intent">
+	</div>
+
 	<div class="form-row">
-        <label for="node-input-example1"><i class="icon-tag"></i> User example 1</label>
-        <input type="text" id="node-input-example1" placeholder="Add unique examples of what the user might say.">
-    </div>
-	
-	<div class="form-row">
-        <label for="node-input-example2"><i class="icon-tag"></i> User example 2</label>
-        <input type="text" id="node-input-example2" placeholder="Add unique examples of what the user might say.">
+        <ol id="node-input-example-container"></ol>
     </div>
     <hr />
     <div>
@@ -92,8 +118,9 @@
             </select>
         </div>
     </div>
+
 </script>
 
 <script type="text/html" data-help-name="createIntent">
-    <p>Implementation with this node enable user to create default intent to the given workspace. Name can only contain alphabetic characters (A-Z,a-z), numeric characters (0-9), underscores (_), dashes (-) and periods (.).</p>
+	<p>Implementation with this node enable user to create default intent to the given workspace. Name can only contain alphabetic characters (A-Z,a-z), numeric characters (0-9), underscores (_), dashes (-) and periods (.).</p>
 </script>

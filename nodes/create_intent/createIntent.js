@@ -47,19 +47,21 @@ module.exports = function(RED) {
             }
 
             console.log(msg);
+
             const params = {
                 //workspaceId: '9d74b2b9-1973-4ab8-90ec-bc45ed12622e',
                 workspaceId: msg.payload.workspaceId,
                 intent: config.name,
                 description: config.description,
-                examples: [{
-                        text: config.example1
-                    },
-                    {
-                        text: config.example2
-                    }
-                ]
+                examples: []
             };
+			for (var i=0;i<config.examples.length;i++) {
+				var example = config.examples[i];
+				params.examples.push({
+                        text: example.exampleContent
+                    });
+			};
+			
             this.assistant.createIntent(params)
                 .then(res => {
                     console.log(JSON.stringify(res, null, 2));
