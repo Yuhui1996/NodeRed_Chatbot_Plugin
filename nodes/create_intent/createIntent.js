@@ -74,13 +74,26 @@ module.exports = function(RED) {
                         .then(res =>{
                             var json = JSON.stringify(res, null, 2);
                             var object = JSON.parse(json);
+                            var hasDialog = false;
 
-                            for (let i = 0; i < object.result.dialog_nodes.length; i++) {
-                                if (object.result.dialog_nodes[i].dialog_node === nodeId) {
-                                    nodeId = createId(i);
-                                    console.log("NodeIde conflict! New Id:"+ nodeId);
+                            if(object.result.dialog_nodes.length > 0){
+                                previousDialog = object.result.dialog_nodes[0].dialog_node;
+                                console.log("first dialog:" + previousDialog);
+                                for (let i = 0; i < object.result.dialog_nodes.length; i++) {
+                                    if (object.result.dialog_nodes[i].dialog_node === nodeId) {
+                                        nodeId = createId(i);
+                                        console.log("NodeIde conflict! New Id:"+ nodeId);
+                                    }
                                 }
                             }
+                            else{
+                                previousDialog = '';
+                                console.log("no dialog:" + previousDialog);
+                            }
+
+
+
+
 
                             this.assistant.createDialogNode({
                                 //workspaceId: '9d74b2b9-1973-4ab8-90ec-bc45ed12622e',
@@ -88,7 +101,7 @@ module.exports = function(RED) {
                                 dialogNode : nodeId,
                                 conditions: condition,
                                 //parent: n.parent,
-                                previousSibling: previousDialog,
+                                //previousSibling: previousDialog,
                                 output: {
                                     generic: [
                                         {
