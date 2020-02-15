@@ -1,5 +1,7 @@
 <script type="text/javascript">
+
     RED.nodes.registerType('dialog', {
+
         category: 'Watson Designer',
         color: '#a6bbcf',
         defaults: {
@@ -24,46 +26,48 @@
         },
         oneditprepare: function () {
 
-            try {
-                this.shared_data = RED.nodes.context().flow.get("shared_data");
-            } catch (e) {
-                this.shared_data = {
-                    data: {
-                        intents: [{name: "Test1", examples: []}, {name: "Test2", examples: []}],
-                        entities: [{
-                            name: "Test1",
-                            values: [
-                                {
-                                    value: "Stuff",
-                                    synonyms: ["Hello", "What"]
-                                }
-                            ]
-                        }]
-                    }
-                };
 
-                RED.nodes.context().flow.set("shared_data", this.shared_data);
-            }
-            $("#node-input-description").change(function () {
-                $("#node-input-chosen").empty();
+            $.getJSON('global_data', function (global_data) {
 
-                var desc = $(this);
-                if (desc.val() == "@") {
-                    for (var i = 0; i < this.shared_data.data.intents.length; i++) {
-                        var next_intent = this.shared_data.data.intents[i];
+                $("#node-input-description").val("@");
 
-                        $("#node-input-chosen").append('<option value=' + next_intent.name + '>' + next_intent.name + '</option>')
-                    }
-                } else {
-                    for (var i = 0; i < this.shared_data.data.entities.length; i++) {
-                        var next_entity = this.shared_data.data.entities[i];
+                for (var i = 0; i < global_data.data.entities.length; i++) {
+                    var next_entity = global_data.data.entities[i];
 
-                        $("#node-input-chosen").append('<option value=' + next_entity.name + '>' + next_entity.name + '</option>')
-                    }
+                    $("#node-input-choices").append('<option value=' + next_entity.name + '>' + next_entity.name + '</option>')
                 }
 
-            });
 
+                $("#node-input-description").change(function () {
+
+                    $.post("/global_data", {type: "intent", name: "John", values: ["awe", "awe"]})
+                        .done(function (data) {
+                            alert("Data Loaded: " + data);
+                        });
+
+                    $("#node-input-choices").empty();
+
+                    console.log(global_data.data);
+                    var desc = $(this);
+                    if (desc.val() == "#") {
+                        for (var i = 0; i < global_data.data.intents.length; i++) {
+                            var next_intent = global_data.data.intents[i];
+
+                            console.log(next_intent);
+
+                            $("#node-input-choices").append('<option value=' + next_intent.name + '>' + next_intent.name + '</option>')
+                        }
+                    } else {
+                        for (var i = 0; i < global_data.data.entities.length; i++) {
+                            var next_entity = global_data.data.entities[i];
+
+                            $("#node-input-choices").append('<option value=' + next_entity.name + '>' + next_entity.name + '</option>')
+                        }
+                    }
+
+                });
+
+            });
             $("#node-input-name").val(this.name);
             $("#node-input-description").val(this.description);
             $("#node-input-example1").val(this.example1);

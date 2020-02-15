@@ -1,11 +1,21 @@
 const AssistantV1 = require('ibm-watson/assistant/v1');
+
 const {
     IamAuthenticator
 } = require('ibm-watson/auth');
 
 let workspaceid;
 
+
+
 module.exports = function(RED) {
+
+
+
+
+
+
+
     function createDialog(config) {
         RED.nodes.createNode(this, config);
         var node = this;
@@ -53,4 +63,7 @@ module.exports = function(RED) {
     }
 
     RED.nodes.registerType("dialog", createDialog);
+
+
+
 }

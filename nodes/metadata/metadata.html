@@ -109,18 +109,7 @@
         },
         oneditprepare: function() {
 
-            try {
-                this.shared_data = this.context().flow.get("shared_data");
-            }catch (e) {
-                this.shared_data = {
-                    data: {
-                        intents: [],
-                        entities: []
-                    }
-                }
 
-                this.context().flow.set("shared_data", this.shared_data);
-            }
 
             $("#node-input-wa").text(this.wa);
             $("#node-input-instance").val(this.instance);
