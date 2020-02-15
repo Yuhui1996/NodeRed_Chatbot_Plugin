@@ -43,7 +43,10 @@ module.exports = function(RED) {
                     });
 			};
 			
-			Toast_Msg(RED, "Test", "Test");
+			RED.notify('Test toast',{
+				type: 'error',
+				modal: false
+			});
 			
             this.assistant.createIntent(params)
                 .then(res => {
