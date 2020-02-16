@@ -1,3 +1,4 @@
+\<script src="../global.js"></script>
 <script type="text/javascript">
   RED.nodes.registerType('entity', {
     category: 'Watson Designer',
@@ -22,14 +23,15 @@
     outputs: 1,
     icon: "comment.svg",
     label: function() {
-      return this.name || "entity";
+      return this.name ? `@${this.name}` : "entity";
     },
     oneditprepare: function() {
       $("#node-input-value-container").editableList({
-    addItem: function(row, index, data) {
+        addItem: function(row, index, data) {
         $(row).html("Item "+index);
-    }
-});
+        console.log(this.global.get("chatbot"));
+        }
+     });
     }
   });
 </script>
@@ -93,6 +95,7 @@
       button.innerHTML = "&#x2717";
       li.appendChild(button);
       ul.appendChild(li);
+      console.log(global.get("chatbot"));
     }
 
     function deleteFromList(e) {

@@ -1,8 +1,28 @@
+var chatbot = {
+    "Entities":[{
+        "name": "Test",
+        "values":[{
+            "value": "Test",
+            "synonyms": []
+            }]
+    }],
+    "Intents":[{
+        "name": "",
+        "examples": []
+        }]
+  }
+
+
 module.exports = function(RED) {
+    "use strict";
+    var util = require("util");
+    var vm = require("vm");
+
     function MetadataNode(n) {
         RED.nodes.createNode(this, n);
         this.payload = n.payload;
         this.payloadType = n.payloadType;
+        this.context().global.set("chatbot", chatbot);
         var node = this;
 
         this.on("input", function(msg) {

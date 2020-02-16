@@ -2,6 +2,7 @@ const Watson_API = require('../scripts/chatbot_fuctions.js');
 let wa = new Watson_API();
 let workspaceid;
 let json;
+
 module.exports = function(RED) {
 
 
