@@ -14,6 +14,23 @@ const instance_origional = 'https://api.eu-gb.assistant.watson.cloud.ibm.com/ins
 module.exports = function (RED) {
 
 
+    function send_pre_data(current_assistant) {
+        for (var next in global_data.data.intents) {
+            let params = {
+                workspaceId: msg.payload.workspaceId,
+                intent: config.name,
+                description: config.description,
+                examples: [{
+                    text: config.example1
+                },
+                    {
+                        text: config.example2
+                    }
+                ]
+            };
+        }
+    }
+
     function MetadataNode(node_data) {
         console.log(node_data);
         // console.log(n.instance);
@@ -31,6 +48,9 @@ module.exports = function (RED) {
         // var myCount = flow.get("assistant");
         // var old = this.context().flow.get("assistant");
         this.context().flow.set("assistant", assistant);
+
+        send_pre_data(assistant);
+
 
         this.on("input", function (msg) {
             msg.payload = {
@@ -78,11 +98,11 @@ module.exports = function (RED) {
         let new_data = req.body;
         ///Handle creation on new intent or entity from node
 
-        if (new_data.type == "intent"){
+        if (new_data.type == "intent") {
             global_data.add_intent(new_data);
-        }else if (new_data.type="entity"){
+        } else if (new_data.type = "entity") {
             global_data.add_entity(new_data);
-        }else{
+        } else {
             res.sendStatus(500);
             node.error(RED._("inject.failed", {
                 error: err.toString()
