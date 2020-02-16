@@ -47,6 +47,11 @@
             }
         },
 		oneditsave: function() {
+			RED.notify('My message in a box', {
+				modal: false,
+				type: 'warning'
+			})
+			
 			this.name = $("#node-input-name").val();
 			this.description = $("#node-input-description").val();
 			var exampleList = $('#node-input-example-container').editableList('items');

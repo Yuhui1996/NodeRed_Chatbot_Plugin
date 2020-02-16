@@ -1,5 +1,4 @@
 const AssistantV1 = require('ibm-watson/assistant/v1');
-const Toast_Msg = require('../scripts/toast_msg.js');
 const {
     IamAuthenticator
 } = require('ibm-watson/auth');
@@ -42,8 +41,6 @@ module.exports = function(RED) {
                         text: example.exampleContent
                     });
 			};
-			
-			Toast_Msg("Test");
 			
             this.assistant.createIntent(params)
                 .then(res => {
