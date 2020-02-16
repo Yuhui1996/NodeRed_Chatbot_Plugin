@@ -40,7 +40,7 @@ function Toast_Msg(msg) {
 		],
 	})
 	*/
-	alert(msg);
+	window.alert(msg);
 	
 }
 
