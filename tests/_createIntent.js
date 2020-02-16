@@ -88,23 +88,10 @@ describe('create Intent', function() {
         });
     });
 
-    it('should be connected', function(done) {
-        var statusCode;
-        watson_assistant.listWorkspaces()
-            .then(res => {
-                statusCode = JSON.parse(JSON.stringify(res, null, 2))['status'];
-                should.equal(statusCode, 200);
-
-                done();
-            })
-            .catch(err => {
-                done(err);
-            });
-    });
 
 
     it('Intent should be created', function(done) {
-        //this.timeout(2000);
+        this.timeout(20000);
         var found = false;
         var flow = [{
                 id: "n1",
