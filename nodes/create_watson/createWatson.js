@@ -56,6 +56,28 @@ module.exports = function (RED) {
         }
     }
 
+
+    function test_data() {
+        global_data.data = {
+            entities: {
+                "Test_Entity": {
+                    values: [{
+                        value: "Menu",
+                        synonyms: ["Veg", "Normal", "Special_Menu"]
+                    }],
+                    description: "Hello",
+                    fuzzy_match: true
+                }
+            },
+            intents: {
+                "Test_Intent": {
+                    description: "",
+                    examples: [{text: "Hello"}, {text: "Hi"}]
+                }
+            }
+        }
+    }
+
     //Format intents for sending to Watson
     function createIntents() {
         let intents = [];
@@ -89,6 +111,9 @@ module.exports = function (RED) {
     }
 
     function createWatson(config) {
+
+        test_data();
+
         RED.nodes.createNode(this, config);
         var node = this;
 
