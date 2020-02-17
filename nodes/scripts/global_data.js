@@ -1,20 +1,4 @@
 var global_data = module.exports = {
-<<<<<<< HEAD
-        entities: [{
-            name: "Test_Entity",
-            values: [{
-                value: "Menu",
-                synonyms: ["Veg","Normal"]
-            }]
-        }],
-        intents: [{
-            name: "Test_Intent",
-            examples: ["Hello", "Hi"]
-        }],
-        
-    add_intent: function () {
-        Counter.count += 10;
-=======
     data: {
         entities: {},
         intents: {}
@@ -51,7 +35,6 @@ var global_data = module.exports = {
             data.intents[send_data.name] = intent_data;
             return 1;
         }
->>>>>>> 933ff8901457a3f432ac06b9f586b3ab00b71146
     },
     add_entity: function (send_data) {
         data.entities[send_data.name].values = send_data.values;
