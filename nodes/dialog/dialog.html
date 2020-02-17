@@ -36,6 +36,17 @@
             synonym: {
                 value: ""
             },
+            intentName: {
+                value: "UnamedIntent"
+            },
+            intentDescription: {
+                value: "EmptyDescription"
+            },
+            examples: {
+                value: [{
+                    exampleContent: "Default example"
+                }]
+            }
         },
         inputs: 1,
         outputs: 1,
@@ -44,7 +55,6 @@
             return this.name || "create dialog";
         },
         oneditprepare: function () {
-
             $("#node-input-value-container").editableList({
                 addButton: "Add assistant response",
                 addItem: function (container, i, data) {
@@ -101,13 +111,13 @@
 
             $.getJSON('global_data', function (global_data) {
 
-                $("#node-input-description").val("@");
+                $("#node-input-description").val("#");
 
-                for (var i = 0; i < global_data.entities.length; i++) {
-                    var next_entity = global_data.entities[i];
+                for (var i = 0; i < global_data.intents.length; i++) {
+                    var next_intent = global_data.intents[i];
 
-                    $("#node-input-choices").append('<option value=' + next_entity.name + '>' +
-                        next_entity.name + '</option>')
+                    $("#node-input-choices").append('<option value=' + next_intent
+                        .name + '>' + next_intent.name + '</option>')
                 }
 
 
@@ -148,8 +158,68 @@
 
             });
             $("#node-input-name").val(this.name);
+
+            // intent creation code
+            if (this.payloadType === 'string' || this.payloadType === 'none') {
+                this.payloadType = "str";
+            }
+            $("#node-input-intentName").val(this.intentName);
+            $("#node-input-intentDescription").val(this.intentDescription);
+
+            $('#node-input-example-container').editableList({
+                addItem: function (row, index, data) {
+                    row.css({
+                        overflow: 'hidden',
+                        whiteSpace: 'nowrap'
+                    });
+                    if (!data.hasOwnProperty('exampleContent')) {
+                        var element = $('<input/>', {
+                            class: "node-input-example",
+                            type: "text"
+                        }).appendTo(row);
+                    } else {
+                        var element = $('<input/>', {
+                            class: "node-input-example",
+                            type: "text",
+                            value: data.exampleContent
+                        }).appendTo(row);
+                    }
+                },
+                sortable: true,
+                removable: true
+
+            });
+
+            for (var i = 0; i < this.examples.length; i++) {
+                var example = this.examples[i];
+                $("#node-input-example-container").editableList('addItem', example);
+            }
+        },
+        oneditsave: function () {
+            this.intentName = $("#node-input-intentName").val();
+            this.intentDescription = $("#node-input-intentDescription").val();
+            var exampleList = $('#node-input-example-container').editableList('items');
+            var node = this;
+            node.examples = [];
+            exampleList.each(function (i) {
+                var exampleElement = $(this);
+                var example = exampleElement.find(".node-input-example").val();
+                var listElement = {
+                    exampleContent: example
+                };
+                node.examples.push(listElement);
+            });
         }
     });
+
+    function createIntent() {
+        var x = document.getElementById("create-intent");
+        if (x.style.display === "none") {
+            x.style.display = "block";
+        } else {
+            x.style.display = "none";
+        }
+    }
 </script>
 
 <script type="text/html" data-template-name="dialog">
@@ -160,8 +230,8 @@
     <div class="form-row">
         <label for="node-input-description"><i class="icon-tag"></i> Choose intent Description</label>
         <select style="width: 50px" name="" id="node-input-description">
-            <option value="@" selected>@</option>
-            <option value="#">#</option>
+            <option value="#" selected>#</option>
+            <option value="@">@</option>
         </select>
 
         <select name="" id="node-input-choices">
@@ -169,8 +239,29 @@
         </select>
     </div>
     <div class=form-row>
-        <button id="node-button-create-entity">Create Entity</button>
-        <button id="node-button-create-intent">Create Intent</button>
+        <button id="node-button-create-intent" onclick="createIntent()">New Intent</button>
+        <button id="node-button-create-entity" hidden="true" onclick="createEntity()">New Entity</button>
+    </div>
+    <div id="create-intent" style="display: none;">
+        <fieldset>
+        <legend>Create intent</legend>
+        <div class="form-row">
+            <label for="node-input-intentName"><i class="icon-tag"></i> Intent Name</label>
+            <input type="text" id="node-input-intentName"
+                placeholder="Name your intent to match a customer's question or goal">
+        </div>
+        <div class="form-row">
+            <label for="node-input-intentDescription"><i class="icon-tag"></i> Intent Description</label>
+            <input type="text" id="node-input-intentDescription"
+                placeholder="Please input the description of this intent">
+        </div>
+
+        <div class="form-row">
+            <ol id="node-input-example-container"></ol>
+        </div>
+        <button>Create intent</button>
+        <legend></legend>
+    </fieldset>
     </div>
     <div class="form-row">
         <label for="node-input-condition"><i class="icon-tag"></i>If assistant recognizes</label>

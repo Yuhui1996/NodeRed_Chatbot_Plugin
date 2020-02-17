@@ -13,6 +13,8 @@ module.exports = function(RED) {
         RED.nodes.createNode(this, n);
         var node = this;
         this.name = n.name;
+        this.intentName = n.intentName;
+        this.intentDescription = n.intentDescription;
         node.on('input', function(msg) {
             try {
                 this.assistant = this.context().flow.get("assistant");
