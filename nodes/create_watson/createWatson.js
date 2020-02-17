@@ -56,7 +56,7 @@ module.exports = function (RED) {
         }
     }
 
-
+    //Format intents for sending to Watson
     function createIntents() {
         let intents = [];
         for (let next_intent in global_data.data.intents) {
@@ -71,7 +71,7 @@ module.exports = function (RED) {
         return intents;
     }
 
-
+    //Format entities for sending to Watson
     function createEntities() {
         let entities = [];
         for (let next_entity in global_data.data.entities) {
@@ -171,24 +171,37 @@ module.exports = function (RED) {
 
     RED.httpAdmin.get("/global_data", RED.auth.needsPermission('global_data.read'), function (req, res) {
         //send all data to node
-        res.json(global_data);
+        res.json(global_data.data);
     });
 
     RED.httpAdmin.post('/global_data', RED.auth.needsPermission("global_data.write"), function (req, res) {
         console.log(req.body);
         let new_data = req.body;
         ///Handle creation on new intent or entity from node
-
-        if (new_data.type == "intent") {
-            global_data.add_intent(new_data);
-        } else if (new_data.type = "entity") {
-            global_data.add_entity(new_data);
-        } else {
-            res.sendStatus(500);
-            node.error(RED._("inject.failed", {
-                error: err.toString()
-            }));
+        if (new_data.control == "add" || new_data.control == "update"){
+            if (new_data.type == "intent") {
+                global_data.add_intent(new_data);
+            } else if (new_data.type = "entity") {
+                global_data.add_entity(new_data);
+            } else {
+                res.sendStatus(500);
+                node.error(RED._("inject.failed", {
+                    error: err.toString()
+                }));
+            }
+        }else{
+            if (new_data.type == "intent") {
+                global_data.remove_intent(new_data);
+            } else if (new_data.type = "entity") {
+                global_data.remove_entity(new_data);
+            } else {
+                res.sendStatus(500);
+                node.error(RED._("inject.failed", {
+                    error: err.toString()
+                }));
+            }
         }
+
     });
 
 
