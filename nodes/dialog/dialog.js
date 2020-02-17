@@ -9,18 +9,11 @@ let workspaceid;
 
 
 module.exports = function(RED) {
-
-
-
-
-
-
-
-    function createDialog(config) {
-        RED.nodes.createNode(this, config);
+    function createDialog(n) {
+        RED.nodes.createNode(this, n);
         var node = this;
+        this.name = n.name;
         node.on('input', function(msg) {
-
             try {
                 this.assistant = this.context().flow.get("assistant");
             } catch (e) {
@@ -40,13 +33,13 @@ module.exports = function(RED) {
             console.log(msg);
             // const params = {
             //     workspaceId: msg.payload.workspaceId,
-            //     intent: config.name,
-            //     description: config.description,
+            //     intent: n.name,
+            //     description: n.description,
             //     examples: [{
-            //             text: config.example1
+            //             text: n.example1
             //         },
             //         {
-            //             text: config.example2
+            //             text: n.example2
             //         }
             //     ]
             // };
@@ -59,6 +52,7 @@ module.exports = function(RED) {
             //         node.error("Error", err);
             //         console.log(err);
             //     });
+            console.log(this.name);
         });
     }
 

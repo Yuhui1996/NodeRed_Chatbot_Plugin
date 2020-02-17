@@ -1,4 +1,21 @@
 <script type="text/javascript">
+    var options = [{
+            v: "text",
+            t: "Text"
+        },
+        {
+            v: "option",
+            t: "Option"
+        },
+        {
+            v: "pause",
+            t: "Pause"
+        },
+        {
+            v: "image",
+            t: "Image"
+        },
+    ];
 
     RED.nodes.registerType('dialog', {
 
@@ -8,15 +25,17 @@
             name: {
                 value: ""
             },
-            description: {
+            value: {
                 value: ""
             },
-            example1: {
+            values: {
+                value: [{
+                    v: ""
+                }],
+            },
+            synonym: {
                 value: ""
             },
-            example2: {
-                value: ""
-            }
         },
         inputs: 1,
         outputs: 1,
@@ -26,42 +45,102 @@
         },
         oneditprepare: function () {
 
+            $("#node-input-value-container").editableList({
+                addButton: "Add assistant response",
+                addItem: function (container, i, data) {
+                    container.css({
+                        overflow: 'hidden',
+                        whiteSpace: 'nowrap',
+                        display: 'flex'
+                    });
+                    var row = $('<div/>').appendTo(container);
+                    var row2 = $('<div/>', {
+                        style: "padding-left: 10px; display: flex; flex-direction: column;"
+                    }).appendTo(container);
+                    var row3 = $('<div/>', {
+                        style: "padding-left: 10px; display: flex; margin-bottom: 2px;"
+                    }).appendTo(container);
+                    var selectField = $('<select/>', {
+                        style: "width:120px; margin-left: 5px; text-align: center;"
+                    }).appendTo(row);
+                    var group0 = $('<optgroup/>', {
+                        label: "Response type"
+                    }).appendTo(selectField);
+                    for (var d in options) {
+                        group0.append($("<option></option>").val(options[d].v).text(/^switch/
+                            .test(options[d].t) ? node._(options[d].t) : options[d].t));
+                    }
+                    var textInput = $('<input/>', {
+                        id: "node-input-case-" + i,
+                        class: "node-input-case",
+                        type: "text",
+                        placeholder: "Enter response text"
+                    }).appendTo(row2);
+                    var addVariationButton = $('<button/>', {
+                        id: "node-button-add-variation" + i,
+                        type: "button",
+                        style: "margin-top: auto; height: 30px"
+                    }).appendTo(row3);
+                    addVariationButton.text('+');
+                    addVariationButton.on("click", function () {
+                        $('<input/>', {
+                            id: "node-input-case-" + i,
+                            class: "node-input-case",
+                            type: "text",
+                            placeholder: "Enter response text"
+                        }).appendTo(row2)
+                    });
+                    selectField.on("change", function () {
+                        var type = selectField.val();
+                        if (type === "text") {
+                            textInput.show();
+                        }
+                    });
+                }
+            });
 
             $.getJSON('global_data', function (global_data) {
 
                 $("#node-input-description").val("@");
 
-                for (var i = 0; i < global_data.data.entities.length; i++) {
-                    var next_entity = global_data.data.entities[i];
+                for (var i = 0; i < global_data.entities.length; i++) {
+                    var next_entity = global_data.entities[i];
 
-                    $("#node-input-choices").append('<option value=' + next_entity.name + '>' + next_entity.name + '</option>')
+                    $("#node-input-choices").append('<option value=' + next_entity.name + '>' +
+                        next_entity.name + '</option>')
                 }
 
 
                 $("#node-input-description").change(function () {
 
-                    $.post("/global_data", {type: "intent", name: "John", values: ["awe", "awe"]})
+                    $.post("/global_data", {
+                            type: "intent",
+                            name: "John",
+                            values: ["awe", "awe"]
+                        })
                         .done(function (data) {
                             alert("Data Loaded: " + data);
                         });
 
                     $("#node-input-choices").empty();
 
-                    console.log(global_data.data);
+                    console.log(global_data);
                     var desc = $(this);
                     if (desc.val() == "#") {
-                        for (var i = 0; i < global_data.data.intents.length; i++) {
-                            var next_intent = global_data.data.intents[i];
+                        for (var i = 0; i < global_data.intents.length; i++) {
+                            var next_intent = global_data.intents[i];
 
                             console.log(next_intent);
 
-                            $("#node-input-choices").append('<option value=' + next_intent.name + '>' + next_intent.name + '</option>')
+                            $("#node-input-choices").append('<option value=' + next_intent
+                                .name + '>' + next_intent.name + '</option>')
                         }
                     } else {
-                        for (var i = 0; i < global_data.data.entities.length; i++) {
-                            var next_entity = global_data.data.entities[i];
+                        for (var i = 0; i < global_data.entities.length; i++) {
+                            var next_entity = global_data.entities[i];
 
-                            $("#node-input-choices").append('<option value=' + next_entity.name + '>' + next_entity.name + '</option>')
+                            $("#node-input-choices").append('<option value=' + next_entity
+                                .name + '>' + next_entity.name + '</option>')
                         }
                     }
 
@@ -69,20 +148,15 @@
 
             });
             $("#node-input-name").val(this.name);
-            $("#node-input-description").val(this.description);
-            $("#node-input-example1").val(this.example1);
-            $("#node-input-example2").val(this.example2);
         }
     });
 </script>
 
 <script type="text/html" data-template-name="dialog">
     <div class="form-row">
-        <label for="node-input-name"><i class="icon-tag"></i> Intent Name</label>
-        <input type="text" id="node-input-name" value="UnamedIntent"
-               placeholder="Name your intent to match a customer's question or goal">
+        <label for="node-input-name"><i class="icon-tag"></i>Node name</label>
+        <input type="text" id="node-input-name" placeholder="Enter node name">
     </div>
-
     <div class="form-row">
         <label for="node-input-description"><i class="icon-tag"></i> Choose intent Description</label>
         <select style="width: 50px" name="" id="node-input-description">
@@ -93,19 +167,42 @@
         <select name="" id="node-input-choices">
 
         </select>
-
     </div>
-
+    <div class=form-row>
+        <button id="node-button-create-entity">Create Entity</button>
+        <button id="node-button-create-intent">Create Intent</button>
+    </div>
     <div class="form-row">
-        <label for="node-input-example1"><i class="icon-tag"></i> User example 1</label>
-        <input type="text" id="node-input-example1" placeholder="Add unique examples of what the user might say.">
+        <label for="node-input-condition"><i class="icon-tag"></i>If assistant recognizes</label>
+        <input type="text" id="node-input-condition" placeholder="Enter condition">
     </div>
-
-    <div class="form-row">
-        <label for="node-input-example2"><i class="icon-tag"></i> User example 2</label>
-        <input type="text" id="node-input-example2" placeholder="Add unique examples of what the user might say.">
-    </div>
+    <ol id="node-input-value-container"></ol>
 </script>
+
+<style>
+    .form-row-select {
+        display: flex;
+    }
+
+    .dropdown {
+        width: auto;
+        margin-right: 10px;
+    }
+
+    .select {
+        flex-grow: 1;
+        margin-right: 10px;
+    }
+
+    .buttons {
+        display: flex;
+        margin-top: 10px;
+    }
+
+    .buttons>* {
+        padding: 10px;
+    }
+</style>
 
 <script type="text/html" data-help-name="dialog">
     <p>Implementation with this node enable user to create default intent to the given workspace. Name can only contain

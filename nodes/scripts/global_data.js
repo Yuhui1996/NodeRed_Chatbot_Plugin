@@ -1,5 +1,4 @@
 var global_data = module.exports = {
-    data: {
         entities: [{
             name: "Test_Entity",
             values: [{
@@ -10,9 +9,8 @@ var global_data = module.exports = {
         intents: [{
             name: "Test_Intent",
             examples: ["Hello", "Hi"]
-        }]
-
-    },
+        }],
+        
     add_intent: function () {
         Counter.count += 10;
     },

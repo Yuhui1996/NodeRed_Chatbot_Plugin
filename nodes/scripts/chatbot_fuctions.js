@@ -11,9 +11,9 @@ class Watson_API {
         version: '2019-02-08',
         authenticator: new IamAuthenticator({
 
-            apikey: 'iaPZHdbsoWlThg8IWVFXM1m3IWuIbJ-vyPa9DstoRT5G', //change this api key to your to modify your own workspace
+            apikey: 'NmIp0EQCOGVRA4dAoni9NosPWYsgG3b9c-xJgD3Iu4qq', //change this api key to your to modify your own workspace
         }),
-        url: 'https://api.eu-gb.assistant.watson.cloud.ibm.com/instances/0ccb889d-9dc1-4098-93e7-2be9f027d0d6',
+        url: 'https://gateway-lon.watsonplatform.net/assistant/api',
 
     });
 
