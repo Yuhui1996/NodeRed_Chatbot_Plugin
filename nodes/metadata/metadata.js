@@ -6,30 +6,13 @@ const {
 } = require('ibm-watson/auth');
 
 
-var global_data = require('../scripts/global_data.js');
-
 
 const api_origional = 'NYLBfhff5TKngBCwOxjfRp7dIipvFPm_v1yo_XlR_K7W';
 const instance_origional = 'https://api.eu-gb.assistant.watson.cloud.ibm.com/instances/a20b257b-83f7-44a4-8093-2553e67aa381';
 module.exports = function (RED) {
 
 
-    function send_pre_data(current_assistant) {
-        for (var next in global_data.data.intents) {
-            let params = {
-                workspaceId: msg.payload.workspaceId,
-                intent: config.name,
-                description: config.description,
-                examples: [{
-                    text: config.example1
-                },
-                    {
-                        text: config.example2
-                    }
-                ]
-            };
-        }
-    }
+
 
     function MetadataNode(node_data) {
         console.log(node_data);
@@ -49,7 +32,7 @@ module.exports = function (RED) {
         // var old = this.context().flow.get("assistant");
         this.context().flow.set("assistant", assistant);
 
-        send_pre_data(assistant);
+
 
 
         this.on("input", function (msg) {
@@ -88,27 +71,7 @@ module.exports = function (RED) {
     });
 
 
-    RED.httpAdmin.get("/global_data", RED.auth.needsPermission('global_data.read'), function (req, res) {
-        //send all data to node
-        res.json(global_data);
-    });
 
-    RED.httpAdmin.post('/global_data', RED.auth.needsPermission("global_data.write"), function (req, res) {
-        console.log(req.body);
-        let new_data = req.body;
-        ///Handle creation on new intent or entity from node
-
-        if (new_data.type == "intent") {
-            global_data.add_intent(new_data);
-        } else if (new_data.type = "entity") {
-            global_data.add_entity(new_data);
-        } else {
-            res.sendStatus(500);
-            node.error(RED._("inject.failed", {
-                error: err.toString()
-            }));
-        }
-    });
 
 
 }

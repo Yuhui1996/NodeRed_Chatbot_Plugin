@@ -1,22 +1,32 @@
 var global_data = module.exports = {
     data: {
         entities: {
-            "Test_Entity": [{
-                value: "Menu",
-                synonyms: ["Veg", "Normal"]
-            }]
+            "Test_Entity":{
+                values:[{
+                    value: "Menu",
+                    synonyms: ["Veg", "Normal","Special"]
+                }],
+                description: "Hello",
+                fuzzy_match: true
+            }
         },
         intents: {
-            "Test_Intent": ["Hello", "Hi"]
+            "Test_Intent": {
+                desc: "",
+                examples: [{text:"Hello"}, {text:"Hi"}]
+            }
         }
-
     },
     add_intent: function (send_data) {
 
         if (data.intents[send_data.name] == undefined) {
             return -1;
         } else {
-            data.intents[send_data.name] = send_data.examples;
+            let intent_data = {
+                desc: send_data.desc,
+                examples: send_data.examples
+            }
+            data.intents[send_data.name] = intent_data;
             return 1;
         }
 
@@ -35,7 +45,11 @@ var global_data = module.exports = {
         if (data.intents[send_data.name] == undefined) {
             return -1;
         } else {
-            data.intents[send_data.name] = send_data.examples;
+            let intent_data = {
+                desc: send_data.desc,
+                examples: send_data.examples
+            }
+            data.intents[send_data.name] = intent_data;
             return 1;
         }
     },
@@ -43,7 +57,9 @@ var global_data = module.exports = {
         if (data.entities[send_data.name] == undefined) {
             return -1;
         } else {
-            data.entities[send_data.name] = send_data.values;
+            data.entities[send_data.name].values = send_data.values;
+            data.entities[send_data.name].description = send_data.description;
+            data.entities[send_data.name].fuzzy_match = send_data.fuzzy_match;
             return 1;
         }
     },
@@ -59,7 +75,9 @@ var global_data = module.exports = {
         if (data.entities[send_data.name] == undefined) {
             return -1;
         } else {
-            data.entities[send_data.name] = send_data.values;
+            data.entities[send_data.name].values = send_data.values;
+            data.entities[send_data.name].description = send_data.description;
+            data.entities[send_data.name].fuzzy_match = send_data.fuzzy_match;
             return 1;
         }
     },
