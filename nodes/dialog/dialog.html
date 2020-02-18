@@ -145,8 +145,10 @@
                             $("#node-input-choices").append('<option value=' + next_intent
                                 .name + '>' + next_intent.name + '</option>')
                         }
-                        document.getElementById("node-button-create-intent").style.display = "block";
-                        document.getElementById("node-button-create-entity").style.display = "none";
+                        document.getElementById("node-button-create-intent").style.display =
+                            "block";
+                        document.getElementById("node-button-create-entity").style.display =
+                            "none";
                     } else {
                         for (var i = 0; i < global_data.entities.length; i++) {
                             var next_entity = global_data.entities[i];
@@ -154,8 +156,10 @@
                             $("#node-input-choices").append('<option value=' + next_entity
                                 .name + '>' + next_entity.name + '</option>')
                         }
-                        document.getElementById("node-button-create-entity").style.display = "block";
-                        document.getElementById("node-button-create-intent").style.display = "none";
+                        document.getElementById("node-button-create-entity").style.display =
+                            "block";
+                        document.getElementById("node-button-create-intent").style.display =
+                            "none";
                     }
 
                 });
@@ -217,25 +221,34 @@
     });
 
     function newIntent() {
-        var x = document.getElementById("create-intent");
+        document.getElementById("create-intent").style.display = "block";
         document.getElementById("node-button-create-intent").style.display = "none";
-        if (x.style.display === "none") {
-            x.style.display = "block";
-        } else {
-            x.style.display = "none";
-        }
     }
 
-    function createIntent(){
-        document.getElementById("node-button-create-intent").style.display = "block";
-        document.getElementById("create-intent").style.display = "none";
-
-
+    function newEntity() {
+        document.getElementById("create-entity").style.display = "block";
+        document.getElementById("node-button-create-entity").style.display = "none";
     }
 
-    function cancelIntent(){
+    function createIntent() {
         document.getElementById("node-button-create-intent").style.display = "block";
         document.getElementById("create-intent").style.display = "none";
+        // Handle intent creation
+    }
+
+    function createEntity(){
+        document.getElementById("node-button-create-entity").style.display = "block";
+        document.getElementById("create-entity").style.display = "none";
+    }
+
+    function cancelIntent() {
+        document.getElementById("node-button-create-intent").style.display = "block";
+        document.getElementById("create-intent").style.display = "none";
+    }
+
+    function cancelEntity(){
+        document.getElementById("node-button-create-entity").style.display = "block";
+        document.getElementById("create-entity").style.display = "none";
     }
 </script>
 
@@ -257,31 +270,42 @@
     </div>
     <div class=form-row>
         <button id="node-button-create-intent" onclick="newIntent()">New Intent</button>
-        <button id="node-button-create-entity" hidden="true" onclick="createEntity()">New Entity</button>
+        <button id="node-button-create-entity" onclick="newEntity()" hidden="true">New Entity</button>
     </div>
     <div id="create-intent" style="display: none;">
         <fieldset>
-        <legend>Create intent</legend>
-        <div class="form-row">
-            <label for="node-input-intentName"><i class="icon-tag"></i> Intent Name</label>
-            <input type="text" id="node-input-intentName"
-                placeholder="Name your intent to match a customer's question or goal">
-        </div>
-        <div class="form-row">
-            <label for="node-input-intentDescription"><i class="icon-tag"></i> Intent Description</label>
-            <input type="text" id="node-input-intentDescription"
-                placeholder="Please input the description of this intent">
-        </div>
+            <legend>Create intent</legend>
+            <div class="form-row">
+                <label for="node-input-intentName"><i class="icon-tag"></i> Intent Name</label>
+                <input type="text" id="node-input-intentName"
+                    placeholder="Name your intent to match a customer's question or goal">
+            </div>
+            <div class="form-row">
+                <label for="node-input-intentDescription"><i class="icon-tag"></i> Intent Description</label>
+                <input type="text" id="node-input-intentDescription"
+                    placeholder="Please input the description of this intent">
+            </div>
 
-        <div class="form-row">
-            <ol id="node-input-example-container"></ol>
-        </div>
-        <div class="form-row"  style="margin-bottom: 10px;">
-        <button onclick="createIntent()">Create intent</button>
-        <button onclick="cancelIntent()">Cancel</button>
-        </div>
-        <legend></legend>
-    </fieldset>
+            <div class="form-row">
+                <ol id="node-input-example-container"></ol>
+            </div>
+            <div class="form-row" style="margin-bottom: 10px;">
+                <button onclick="createIntent()">Create intent</button>
+                <button onclick="cancelIntent()">Cancel</button>
+            </div>
+            <legend></legend>
+        </fieldset>
+    </div>
+    <div id="create-entity" style="display: none;">
+        <fieldset>
+            <legend>Create entity</legend>
+            <!-- entity creation html here-->
+            <div class="form-row" style="margin-bottom: 10px;">
+                <button onclick="createEntity()">Create entity</button>
+                <button onclick="cancelEntity()">Cancel</button>
+            </div>
+            <legend></legend>
+        </fieldset>
     </div>
     <div class="form-row">
         <label for="node-input-condition"><i class="icon-tag"></i>If assistant recognizes</label>
