@@ -145,6 +145,8 @@
                             $("#node-input-choices").append('<option value=' + next_intent
                                 .name + '>' + next_intent.name + '</option>')
                         }
+                        document.getElementById("node-button-create-intent").style.display = "block";
+                        document.getElementById("node-button-create-entity").style.display = "none";
                     } else {
                         for (var i = 0; i < global_data.entities.length; i++) {
                             var next_entity = global_data.entities[i];
@@ -152,6 +154,8 @@
                             $("#node-input-choices").append('<option value=' + next_entity
                                 .name + '>' + next_entity.name + '</option>')
                         }
+                        document.getElementById("node-button-create-entity").style.display = "block";
+                        document.getElementById("node-button-create-intent").style.display = "none";
                     }
 
                 });
@@ -212,13 +216,26 @@
         }
     });
 
-    function createIntent() {
+    function newIntent() {
         var x = document.getElementById("create-intent");
+        document.getElementById("node-button-create-intent").style.display = "none";
         if (x.style.display === "none") {
             x.style.display = "block";
         } else {
             x.style.display = "none";
         }
+    }
+
+    function createIntent(){
+        document.getElementById("node-button-create-intent").style.display = "block";
+        document.getElementById("create-intent").style.display = "none";
+
+
+    }
+
+    function cancelIntent(){
+        document.getElementById("node-button-create-intent").style.display = "block";
+        document.getElementById("create-intent").style.display = "none";
     }
 </script>
 
@@ -239,7 +256,7 @@
         </select>
     </div>
     <div class=form-row>
-        <button id="node-button-create-intent" onclick="createIntent()">New Intent</button>
+        <button id="node-button-create-intent" onclick="newIntent()">New Intent</button>
         <button id="node-button-create-entity" hidden="true" onclick="createEntity()">New Entity</button>
     </div>
     <div id="create-intent" style="display: none;">
@@ -259,7 +276,10 @@
         <div class="form-row">
             <ol id="node-input-example-container"></ol>
         </div>
-        <button>Create intent</button>
+        <div class="form-row"  style="margin-bottom: 10px;">
+        <button onclick="createIntent()">Create intent</button>
+        <button onclick="cancelIntent()">Cancel</button>
+        </div>
         <legend></legend>
     </fieldset>
     </div>
