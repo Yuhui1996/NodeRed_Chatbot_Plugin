@@ -112,7 +112,7 @@ module.exports = function (RED) {
 
     function createWatson(config) {
 
-        test_data();
+        // test_data();
 
         RED.nodes.createNode(this, config);
         var node = this;
