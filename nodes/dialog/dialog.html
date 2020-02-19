@@ -182,13 +182,13 @@
                     });
                 }
             });
-            let node = $(this);
 
-            if (node.dialog_type == undefined){
-                node.dialog_type = node[0].dialog_type;
-            }
 
-            updateData(node.dialog_type,node.dialog_value);
+            // if (this.dialog_type == undefined){
+            //     this.dialog_type = node.dialog_type;
+            // }
+
+            updateData(this.dialog_type,this.dialog_value);
 
             $("#node-input-name").val(this.name);
 
@@ -231,6 +231,7 @@
             }
         },
         oneditsave: function () {
+
             this.intentName = $("#node-input-intentName").val();
             this.intentDescription = $("#node-input-intentDescription").val();
             var exampleList = $('#node-input-example-container').editableList('items');
