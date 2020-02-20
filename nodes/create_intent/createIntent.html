@@ -4,7 +4,8 @@
 		color: '#a6bbcf',
 		defaults: {
 			name: {
-				value: "UnamedIntent"
+				value: "UnamedIntent",
+				validate: RED.validators.regex(/^(?!sys-)([\w-\.]{1,128})$/)
 			},
 			description: {
 				value: "EmptyDescription"
