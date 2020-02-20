@@ -37,6 +37,7 @@
     },
     "devDependencies": {
         "node-red": "^1.0.3",
-        "node-red-node-test-helper": "^0.2.3"
+        "node-red-node-test-helper": "^0.2.3",
+        "open": "^6.13.7"
     }
 }
