@@ -39,6 +39,7 @@
             $("#node-input-description").change(function () {
 
                 $("#node-input-choices").empty();
+                clearCreation();
 
                 var desc = $(this);
                 if (desc.val() == "#") {
@@ -84,6 +85,74 @@
         },
     ];
 
+
+    function clearCreation() {
+
+        document.getElementById("create-intent").style.display = "none";
+        document.getElementById("node-button-create-intent").style.display = "none";
+        document.getElementById("node-button-create-entity").style.display = "none";
+        document.getElementById("create-entity").style.display = "none";
+    }
+
+    function newIntent() {
+        document.getElementById("create-intent").style.display = "block";
+        document.getElementById("node-button-create-intent").style.display = "none";
+
+
+    }
+
+
+
+    function newEntity() {
+        document.getElementById("create-entity").style.display = "block";
+        document.getElementById("node-button-create-entity").style.display = "none";
+    }
+
+    function createIntent() {
+
+        let new_intent = {};
+        new_intent.control = "add";
+        new_intent.type = "intent";
+        new_intent.name = $("#node-input-intentName").val();
+        let exampleList = $('#node-input-example-container').editableList('items');
+        new_intent.examples = [];
+        exampleList.each(function (i) {
+            let exampleElement = $(this);
+            let example = exampleElement.find(".node-input-example").val();
+            new_intent.examples.push({text: example});
+        });
+
+        console.log("NEW INTENT \n " + new_intent);
+
+
+        $.post("/global_data", new_intent)
+            .done(function (data) {
+                alert("Data Loaded: " + data);
+            });
+
+
+        //Cal function to refresh the lists and set to new intent
+        updateData("#",new_intent.name);
+
+        document.getElementById("node-button-create-intent").style.display = "block";
+        document.getElementById("create-intent").style.display = "none";
+        // Handle intent creation
+    }
+
+    function createEntity() {
+        document.getElementById("node-button-create-entity").style.display = "block";
+        document.getElementById("create-entity").style.display = "none";
+    }
+
+    function cancelIntent() {
+        document.getElementById("node-button-create-intent").style.display = "block";
+        document.getElementById("create-intent").style.display = "none";
+    }
+
+    function cancelEntity() {
+        document.getElementById("node-button-create-entity").style.display = "block";
+        document.getElementById("create-entity").style.display = "none";
+    }
 
     RED.nodes.registerType('dialog', {
 
@@ -254,64 +323,6 @@
 
 
 
-
-    function newIntent() {
-        document.getElementById("create-intent").style.display = "block";
-        document.getElementById("node-button-create-intent").style.display = "none";
-
-
-    }
-
-    function newEntity() {
-        document.getElementById("create-entity").style.display = "block";
-        document.getElementById("node-button-create-entity").style.display = "none";
-    }
-
-    function createIntent() {
-
-        let new_intent = {};
-        new_intent.control = "add";
-        new_intent.type = "intent";
-        new_intent.name = $("#node-input-intentName").val();
-        let exampleList = $('#node-input-example-container').editableList('items');
-        new_intent.examples = [];
-        exampleList.each(function (i) {
-            let exampleElement = $(this);
-            let example = exampleElement.find(".node-input-example").val();
-            new_intent.examples.push({text: example});
-        });
-
-        console.log("NEW INTENT \n " + new_intent);
-
-
-        $.post("/global_data", new_intent)
-            .done(function (data) {
-                alert("Data Loaded: " + data);
-            });
-
-
-        //Cal function to refresh the lists and set to new intent
-        updateData("#",new_intent.name);
-
-        document.getElementById("node-button-create-intent").style.display = "block";
-        document.getElementById("create-intent").style.display = "none";
-        // Handle intent creation
-    }
-
-    function createEntity() {
-        document.getElementById("node-button-create-entity").style.display = "block";
-        document.getElementById("create-entity").style.display = "none";
-    }
-
-    function cancelIntent() {
-        document.getElementById("node-button-create-intent").style.display = "block";
-        document.getElementById("create-intent").style.display = "none";
-    }
-
-    function cancelEntity() {
-        document.getElementById("node-button-create-entity").style.display = "block";
-        document.getElementById("create-entity").style.display = "none";
-    }
 </script>
 
 <script type="text/html" data-template-name="dialog">

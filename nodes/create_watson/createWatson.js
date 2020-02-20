@@ -7,23 +7,41 @@ let workspaceid;
 let json;
 
 
-var global_data = require('../scripts/global_data.js');
 
 
 
 module.exports = function (RED) {
 
+    console.log(this.global_data);
+    this.global_data = require('../scripts/global_data.js');
+
+    // if (saved_data == undefined){
+    //    saved_data = this.global_data.data;
+    // } else{
+    //     this.global_data.data = saved_data;
+    // }
+
+
+    // if (this.context().flow.get("global_data") == undefined){
+    //     this.global_data = require('../scripts/global_data.js');
+    // }else{
+    //     this.global_data = this.context().flow.get("global_data");
+    // }
+    //
 
     //Unused slow function that has been replaced by used on creation
     function send_pre_data(current_assistant, msg) {
-        for (let next_intent in global_data.data.intents) {
 
-            console.log(global_data.data.intents[next_intent].examples);
+
+
+        for (let next_intent in this.global_data.data.intents) {
+
+            console.log(this.global_data.data.intents[next_intent].examples);
             let params = {
                 workspaceId: msg.payload.workspaceId,
                 intent: next_intent,
-                description: global_data.data.intents[next_intent].desc,
-                examples: global_data.data.intents[next_intent].examples
+                description: this.global_data.data.intents[next_intent].desc,
+                examples: this.global_data.data.intents[next_intent].examples
             };
 
             current_assistant.createIntent(params)
@@ -36,14 +54,14 @@ module.exports = function (RED) {
         }
 
 
-        for (let next_entity in global_data.data.entities) {
+        for (let next_entity in this.global_data.data.entities) {
 
-            console.log(global_data.data.entities[next_entity]);
+            console.log(this.global_data.data.entities[next_entity]);
 
             let params = {
                 workspaceId: msg.payload.workspaceId,
                 entity: next_entity,
-                values:  global_data.data.entities[next_entity]
+                values:  this.global_data.data.entities[next_entity]
             };
 
             current_assistant.createEntity(params)
@@ -58,7 +76,7 @@ module.exports = function (RED) {
 
 
     function test_data() {
-        global_data.data = {
+        this.global_data.data = {
             entities: {
                 "Test_Entity": {
                     values: [{
@@ -81,11 +99,11 @@ module.exports = function (RED) {
     //Format intents for sending to Watson
     function createIntents() {
         let intents = [];
-        for (let next_intent in global_data.data.intents) {
+        for (let next_intent in this.global_data.data.intents) {
             let intent = {
                 intent: next_intent,
-                description: global_data.data.intents[next_intent].desc,
-                examples: global_data.data.intents[next_intent].examples
+                description: this.global_data.data.intents[next_intent].desc,
+                examples: this.global_data.data.intents[next_intent].examples
             };
 
            intents.push(intent);
@@ -96,13 +114,13 @@ module.exports = function (RED) {
     //Format entities for sending to Watson
     function createEntities() {
         let entities = [];
-        for (let next_entity in global_data.data.entities) {
+        for (let next_entity in this.global_data.data.entities) {
 
             let entity = {
                 entity: next_entity,
-                description: global_data.data.entities[next_entity].description,
-                fuzzy_match: global_data.data.entities[next_entity].fuzzy_match,
-                values:  global_data.data.entities[next_entity].values
+                description: this.global_data.data.entities[next_entity].description,
+                fuzzy_match: this.global_data.data.entities[next_entity].fuzzy_match,
+                values:  this.global_data.data.entities[next_entity].values
             };
 
             entities.push(entity)
@@ -112,13 +130,18 @@ module.exports = function (RED) {
 
     function createWatson(config) {
 
+
+
         // test_data();
 
         RED.nodes.createNode(this, config);
+        if (this.context().flow.get("global_data") != undefined){
+            this.global_data.data = this.context().flow.get("global_data");
+        }
         var node = this;
 
         node.on('input', function (msg) {
-
+            this.context().flow.set("saved_data", this.global_data.data);
             try {
                 this.assistant = this.context().flow.get("assistant");
             } catch (e) {
@@ -193,10 +216,13 @@ module.exports = function (RED) {
 
     RED.nodes.registerType("createWatson", createWatson);
 
+    RED.
+
 
     RED.httpAdmin.get("/global_data", RED.auth.needsPermission('global_data.read'), function (req, res) {
         //send all data to node
-        res.json(global_data.data);
+
+        res.json(this.global_data.data);
     });
 
     RED.httpAdmin.post('/global_data', RED.auth.needsPermission("global_data.write"), function (req, res) {
@@ -205,9 +231,9 @@ module.exports = function (RED) {
         ///Handle creation on new intent or entity from node
         if (new_data.control == "add" || new_data.control == "update"){
             if (new_data.type == "intent") {
-                global_data.add_intent(new_data);
+                this.global_data.add_intent(new_data);
             } else if (new_data.type = "entity") {
-                global_data.add_entity(new_data);
+                this.global_data.add_entity(new_data);
             } else {
                 res.sendStatus(500);
                 node.error(RED._("inject.failed", {
@@ -216,9 +242,9 @@ module.exports = function (RED) {
             }
         }else{
             if (new_data.type == "intent") {
-                global_data.remove_intent(new_data);
+                this.global_data.remove_intent(new_data);
             } else if (new_data.type = "entity") {
-                global_data.remove_entity(new_data);
+                this.global_data.remove_entity(new_data);
             } else {
                 res.sendStatus(500);
                 node.error(RED._("inject.failed", {
