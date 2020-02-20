@@ -135,12 +135,13 @@ module.exports = function (RED) {
         // test_data();
 
         RED.nodes.createNode(this, config);
-        if (this.context().flow.get("global_data") != undefined){
-            this.global_data.data = this.context().flow.get("global_data");
-        }
+        // if (this.context().flow.get("global_data") != undefined){
+        //     this.global_data.data = this.context().flow.get("global_data");
+        // }
         var node = this;
 
         node.on('input', function (msg) {
+
             this.context().flow.set("saved_data", this.global_data.data);
             try {
                 this.assistant = this.context().flow.get("assistant");
@@ -216,7 +217,6 @@ module.exports = function (RED) {
 
     RED.nodes.registerType("createWatson", createWatson);
 
-    RED.
 
 
     RED.httpAdmin.get("/global_data", RED.auth.needsPermission('global_data.read'), function (req, res) {
