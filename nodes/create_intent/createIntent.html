@@ -5,12 +5,16 @@
 		defaults: {
 			name: {
 				value: "UnamedIntent",
-				validate: RED.validators.regex(/^(?!sys-)([\w-\.]{1,128})$/)
+				validate: RED.validators.regex(/^(?!sys-)(?!sys\.)(?!sys_)([\w-\.]{1,128})$/)
 			},
 			description: {
-				value: "EmptyDescription"
+				value: "EmptyDescription",
+				validate: RED.validators.regex(/^.{1,128}$/)
 			},
-			examples: {value:[{exampleContent:"Default example"}]}
+			examples: {
+				value:[{exampleContent:"Default example"}],
+				validate: RED.validators.regex(/^.{1,1024}$/)
+			}
 		},
 		inputs: 1,
 		outputs: 1,
