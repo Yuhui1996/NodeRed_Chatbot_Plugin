@@ -9,11 +9,11 @@
 			},
 			description: {
 				value: "EmptyDescription",
-				validate: RED.validators.regex(/^.{1,128}$/)
+				validate: RED.validators.regex(/^(?!\S*$)(?!\s*$).{1,128}$/)
 			},
 			examples: {
 				value:[{exampleContent:"Default example"}],
-				validate: RED.validators.regex(/^.{1,1024}$/)
+				validate: RED.validators.regex(/^(?!\S*$)(?!\s*$).{1,1024}$/)
 			}
 		},
 		inputs: 1,
