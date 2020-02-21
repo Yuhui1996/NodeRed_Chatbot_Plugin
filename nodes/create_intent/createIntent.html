@@ -9,11 +9,11 @@
 			},
 			description: {
 				value: "EmptyDescription",
-				validate: RED.validators.regex(/^(?!\S*$)(?!\s*$).{1,128}$/)
+				validate: RED.validators.regex(/^(?!\s*$).{1,128}$/)
 			},
 			examples: {
 				value:[{exampleContent:"Default example"}],
-				validate: RED.validators.regex(/^(?!\S*$)(?!\s*$).{1,1024}$/)
+				validate: RED.validators.regex(/^(?!\s*$).{1,1024}$/)
 			}
 		},
 		inputs: 1,
@@ -36,9 +36,9 @@
                         whiteSpace: 'nowrap'
                     });
 					if (!data.hasOwnProperty('exampleContent')) {
-						var element = $('<input/>',{class:"node-input-example",type:"text"}).appendTo(row);
+						var element = $('<input/>',{class:"node-input-example",type:"text",validate: RED.validators.regex(/^(?!\s*$).{1,1024}$/)}).appendTo(row);
 					} else {
-						var element = $('<input/>',{class:"node-input-example",type:"text",value:data.exampleContent}).appendTo(row);
+						var element = $('<input/>',{class:"node-input-example",type:"text",value:data.exampleContent,validate: RED.validators.regex(/^(?!\s*$).{1,1024}$/)}).appendTo(row);
 					}
 				},
 				sortable: true,
