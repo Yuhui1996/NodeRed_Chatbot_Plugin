@@ -28,6 +28,13 @@
 
             } else {
                 $("#node-input-description").val("@");
+
+                for (let next_recog in recognition_options){
+                    $("#node-input-condition").append('<option value=' + next_recog
+                        + '>' + next_recog + '</option>');
+                }
+
+
                 for (var next_entity in global_data.entities) {
                     if (next_entity == selected_value) {
                         $("#node-input-choices").append('<option value=' + next_entity
@@ -59,6 +66,13 @@
 
                         $("#node-input-choices").append('<option value=' + next_intent + '>' + next_intent + '</option>')
                     }
+
+
+                    $("#node-input-condition").typedInput({
+                        types: ["is"]
+
+                    });
+
                     document.getElementById("node-button-create-intent").style.display =
                         "block";
                     document.getElementById("node-button-create-entity").style.display =
@@ -68,6 +82,11 @@
                         $("#node-input-choices").append('<option value=' + next_entity
                             + '>' + next_entity + '</option>')
                     }
+
+                    $("#node-input-condition").typedInput({
+                        types: ["any",": is", "!= is not", ">= greater than", "<= Less than"]
+
+                    });
                     document.getElementById("node-button-create-entity").style.display =
                         "block";
                     document.getElementById("node-button-create-intent").style.display =
@@ -95,6 +114,8 @@
             t: "Image"
         },
     ];
+
+    var recognition_options = ["any", ": is", "!: is not", ">= greater than", "<= less than"];
 
 
     function clearCreation() {
@@ -702,8 +723,23 @@
         </fieldset>
     </div>
     <div class="form-row">
-        <label for="node-input-condition"><i class="icon-tag"></i>If assistant recognizes</label>
-        <input type="text" id="node-input-condition" placeholder="Enter condition">
+
+
+        <div class="form-row">
+            <label for="node-input-condition"><i class="icon-tag"></i>If recognizes</label>
+            <select style="width: 70px" name="" id="node-input-condition">
+
+                <option value="any" selected>any</option>
+                <option value="is" >: is</option>
+                <option value="is_not">!: is not</option>
+                <option value="greater_than">>= greater than</option>
+                <option value="less_than">=< less than</option>
+            </select>
+
+            <select name="" id="node-input-condition-choices">
+
+            </select>
+        </div>
     </div>
     <ol id="node-input-value-container"></ol>
 </script>
