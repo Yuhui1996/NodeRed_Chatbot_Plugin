@@ -114,6 +114,58 @@
 
 
     function newEntity() {
+
+        let new_entity = {}
+
+
+        new_entity.name = "";
+        new_entity.description = "";
+        new_entity.fuzzy_match = true;
+
+        new_entity.control = "add";
+        new_entity.type = "entity";
+
+
+        var enitity_values = $("#node-input-entity-value-container").editableList('items');
+
+        var entity_list = [];
+
+        //Loop through Items to save the data
+        enitity_values.each(function (i) {
+
+            var entity = $(this);
+            var value = {};
+            //get list of synonyms from within this list item
+
+            var list = entity.find(".node-input-entity-value-synonyms").editableList('items');
+            value.synonym = [];
+
+            //loop through synonymn item
+            list.each(function (j) {
+                var syn_value = $(this);
+                var next_value = syn_value.find(".node-input-entity-value-syn-value").val();
+                value.synonym.push(next_value);
+            });
+
+            //get value
+            value.value = entity.find(".node-input-entity-value-value").val();
+            // console.log("RULE");
+            // console.log(r);
+            // //Save values to node default
+            entity_list.push(value);
+        });
+
+        new_entity.values = entity_list;
+
+        $.post("/global_data", new_entity)
+            .done(function (data) {
+                alert("Data Loaded: " + data);
+            });
+
+
+        //Cal function to refresh the lists and set to new intent
+        updateData("#", new_intent.name);
+
         document.getElementById("create-entity").style.display = "block";
         document.getElementById("node-button-create-entity").style.display = "none";
     }
