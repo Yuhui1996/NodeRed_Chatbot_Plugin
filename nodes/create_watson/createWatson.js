@@ -142,7 +142,7 @@ module.exports = function (RED) {
 
         node.on('input', function (msg) {
 
-            this.context().flow.set("saved_data", this.global_data.data);
+            // this.context().flow.set("saved_data", this.global_data.data);
             try {
                 this.assistant = this.context().flow.get("assistant");
             } catch (e) {
@@ -226,13 +226,15 @@ module.exports = function (RED) {
     });
 
     RED.httpAdmin.post('/global_data', RED.auth.needsPermission("global_data.write"), function (req, res) {
-        console.log(req.body);
+
         let new_data = req.body;
         ///Handle creation on new intent or entity from node
         if (new_data.control == "add" || new_data.control == "update"){
             if (new_data.type == "intent") {
                 this.global_data.add_intent(new_data);
             } else if (new_data.type = "entity") {
+
+                console.log(new_data.values);
                 this.global_data.add_entity(new_data);
             } else {
                 res.sendStatus(500);

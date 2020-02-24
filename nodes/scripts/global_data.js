@@ -49,9 +49,17 @@ var global_data = module.exports = {
         }
     },
     add_entity: function (send_data) {
-        this.data.entities[send_data.name].values = send_data.values;
-        this.data.entities[send_data.name].description = send_data.description;
-        this.data.entities[send_data.name].fuzzy_match = send_data.fuzzy_match;
+
+        console.log("This is send data \n\n " + send_data.values);
+
+
+        let entity_data = {
+            description: send_data.description,
+            fuzzy_match: send_data.fuzzy_match,
+            values: send_data.values
+        }
+
+        this.data.entities[send_data.name] = entity_data;
 
     },
     remove_entity: function (send_data) {
@@ -66,9 +74,16 @@ var global_data = module.exports = {
         if (this.data.entities[send_data.name] == undefined) {
             return -1;
         } else {
-            this.data.entities[send_data.name].values = send_data.values;
-            this.data.entities[send_data.name].description = send_data.description;
-            this.data.entities[send_data.name].fuzzy_match = send_data.fuzzy_match;
+
+
+            let entity_data = {
+                description: send_data.description,
+                fuzzy_match: send_data.fuzzy_match,
+                values: send_data.values
+            }
+
+            this.data.entities[send_data.name] = entity_data;
+
             return 1;
         }
     },
