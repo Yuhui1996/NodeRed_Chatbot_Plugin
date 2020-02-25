@@ -1,8 +1,32 @@
 <script type="text/javascript">
 
+    const recognition_options = ["any", "is", "is_not", "greater", "less"];
+    const options = [{
+        v: "text",
+        t: "Text"
+    },
+        {
+            v: "option",
+            t: "Option"
+        },
+        {
+            v: "pause",
+            t: "Pause"
+        },
+        {
+            v: "image",
+            t: "Image"
+        },
+    ];
+
+
     //Function to update the system with the current data.
-    function updateData(type_given, selected_value) {
+    function updateData(type_given, selected_value, condition, conditionChoice) {
         $.getJSON('global_data', function (global_data) {
+
+            $("#node-input-choices").unbind("change");
+            $("#node-input-description").unbind("change");
+
             $("#node-input-choices").empty();
 
 
@@ -21,6 +45,13 @@
                     }
                 }
 
+                $("#node-input-condition").empty();
+                $("#node-input-condition").append('<option value="! is" selected="selected">' + "! is" + '</option>');
+
+                $("#node-input-conditionChoices").empty();
+
+                $("#node-input-conditionChoices").append('<option value=' + next_intent
+                    + 'selected="selected">' + next_intent + '</option>');
                 document.getElementById("node-button-create-intent").style.display =
                     "block";
                 document.getElementById("node-button-create-entity").style.display =
@@ -29,9 +60,19 @@
             } else {
                 $("#node-input-description").val("@");
 
-                for (let next_recog in recognition_options){
-                    $("#node-input-condition").append('<option value=' + next_recog
-                        + '>' + next_recog + '</option>');
+
+                $("#node-input-condition").empty();
+
+
+                for (let i = 0; i < recognition_options.length; i++) {
+
+                    if (condition == recognition_options[i]){
+                        $("#node-input-condition").append('<option value=\"' + recognition_options[i]
+                            + '\" selected="selected">' + recognition_options[i] + '</option>');
+                    }else{
+                        $("#node-input-condition").append('<option value=' + recognition_options[i]
+                            + '>' + recognition_options[i] + '</option>');
+                    }
                 }
 
 
@@ -46,6 +87,38 @@
                     }
                 }
 
+
+                $("#node-input-choices").change(function () {
+
+
+                    $("#node-input-conditionChoices").empty();
+
+
+                    let temp_name = $("#node-input-choices").val();
+
+
+                    console.log(global_data.entities);
+
+                    let current_entity = global_data.entities[temp_name];
+
+                    for (let i = 0; i < current_entity.values.length; i++) {
+                        let next_value = current_entity.values[i];
+
+                        if (next_value.value == conditionChoice){
+
+                            $("#node-input-conditionChoices").append('<option value=\"' + next_value.value
+                                + '\"selected="selected">' + next_value.value + '</option>');
+                        }else {
+
+                            $("#node-input-conditionChoices").append('<option value=' + next_value.value
+                                + '>' + next_value.value + '</option>');
+                        }
+                    }
+
+                });
+
+                $("#node-input-choices").trigger("change");
+
                 document.getElementById("node-button-create-entity").style.display =
                     "block";
                 document.getElementById("node-button-create-intent").style.display =
@@ -54,6 +127,8 @@
 
 
             $("#node-input-description").change(function () {
+
+                $("#node-input-choices").unbind("change");
 
                 $("#node-input-choices").empty();
                 clearCreation();
@@ -68,25 +143,64 @@
                     }
 
 
-                    $("#node-input-condition").typedInput({
-                        types: ["is"]
+                    $("#node-input-condition").empty();
+                    $("#node-input-condition").append('<option value="! is" selected="selected">' + "! is" + '</option>');
 
-                    });
+                    $("#node-input-conditionChoices").empty();
+
+                    $("#node-input-conditionChoices").append('<option value=' + next_intent
+                        + 'selected="selected">' + next_intent + '</option>');
+
 
                     document.getElementById("node-button-create-intent").style.display =
                         "block";
                     document.getElementById("node-button-create-entity").style.display =
                         "none";
                 } else {
+
+
+                    $("#node-input-condition").empty();
+
+
+                    for (let i = 0; i < recognition_options.length; i++) {
+                        $("#node-input-condition").append('<option value=' + recognition_options[i]
+                            + '>' + recognition_options[i] + '</option>');
+                    }
+
+
                     for (var next_entity in global_data.entities) {
                         $("#node-input-choices").append('<option value=' + next_entity
                             + '>' + next_entity + '</option>')
                     }
 
-                    $("#node-input-condition").typedInput({
-                        types: ["any",": is", "!= is not", ">= greater than", "<= Less than"]
+
+                    $("#node-input-choices").change(function () {
+
+
+                        $("#node-input-conditionChoices").empty();
+
+
+                        let temp_name = $("#node-input-choices").val();
+
+
+                        console.log(global_data.entities);
+
+                        let current_entity = global_data.entities[temp_name];
+                        console.log(current_entity);
+
+                        for (let i = 0; i < current_entity.values.length; i++) {
+                            let next_value = current_entity.values[i];
+
+                            console.log(next_value);
+
+                            $("#node-input-conditionChoices").append('<option value=' + next_value.value
+                                + '>' + next_value.value + '</option>');
+                        }
 
                     });
+
+                    $("#node-input-choices").trigger("change");
+
                     document.getElementById("node-button-create-entity").style.display =
                         "block";
                     document.getElementById("node-button-create-intent").style.display =
@@ -96,26 +210,6 @@
 
         });
     }
-
-    var options = [{
-        v: "text",
-        t: "Text"
-    },
-        {
-            v: "option",
-            t: "Option"
-        },
-        {
-            v: "pause",
-            t: "Pause"
-        },
-        {
-            v: "image",
-            t: "Image"
-        },
-    ];
-
-    var recognition_options = ["any", ": is", "!: is not", ">= greater than", "<= less than"];
 
 
     function clearCreation() {
@@ -136,11 +230,15 @@
 
     function newEntity() {
 
-               document.getElementById("create-entity").style.display = "block";
+        document.getElementById("create-entity").style.display = "block";
         document.getElementById("node-button-create-entity").style.display = "none";
     }
 
     function createIntent() {
+
+
+        $("#node-input-choices").unbind("change");
+        $("#node-input-description").unbind("change");
 
         let new_intent = {};
         new_intent.control = "add";
@@ -164,7 +262,7 @@
 
 
         //Cal function to refresh the lists and set to new intent
-        updateData("#", new_intent.name);
+        updateData("#", new_intent.name, "", "");
 
         document.getElementById("node-button-create-intent").style.display = "block";
         document.getElementById("create-intent").style.display = "none";
@@ -172,6 +270,12 @@
     }
 
     function createEntity() {
+
+
+        $("#node-input-choices").unbind("change");
+        $("#node-input-description").unbind("change");
+
+
         let new_entity = {};
 
 
@@ -213,7 +317,6 @@
         });
 
 
-
         new_entity.values = entity_list;
         // console.log("New Entity:\n\n"+new_entity);
         $.post("/global_data", new_entity)
@@ -223,7 +326,7 @@
 
 
         //Cal function to refresh the lists and set to new intent
-        updateData("@", new_entity.name);
+        updateData("@", new_entity.name,"","");
 
         document.getElementById("node-button-create-entity").style.display = "block";
         document.getElementById("create-entity").style.display = "none";
@@ -283,6 +386,12 @@
                     v: "",
                     s: []
                 }]
+            },
+            condition: {
+                value: ""
+            },
+            conditionChoices: {
+                value: ""
             }
         },
         inputs: 1,
@@ -353,7 +462,7 @@
             //     this.dialog_type = node.dialog_type;
             // }
 
-            updateData(this.dialog_type, this.dialog_value);
+            updateData(this.dialog_type, this.dialog_value, this.condition,this.conditionChoices);
 
             $("#node-input-name").val(this.name);
 
@@ -590,14 +699,15 @@
             }
 
 
-
         },
         oneditsave: function () {
-
 
             ///INTENT SAVING
             this.intentName = $("#node-input-intentName").val();
             this.intentDescription = $("#node-input-intentDescription").val();
+
+
+
             var exampleList = $('#node-input-example-container').editableList('items');
             var node = this;
             node.examples = [];
@@ -622,6 +732,12 @@
 
             var node = this;
             node.entity_values = [];
+
+
+            node.condition = $("#node-input-condition").val();
+            node.conditionChoices = $("#node-input-conditionChoices").val();
+
+            console.log(node.conditionChoices);
 
             //Loop through Items to save the data
             enitity_values.each(function (i) {
@@ -709,7 +825,7 @@
                 <label for="node-input-entityName"><i class="icon-tag"></i>Entity name</label>
                 <input type="text" id="node-input-entityName" placeholder="Type entity name here, e.g. account_type">
             </div>
-            <div >
+            <div>
                 <input type="hidden" id="node-input-outputs"/>
             </div>
             <ol id="node-input-entity-value-container"></ol>
@@ -729,14 +845,14 @@
             <label for="node-input-condition"><i class="icon-tag"></i>If recognizes</label>
             <select style="width: 70px" name="" id="node-input-condition">
 
-                <option value="any" selected>any</option>
-                <option value="is" >: is</option>
-                <option value="is_not">!: is not</option>
-                <option value="greater_than">>= greater than</option>
-                <option value="less_than">=< less than</option>
+                <!--                <option value="any" selected>any</option>-->
+                <!--                <option value="is" >: is</option>-->
+                <!--                <option value="is_not">!: is not</option>-->
+                <!--                <option value="greater_than">>= greater than</option>-->
+                <!--                <option value="less_than">=< less than</option>-->
             </select>
 
-            <select name="" id="node-input-condition-choices">
+            <select name="" id="node-input-conditionChoices">
 
             </select>
         </div>
