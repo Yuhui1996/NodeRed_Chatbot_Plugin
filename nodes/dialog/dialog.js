@@ -8,6 +8,40 @@ let workspaceid;
 
 
 module.exports = function (RED) {
+
+
+    function getReferenceValue(sendType, sendValue, relationType, relationValue){
+        let result;
+        if (sendType == "#"){
+            result = sendType + sendValue;
+        }else{
+            switch (relationType) {
+                case "any":{
+                    result =  sendType + sendValue;
+                    break;
+                }
+                case "is":{
+                    result =  sendType + sendValue + ":" + relationValue;
+                    break;
+                }
+                case "is_not":{
+                    result =  sendType + sendValue + "!=" + relationValue;
+                    break;
+                }
+                case "greater":{
+                    result =  sendType + sendValue + ">" + relationValue;
+                    break;
+                }
+                case "less":{
+                    result =  sendType + sendValue + "<" + relationValue;
+                    break;
+                }
+            }
+        }
+
+        return result;
+
+    }
     function createDialog(n) {
         RED.nodes.createNode(this, n);
         var node = this;
@@ -31,12 +65,15 @@ module.exports = function (RED) {
                 }
             }
 
+
+
+
             //for creating dialog node
             let params = {
                 workspaceId: msg.payload.workspaceId,
                 parent: msg.payload.nodeID,
                 dialogNode: n.name.toLowerCase(), //needs to be unique
-                conditions: n.dialog_type + n.dialog_value,
+                conditions: getReferenceValue(n.dialog_type,n.dialog_value, n.condition, n.conditionChoices),
                 title: n.name
             }
 

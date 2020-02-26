@@ -116,10 +116,12 @@ module.exports = function (RED) {
         let entities = [];
         for (let next_entity in this.global_data.data.entities) {
 
+            console.log(this.global_data.data.entities[next_entity].fuzzy_match);
+
             let entity = {
                 entity: next_entity,
                 description: this.global_data.data.entities[next_entity].description,
-                fuzzy_match: this.global_data.data.entities[next_entity].fuzzy_match,
+                fuzzy_match: this.global_data.data.entities[next_entity].fuzzy_match == true,
                 values:  this.global_data.data.entities[next_entity].values
             };
 
