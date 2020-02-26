@@ -7,15 +7,14 @@ const {
 let workspaceid;
 
 
-
-module.exports = function(RED) {
+module.exports = function (RED) {
     function createDialog(n) {
         RED.nodes.createNode(this, n);
         var node = this;
         this.name = n.name;
         this.intentName = n.intentName;
         this.intentDescription = n.intentDescription;
-        node.on('input', function(msg) {
+        node.on('input', function (msg) {
             try {
                 this.assistant = this.context().flow.get("assistant");
             } catch (e) {
@@ -32,7 +31,27 @@ module.exports = function(RED) {
                 }
             }
 
-            console.log(msg);
+            //for creating dialog node
+            let params = {
+                workspaceId: msg.payload.workspaceId,
+                parent: msg.payload.nodeID,
+                dialogNode: n.name.toLowerCase(), //needs to be unique
+                conditions: n.dialog_type + n.dialog_value,
+                title: n.name
+            }
+
+            this.assistant.createDialogNode(params)
+                .then(res => {
+                    json = JSON.stringify(res, null, 2);
+                    let object = JSON.parse(json);
+                    let nodeID = n.name.toLowerCase();
+                    msg.payload.nodeID = nodeID;
+
+                    node.send(msg);
+                })
+                .catch(err => {
+                    console.log(err)
+                });
             // const params = {
             //     workspaceId: msg.payload.workspaceId,
             //     intent: n.name,
@@ -54,12 +73,10 @@ module.exports = function(RED) {
             //         node.error("Error", err);
             //         console.log(err);
             //     });
-            console.log(this.name);
         });
     }
 
     RED.nodes.registerType("dialog", createDialog);
-
 
 
 }

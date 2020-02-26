@@ -1,8 +1,106 @@
 <script type="text/javascript">
+
+    //Function to update the system with the current data.
+    function updateData(type_given, selected_value) {
+        $.getJSON('global_data', function (global_data) {
+            $("#node-input-choices").empty();
+
+
+            if (type_given == "#") {
+                $("#node-input-description").val("#");
+
+                for (var next_intent in global_data.intents) {
+                    if (next_intent == selected_value) {
+
+                        $("#node-input-choices").append('<option value=' + next_intent
+                            + ' selected="selected">' + next_intent + '</option>')
+                    } else {
+
+                        $("#node-input-choices").append('<option value=' + next_intent
+                            + '>' + next_intent + '</option>')
+                    }
+                }
+
+                document.getElementById("node-button-create-intent").style.display =
+                    "block";
+                document.getElementById("node-button-create-entity").style.display =
+                    "none";
+
+            } else {
+                $("#node-input-description").val("@");
+
+                for (let next_recog in recognition_options){
+                    $("#node-input-condition").append('<option value=' + next_recog
+                        + '>' + next_recog + '</option>');
+                }
+
+
+                for (var next_entity in global_data.entities) {
+                    if (next_entity == selected_value) {
+                        $("#node-input-choices").append('<option value=' + next_entity
+                            + ' selected="selected">' + next_entity + '</option>');
+                    } else {
+
+                        $("#node-input-choices").append('<option value=' + next_entity
+                            + '>' + next_entity + '</option>');
+                    }
+                }
+
+                document.getElementById("node-button-create-entity").style.display =
+                    "block";
+                document.getElementById("node-button-create-intent").style.display =
+                    "none";
+            }
+
+
+            $("#node-input-description").change(function () {
+
+                $("#node-input-choices").empty();
+                clearCreation();
+
+                var desc = $(this);
+                if (desc.val() == "#") {
+                    for (var next_intent in global_data.intents) {
+
+                        console.log(next_intent);
+
+                        $("#node-input-choices").append('<option value=' + next_intent + '>' + next_intent + '</option>')
+                    }
+
+
+                    $("#node-input-condition").typedInput({
+                        types: ["is"]
+
+                    });
+
+                    document.getElementById("node-button-create-intent").style.display =
+                        "block";
+                    document.getElementById("node-button-create-entity").style.display =
+                        "none";
+                } else {
+                    for (var next_entity in global_data.entities) {
+                        $("#node-input-choices").append('<option value=' + next_entity
+                            + '>' + next_entity + '</option>')
+                    }
+
+                    $("#node-input-condition").typedInput({
+                        types: ["any",": is", "!= is not", ">= greater than", "<= Less than"]
+
+                    });
+                    document.getElementById("node-button-create-entity").style.display =
+                        "block";
+                    document.getElementById("node-button-create-intent").style.display =
+                        "none";
+                }
+            });
+
+        });
+    }
+
     var options = [{
-            v: "text",
-            t: "Text"
-        },
+        v: "text",
+        t: "Text"
+    },
         {
             v: "option",
             t: "Option"
@@ -16,6 +114,130 @@
             t: "Image"
         },
     ];
+
+    var recognition_options = ["any", ": is", "!: is not", ">= greater than", "<= less than"];
+
+
+    function clearCreation() {
+
+        document.getElementById("create-intent").style.display = "none";
+        document.getElementById("node-button-create-intent").style.display = "none";
+        document.getElementById("node-button-create-entity").style.display = "none";
+        document.getElementById("create-entity").style.display = "none";
+    }
+
+    function newIntent() {
+        document.getElementById("create-intent").style.display = "block";
+        document.getElementById("node-button-create-intent").style.display = "none";
+
+
+    }
+
+
+    function newEntity() {
+
+               document.getElementById("create-entity").style.display = "block";
+        document.getElementById("node-button-create-entity").style.display = "none";
+    }
+
+    function createIntent() {
+
+        let new_intent = {};
+        new_intent.control = "add";
+        new_intent.type = "intent";
+        new_intent.name = $("#node-input-intentName").val();
+        let exampleList = $('#node-input-example-container').editableList('items');
+        new_intent.examples = [];
+        exampleList.each(function (i) {
+            let exampleElement = $(this);
+            let example = exampleElement.find(".node-input-example").val();
+            new_intent.examples.push({text: example});
+        });
+
+        console.log("NEW INTENT \n " + new_intent);
+
+
+        $.post("/global_data", new_intent)
+            .done(function (data) {
+                alert("Data Loaded: " + data);
+            });
+
+
+        //Cal function to refresh the lists and set to new intent
+        updateData("#", new_intent.name);
+
+        document.getElementById("node-button-create-intent").style.display = "block";
+        document.getElementById("create-intent").style.display = "none";
+        // Handle intent creation
+    }
+
+    function createEntity() {
+        let new_entity = {};
+
+
+        new_entity.name = $("#node-input-entityName").val();
+        new_entity.description = "";
+        new_entity.fuzzy_match = true;
+
+        new_entity.control = "add";
+        new_entity.type = "entity";
+
+
+        let enitity_values = $("#node-input-entity-value-container").editableList('items');
+
+        let entity_list = [];
+
+        //Loop through Items to save the data
+        enitity_values.each(function (i) {
+
+            var entity = $(this);
+            var value = {};
+            //get list of synonyms from within this list item
+
+            var list = entity.find(".node-input-entity-value-synonyms").editableList('items');
+            value.synonym = [];
+
+            //loop through synonymn item
+            list.each(function (j) {
+                var syn_value = $(this);
+                var next_value = syn_value.find(".node-input-entity-value-syn-value").val();
+                value.synonym.push(next_value);
+            });
+
+            //get value
+            value.value = entity.find(".node-input-entity-value-value").val();
+            // console.log("RULE");
+            // console.log(r);
+            // //Save values to node default
+            entity_list.push(value);
+        });
+
+
+
+        new_entity.values = entity_list;
+        // console.log("New Entity:\n\n"+new_entity);
+        $.post("/global_data", new_entity)
+            .done(function (data) {
+                alert("Data Loaded: " + data);
+            });
+
+
+        //Cal function to refresh the lists and set to new intent
+        updateData("@", new_entity.name);
+
+        document.getElementById("node-button-create-entity").style.display = "block";
+        document.getElementById("create-entity").style.display = "none";
+    }
+
+    function cancelIntent() {
+        document.getElementById("node-button-create-intent").style.display = "block";
+        document.getElementById("create-intent").style.display = "none";
+    }
+
+    function cancelEntity() {
+        document.getElementById("node-button-create-entity").style.display = "block";
+        document.getElementById("create-entity").style.display = "none";
+    }
 
     RED.nodes.registerType('dialog', {
 
@@ -36,6 +258,12 @@
             synonym: {
                 value: ""
             },
+            dialog_value: {
+                value: ""
+            },
+            dialog_type: {
+                value: "#"
+            },
             intentName: {
                 value: "UnamedIntent"
             },
@@ -46,6 +274,15 @@
                 value: [{
                     exampleContent: "Default example"
                 }]
+            },
+            entityName: {
+                value: "UnamedEntity"
+            },
+            entity_values: {
+                value: [{
+                    v: "",
+                    s: []
+                }]
             }
         },
         inputs: 1,
@@ -55,6 +292,8 @@
             return this.name || "create dialog";
         },
         oneditprepare: function () {
+
+            //INTENT MODIFICATIONS
             $("#node-input-value-container").editableList({
                 addButton: "Add assistant response",
                 addItem: function (container, i, data) {
@@ -109,62 +348,13 @@
                 }
             });
 
-            $.getJSON('global_data', function (global_data) {
 
-                $("#node-input-description").val("#");
+            // if (this.dialog_type == undefined){
+            //     this.dialog_type = node.dialog_type;
+            // }
 
-                for (var i = 0; i < global_data.intents.length; i++) {
-                    var next_intent = global_data.intents[i];
+            updateData(this.dialog_type, this.dialog_value);
 
-                    $("#node-input-choices").append('<option value=' + next_intent
-                        .name + '>' + next_intent.name + '</option>')
-                }
-
-
-                $("#node-input-description").change(function () {
-
-                    $.post("/global_data", {
-                            type: "intent",
-                            name: "John",
-                            values: ["awe", "awe"]
-                        })
-                        .done(function (data) {
-                            alert("Data Loaded: " + data);
-                        });
-
-                    $("#node-input-choices").empty();
-
-                    console.log(global_data);
-                    var desc = $(this);
-                    if (desc.val() == "#") {
-                        for (var i = 0; i < global_data.intents.length; i++) {
-                            var next_intent = global_data.intents[i];
-
-                            console.log(next_intent);
-
-                            $("#node-input-choices").append('<option value=' + next_intent
-                                .name + '>' + next_intent.name + '</option>')
-                        }
-                        document.getElementById("node-button-create-intent").style.display =
-                            "block";
-                        document.getElementById("node-button-create-entity").style.display =
-                            "none";
-                    } else {
-                        for (var i = 0; i < global_data.entities.length; i++) {
-                            var next_entity = global_data.entities[i];
-
-                            $("#node-input-choices").append('<option value=' + next_entity
-                                .name + '>' + next_entity.name + '</option>')
-                        }
-                        document.getElementById("node-button-create-entity").style.display =
-                            "block";
-                        document.getElementById("node-button-create-intent").style.display =
-                            "none";
-                    }
-
-                });
-
-            });
             $("#node-input-name").val(this.name);
 
             // intent creation code
@@ -198,59 +388,272 @@
 
             });
 
+
             for (var i = 0; i < this.examples.length; i++) {
                 var example = this.examples[i];
                 $("#node-input-example-container").editableList('addItem', example);
             }
+
+            //Entity component
+
+            var outputCount = $("#node-input-outputs").val("{}");
+
+
+            //Create a dynamic list that contains values and sub dynamic lists that contains synonyms
+            $("#node-input-entity-value-container").css('min-height', '300px').css('min-width', '450px').editableList({
+
+                header: $("<div>").append($.parseHTML("<div style='display: inline-grid'>Values</div>")),
+                addItem: function (container, i, opt) {
+
+                    // If a new value is being created create the data structures to hold them.
+                    // Otherwise these variable will exists when the function is called.
+
+                    // console.log(opt);
+                    if (!opt.hasOwnProperty('entity_value')) {
+                        opt.entity_value = {};
+                    }
+                    var value = opt.entity_value;
+
+                    if (!value.hasOwnProperty('v')) {
+                        value.v = null;
+                    }
+                    if (!value.hasOwnProperty('s')) {
+                        value.s = [];
+                    }
+
+                    if (!opt.hasOwnProperty('i')) {
+                        opt._i = Math.floor((0x99999 - 0x10000) * Math.random()).toString();
+                    }
+
+
+                    //Create HTML row in the list item.
+                    //Row 1 = value line
+                    // Row 2 = synonyms line
+
+                    var row = $('<div/>', {class: 'form-row'}).appendTo(container);
+                    var row2 = $('<div/>', {
+                        class: 'form-row',
+                        style: "padding-top: 5px;"
+                    }).appendTo(container);
+
+                    // Vars for each row
+                    var entityValue = null;
+                    var entitySyns = null;
+
+
+                    //Value Entry
+                    function createValueField() {
+                        return $('<input/>', {
+                            class: "node-input-entity-value-value",
+                            type: "text",
+                            style: "margin-left: 5px; ",
+                            placeholder: "Example Value"
+                        }).appendTo(row);
+                    }
+
+                    //Function to create sub list for synonyms
+                    function createSynonymField() {
+
+                        //Create list.
+                        var syn = $('<div/>', {class: "node-input-entity-value-synonyms synonym_row"}).appendTo(row2);
+                        syn.css('height', '140px').editableList({
+
+                            header: $("<div>").append($.parseHTML("<div style='display: inline-grid'>Synonyms</div>")),
+                            addItem: function (syn, index_sym, opt_syn) {
+
+                                // console.log("OPt" + opt_syn)
+
+                                if (!opt_syn.hasOwnProperty('i')) {
+                                    opt_syn._i = Math.floor((0x99999 - 0x10000) * Math.random()).toString();
+                                }
+
+                                var syn_value = null;
+                                var row_syn = $('<div/>', {class: 'form-row'}).appendTo(syn);
+
+
+                                //Create list item input.
+                                function createSynonymField() {
+                                    return $('<input/>', {
+                                        class: "node-input-entity-value-syn-value",
+                                        type: "text",
+                                        style: "margin-left: 5px; "
+                                    }).appendTo(row_syn);
+                                }
+
+
+                                if (syn_value == null) {
+                                    syn_value = createSynonymField();
+                                }
+
+                                // Link value to attribute passed in if exists
+                                syn_value.val(opt_syn.s);
+
+
+                                //Add index counters
+                                var syn_count = $('<span/>', {style: "float: right;margin-top: 6px;"}).appendTo(row_syn);
+                                syn_count.append(' &#8594; <span class="node-input-entity-value-index">' + (index_sym + 1) + '</span> ');
+                            },
+                            removeItem: function (opt_syn) {
+                                //Remove item from the list
+                                var currentOutputs = JSON.parse(outputCount.val() || "{}");
+                                if (opt_syn.hasOwnProperty('i')) {
+                                    currentOutputs[opt_syn.i] = -1;
+                                } else {
+                                    delete currentOutputs[opt_syn._i];
+                                }
+                                var entity_values = $("#node-input-entity-value-synonyms").editableList('items');
+                                entity_values.each(function (i) {
+                                    $(this).find(".node-input-entity-value-index").html(i + 1);
+                                    var data = $(this).data('data');
+                                    currentOutputs[data.hasOwnProperty('i') ? data.i : data._i] = i;
+                                });
+                                outputCount.val(JSON.stringify(currentOutputs));
+                            },
+                            sortItems: function (entity_values) {
+                                //Change indexes on sorting
+                                var currentOutputs = JSON.parse(outputCount.val() || "{}");
+                                var entity_values = $("#node-input-entity-value-container").editableList('items');
+                                entity_values.each(function (i) {
+                                    $(this).find(".node-input-entity-value-index").html(index_sym + 1);
+                                    var data = $(this).data('data');
+                                    currentOutputs[data.hasOwnProperty('i') ? data.i : data._i] = i;
+                                });
+                                outputCount.val(JSON.stringify(currentOutputs));
+                            },
+                            sortable: true,
+                            removable: true
+                        });
+
+                        return syn;
+                    }
+
+
+                    //Add index counter to main list
+                    var finalspan = $('<span/>', {style: "float: right;margin-top: 6px;"}).appendTo(row);
+                    finalspan.append(' &#8594; <span class="node-input-entity-value-index">' + (i + 1) + '</span> ');
+
+                    // Create items in the list item
+                    if (entityValue == null) {
+                        entityValue = createValueField();
+                    }
+
+                    if (value.v != null) {
+                        entityValue.val(value.v);
+                    }
+
+                    if (entitySyns == null) {
+                        entitySyns = createSynonymField();
+                    }
+
+
+                    //If the items is built from saved values then loop through value to create
+                    // the synonym lists
+                    for (var i = 0; i < value.s.length; i++) {
+                        console.log(value.s[i]);
+                        var rule_S = value.s[i];
+                        entitySyns.editableList('addItem', {s: rule_S, i: i});
+                    }
+                },
+                removeItem: function (opt) {
+                    var currentOutputs = JSON.parse(outputCount.val() || "{}");
+                    if (opt.hasOwnProperty('i')) {
+                        currentOutputs[opt.i] = -1;
+                    } else {
+                        delete currentOutputs[opt._i];
+                    }
+                    var values = $("#node-input-entity-value-container").editableList('items');
+                    values.each(function (i) {
+                        $(this).find(".node-input-entity-value-index").html(i + 1);
+                        var data = $(this).data('data');
+                        currentOutputs[data.hasOwnProperty('i') ? data.i : data._i] = i;
+                    });
+                    outputCount.val(JSON.stringify(currentOutputs));
+                },
+                sortItems: function (rules) {
+                    var currentOutputs = JSON.parse(outputCount.val() || "{}");
+                    var values = $("#node-input-entity-value-container").editableList('items');
+                    values.each(function (i) {
+                        $(this).find(".node-input-entity-value-index").html(i + 1);
+                        var data = $(this).data('data');
+                        currentOutputs[data.hasOwnProperty('i') ? data.i : data._i] = i;
+                    });
+                    outputCount.val(JSON.stringify(currentOutputs));
+                },
+                sortable: true,
+                removable: true
+            });
+
+            //Read values from node default and build lists.
+            for (var i = 0; i < this.entity_values.length; i++) {
+                var value = this.entity_values[i];
+                $("#node-input-entity-value-container").editableList('addItem', {entity_value: value, i: i});
+            }
+
+
+
         },
         oneditsave: function () {
+
+
+            ///INTENT SAVING
             this.intentName = $("#node-input-intentName").val();
             this.intentDescription = $("#node-input-intentDescription").val();
             var exampleList = $('#node-input-example-container').editableList('items');
             var node = this;
             node.examples = [];
+
             exampleList.each(function (i) {
                 var exampleElement = $(this);
-                var example = exampleElement.find(".node-input-example").val();
+                var example = exampleElement.find(".node-input-examle").val();
                 var listElement = {
                     exampleContent: example
                 };
                 node.examples.push(listElement);
             });
+
+            node.dialog_type = $("#node-input-description").val();
+            node.dialog_value = $("#node-input-choices").val();
+
+
+            //ENTITY SAVING
+
+            this.entity_name = $("#node-input-entityName").val();
+            var enitity_values = $("#node-input-entity-value-container").editableList('items');
+
+            var node = this;
+            node.entity_values = [];
+
+            //Loop through Items to save the data
+            enitity_values.each(function (i) {
+
+                //crete data variable
+                var entityData = $(this).data('data');
+                var entity = $(this);
+                var value = {};
+                //get list of synonyms from within this list item
+
+                var list = entity.find(".node-input-entity-value-synonyms").editableList('items');
+                value.s = [];
+
+                //loop through synonymn item
+                list.each(function (j) {
+                    var syn_value = $(this);
+                    var next_value = syn_value.find(".node-input-entity-value-syn-value").val();
+                    value.s.push(next_value);
+                });
+
+                //get value
+                value.v = entity.find(".node-input-entity-value-value").val();
+                // console.log("RULE");
+                // console.log(r);
+                // //Save values to node default
+                node.entity_values.push(value);
+            });
         }
-    });
+    })
+    ;
 
-    function newIntent() {
-        document.getElementById("create-intent").style.display = "block";
-        document.getElementById("node-button-create-intent").style.display = "none";
-    }
 
-    function newEntity() {
-        document.getElementById("create-entity").style.display = "block";
-        document.getElementById("node-button-create-entity").style.display = "none";
-    }
-
-    function createIntent() {
-        document.getElementById("node-button-create-intent").style.display = "block";
-        document.getElementById("create-intent").style.display = "none";
-        // Handle intent creation
-    }
-
-    function createEntity(){
-        document.getElementById("node-button-create-entity").style.display = "block";
-        document.getElementById("create-entity").style.display = "none";
-        // Handle entity creation
-    }
-
-    function cancelIntent() {
-        document.getElementById("node-button-create-intent").style.display = "block";
-        document.getElementById("create-intent").style.display = "none";
-    }
-
-    function cancelEntity(){
-        document.getElementById("node-button-create-entity").style.display = "block";
-        document.getElementById("create-entity").style.display = "none";
-    }
 </script>
 
 <script type="text/html" data-template-name="dialog">
@@ -279,12 +682,12 @@
             <div class="form-row">
                 <label for="node-input-intentName"><i class="icon-tag"></i> Intent Name</label>
                 <input type="text" id="node-input-intentName"
-                    placeholder="Name your intent to match a customer's question or goal">
+                       placeholder="Name your intent to match a customer's question or goal">
             </div>
             <div class="form-row">
                 <label for="node-input-intentDescription"><i class="icon-tag"></i> Intent Description</label>
                 <input type="text" id="node-input-intentDescription"
-                    placeholder="Please input the description of this intent">
+                       placeholder="Please input the description of this intent">
             </div>
 
             <div class="form-row">
@@ -301,6 +704,17 @@
         <fieldset>
             <legend>Create entity</legend>
             <!-- entity creation html here-->
+
+            <div class="form-row">
+                <label for="node-input-entityName"><i class="icon-tag"></i>Entity name</label>
+                <input type="text" id="node-input-entityName" placeholder="Type entity name here, e.g. account_type">
+            </div>
+            <div >
+                <input type="hidden" id="node-input-outputs"/>
+            </div>
+            <ol id="node-input-entity-value-container"></ol>
+
+
             <div class="form-row" style="margin-bottom: 10px;">
                 <button onclick="createEntity()">Create entity</button>
                 <button onclick="cancelEntity()">Cancel</button>
@@ -309,8 +723,23 @@
         </fieldset>
     </div>
     <div class="form-row">
-        <label for="node-input-condition"><i class="icon-tag"></i>If assistant recognizes</label>
-        <input type="text" id="node-input-condition" placeholder="Enter condition">
+
+
+        <div class="form-row">
+            <label for="node-input-condition"><i class="icon-tag"></i>If recognizes</label>
+            <select style="width: 70px" name="" id="node-input-condition">
+
+                <option value="any" selected>any</option>
+                <option value="is" >: is</option>
+                <option value="is_not">!: is not</option>
+                <option value="greater_than">>= greater than</option>
+                <option value="less_than">=< less than</option>
+            </select>
+
+            <select name="" id="node-input-condition-choices">
+
+            </select>
+        </div>
     </div>
     <ol id="node-input-value-container"></ol>
 </script>
@@ -335,7 +764,7 @@
         margin-top: 10px;
     }
 
-    .buttons>* {
+    .buttons > * {
         padding: 10px;
     }
 </style>
