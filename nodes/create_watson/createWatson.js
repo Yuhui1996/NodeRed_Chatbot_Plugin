@@ -12,6 +12,9 @@ let json;
 
 module.exports = function (RED) {
 
+    let dialog_queue = [];
+    let mutex = 1;
+
     console.log(this.global_data);
     this.global_data = require('../scripts/global_data.js');
 
@@ -108,6 +111,7 @@ module.exports = function (RED) {
 
            intents.push(intent);
         }
+        console.log("Intents_______________\n" + intents);
         return intents;
     }
 
@@ -127,6 +131,8 @@ module.exports = function (RED) {
 
             entities.push(entity)
         }
+
+        console.log("ENTITIES_______________\n" + entities);
         return entities;
     }
 
@@ -146,7 +152,11 @@ module.exports = function (RED) {
 
             // this.context().flow.set("saved_data", this.global_data.data);
             try {
+                this.context().flow.set("dialog_queue", dialog_queue);
+                this.context().flow.set("ids",1);
                 this.assistant = this.context().flow.get("assistant");
+
+
             } catch (e) {
                 console.log("context not found");
             } finally {
@@ -183,6 +193,30 @@ module.exports = function (RED) {
                             this.assistant.deleteWorkspace(workspace_to_delete)
                                 .then(res => {
                                     console.log("delete success");
+                                    this.assistant.createWorkspace(workspace)
+                                        .then(res => {
+                                            json = JSON.stringify(res, null, 2);
+                                            let object = JSON.parse(json);
+                                            workspaceid = object.result.workspace_id;
+                                            msg.payload.workspaceId = workspaceid;
+
+                                            // send_pre_data(this.assistant, msg);
+
+
+                                            node.send(msg); //send workspace id to next
+
+                                            while (true){
+                                                if (dialog_queue.length > 0){
+
+                                                }
+                                            }
+
+
+
+                                        })
+                                        .catch(err => {
+                                            console.log(err);
+                                        });
                                 })
                                 .catch(err => {
                                     console.log(err);
@@ -190,30 +224,15 @@ module.exports = function (RED) {
                         }
 
                     }
-                    this.assistant.createWorkspace(workspace)
-                        .then(res => {
-                            json = JSON.stringify(res, null, 2);
-                            let object = JSON.parse(json);
-                            workspaceid = object.result.workspace_id;
-                            msg.payload.workspaceId = workspaceid;
 
-                            // send_pre_data(this.assistant, msg);
-
-
-                            node.send(msg); //send workspace id to next
-
-                        })
-                        .catch(err => {
-                            console.log(err);
-                        });
 
                 })
                 .catch(err => {
                     console.log(err);
                 });
-
-
         });
+
+
     }
 
 
@@ -227,7 +246,7 @@ module.exports = function (RED) {
         res.json(this.global_data.data);
     });
 
-    RED.httpAdmin.post('/global_data', RED.auth.needsPermission("global_data.write"), function (req, res) {
+       RED.httpAdmin.post('/global_data', RED.auth.needsPermission("global_data.write"), function (req, res) {
 
         let new_data = req.body;
         ///Handle creation on new intent or entity from node
@@ -258,6 +277,16 @@ module.exports = function (RED) {
         }
 
     });
+
+
+    RED.httpAdmin.post('/send_dialog', RED.auth.needsPermission("global_data.write"), function (req, res) {
+
+        let new_data = req.body;
+
+        
+
+    });
+
 
 
 }

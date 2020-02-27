@@ -10,30 +10,30 @@ let workspaceid;
 module.exports = function (RED) {
 
 
-    function getReferenceValue(sendType, sendValue, relationType, relationValue){
+    function getReferenceValue(sendType, sendValue, relationType, relationValue) {
         let result;
-        if (sendType == "#"){
+        if (sendType == "#") {
             result = sendType + sendValue;
-        }else{
+        } else {
             switch (relationType) {
-                case "any":{
-                    result =  sendType + sendValue;
+                case "any": {
+                    result = sendType + sendValue;
                     break;
                 }
-                case "is":{
-                    result =  sendType + sendValue + ":" + relationValue;
+                case "is": {
+                    result = sendType + sendValue + " : " + relationValue;
                     break;
                 }
-                case "is_not":{
-                    result =  sendType + sendValue + "!=" + relationValue;
+                case "is_not": {
+                    result = sendType + sendValue + " != " + relationValue;
                     break;
                 }
-                case "greater":{
-                    result =  sendType + sendValue + ">" + relationValue;
+                case "greater": {
+                    result = sendType + sendValue + " > " + relationValue;
                     break;
                 }
-                case "less":{
-                    result =  sendType + sendValue + "<" + relationValue;
+                case "less": {
+                    result = sendType + sendValue + " < " + relationValue;
                     break;
                 }
             }
@@ -42,6 +42,7 @@ module.exports = function (RED) {
         return result;
 
     }
+
     function createDialog(n) {
         RED.nodes.createNode(this, n);
         var node = this;
@@ -49,6 +50,8 @@ module.exports = function (RED) {
         this.intentName = n.intentName;
         this.intentDescription = n.intentDescription;
         node.on('input', function (msg) {
+
+            var flows = this.context().flow;
             try {
                 this.assistant = this.context().flow.get("assistant");
             } catch (e) {
@@ -66,50 +69,51 @@ module.exports = function (RED) {
             }
 
 
+            try {
+
+                if (this.context().flow.get("ids") != undefined) {
+                    this.id = this.context().flow.get("ids");
+                } else {
+                    this.id = 1;
+                    this.context().flow.set("ids", this.id);
+                }
+                let nextID = this.id + 1;
+                this.context().flow.set("ids", nextID);
+            } catch (e) {
+                this.id = 1;
+                this.context().flow.set("ids", this.id);
+            }
 
 
+            console.log(this.id);
             //for creating dialog node
             let params = {
                 workspaceId: msg.payload.workspaceId,
-                parent: msg.payload.nodeID,
-                dialogNode: n.name.toLowerCase(), //needs to be unique
-                conditions: getReferenceValue(n.dialog_type,n.dialog_value, n.condition, n.conditionChoices),
-                title: n.name
-            }
+                // parent: msg.payload.nodeID,
+                dialogNode: this.id + "", //needs to be unique
+                // conditions: getReferenceValue(n.dialog_type,n.dialog_value, n.condition, n.conditionChoices),
+                // title: n.name
+            };
+
+
 
             this.assistant.createDialogNode(params)
                 .then(res => {
+
                     json = JSON.stringify(res, null, 2);
                     let object = JSON.parse(json);
-                    let nodeID = n.name.toLowerCase();
+                    let nodeID = this.id + "";
                     msg.payload.nodeID = nodeID;
 
                     node.send(msg);
+
+
                 })
                 .catch(err => {
-                    console.log(err)
+                    console.log("THIS IS ERROR OF" + this.id + "__________________________-\n\n" + err)
                 });
-            // const params = {
-            //     workspaceId: msg.payload.workspaceId,
-            //     intent: n.name,
-            //     description: n.description,
-            //     examples: [{
-            //             text: n.example1
-            //         },
-            //         {
-            //             text: n.example2
-            //         }
-            //     ]
-            // };
-            // this.assistant.createIntent(params)
-            //     .then(res => {
-            //         console.log(JSON.stringify(res, null, 2));
-            //         node.send(msg);
-            //     })
-            //     .catch(err => {
-            //         node.error("Error", err);
-            //         console.log(err);
-            //     });
+
+
         });
     }
 

@@ -37,7 +37,12 @@
                     if (next_intent == selected_value) {
 
                         $("#node-input-choices").append('<option value=' + next_intent
-                            + ' selected="selected">' + next_intent + '</option>')
+                            + ' selected="selected">' + next_intent + '</option>');
+
+                        $("#node-input-conditionChoices").empty();
+
+                        $("#node-input-conditionChoices").append('<option value=' + next_intent
+                            + 'selected="selected">' + next_intent + '</option>');
                     } else {
 
                         $("#node-input-choices").append('<option value=' + next_intent
@@ -48,10 +53,22 @@
                 $("#node-input-condition").empty();
                 $("#node-input-condition").append('<option value="! is" selected="selected">' + "! is" + '</option>');
 
-                $("#node-input-conditionChoices").empty();
 
-                $("#node-input-conditionChoices").append('<option value=' + next_intent
-                    + 'selected="selected">' + next_intent + '</option>');
+                $("#node-input-choices").change(function () {
+
+
+                    $("#node-input-conditionChoices").empty();
+
+
+                    let temp_name = $("#node-input-choices").val();
+
+                    $("#node-input-conditionChoices").append('<option value=' + temp_name
+                        + 'selected="selected">' + temp_name + '</option>');
+                });
+
+
+                $("#node-input-choices").trigger("change");
+
                 document.getElementById("node-button-create-intent").style.display =
                     "block";
                 document.getElementById("node-button-create-entity").style.display =
@@ -66,10 +83,10 @@
 
                 for (let i = 0; i < recognition_options.length; i++) {
 
-                    if (condition == recognition_options[i]){
+                    if (condition == recognition_options[i]) {
                         $("#node-input-condition").append('<option value=\"' + recognition_options[i]
                             + '\" selected="selected">' + recognition_options[i] + '</option>');
-                    }else{
+                    } else {
                         $("#node-input-condition").append('<option value=' + recognition_options[i]
                             + '>' + recognition_options[i] + '</option>');
                     }
@@ -104,11 +121,11 @@
                     for (let i = 0; i < current_entity.values.length; i++) {
                         let next_value = current_entity.values[i];
 
-                        if (next_value.value == conditionChoice){
+                        if (next_value.value == conditionChoice) {
 
                             $("#node-input-conditionChoices").append('<option value=\"' + next_value.value
                                 + '\"selected="selected">' + next_value.value + '</option>');
-                        }else {
+                        } else {
 
                             $("#node-input-conditionChoices").append('<option value=' + next_value.value
                                 + '>' + next_value.value + '</option>');
@@ -136,9 +153,6 @@
                 var desc = $(this);
                 if (desc.val() == "#") {
                     for (var next_intent in global_data.intents) {
-
-                        console.log(next_intent);
-
                         $("#node-input-choices").append('<option value=' + next_intent + '>' + next_intent + '</option>')
                     }
 
@@ -146,12 +160,24 @@
                     $("#node-input-condition").empty();
                     $("#node-input-condition").append('<option value="! is" selected="selected">' + "! is" + '</option>');
 
-                    $("#node-input-conditionChoices").empty();
 
-                    $("#node-input-conditionChoices").append('<option value=' + next_intent
-                        + 'selected="selected">' + next_intent + '</option>');
+                    // Update the selected variable to the current one as intent does not require matching other than to the examples.
+
+                    $("#node-input-choices").change(function () {
 
 
+                        $("#node-input-conditionChoices").empty();
+
+
+                        let current_intent = $("#node-input-choices").val();
+
+                        $("#node-input-conditionChoices").append('<option value=' + current_intent
+                            + 'selected="selected">' + current_intent + '</option>');
+
+                    });
+
+
+                    $("#node-input-choices").trigger("change");
                     document.getElementById("node-button-create-intent").style.display =
                         "block";
                     document.getElementById("node-button-create-entity").style.display =
@@ -199,12 +225,13 @@
 
                     });
 
-                    $("#node-input-choices").trigger("change");
-
                     document.getElementById("node-button-create-entity").style.display =
                         "block";
                     document.getElementById("node-button-create-intent").style.display =
                         "none";
+                    $("#node-input-choices").trigger("change");
+
+
                 }
             });
 
@@ -326,7 +353,7 @@
 
 
         //Cal function to refresh the lists and set to new intent
-        updateData("@", new_entity.name,"","");
+        updateData("@", new_entity.name, "", "");
 
         document.getElementById("node-button-create-entity").style.display = "block";
         document.getElementById("create-entity").style.display = "none";
@@ -456,34 +483,34 @@
                     });
                 },
                 removeItem: function (opt_syn) {
-                                //Remove item from the list
-                                var currentOutputs = JSON.parse(outputCount.val() || "{}");
-                                if (opt_syn.hasOwnProperty('i')) {
-                                    currentOutputs[opt_syn.i] = -1;
-                                } else {
-                                    delete currentOutputs[opt_syn._i];
-                                }
-                                var entity_values = $("#node-input-value-container").editableList('items');
-                                entity_values.each(function (i) {
-                                    $(this).find(".node-input-entity-value-index").html(i + 1);
-                                    var data = $(this).data('data');
-                                    currentOutputs[data.hasOwnProperty('i') ? data.i : data._i] = i;
-                                });
-                                outputCount.val(JSON.stringify(currentOutputs));
-                            },
-                            sortItems: function (entity_values) {
-                                //Change indexes on sorting
-                                var currentOutputs = JSON.parse(outputCount.val() || "{}");
-                                var entity_values = $("#node-input-value-container").editableList('items');
-                                entity_values.each(function (i) {
-                                    $(this).find(".node-input-entity-value-index").html(index_sym + 1);
-                                    var data = $(this).data('data');
-                                    currentOutputs[data.hasOwnProperty('i') ? data.i : data._i] = i;
-                                });
-                                outputCount.val(JSON.stringify(currentOutputs));
-                            },
-                            sortable: true,
-                            removable: true
+                    //Remove item from the list
+                    var currentOutputs = JSON.parse(outputCount.val() || "{}");
+                    if (opt_syn.hasOwnProperty('i')) {
+                        currentOutputs[opt_syn.i] = -1;
+                    } else {
+                        delete currentOutputs[opt_syn._i];
+                    }
+                    var entity_values = $("#node-input-value-container").editableList('items');
+                    entity_values.each(function (i) {
+                        $(this).find(".node-input-entity-value-index").html(i + 1);
+                        var data = $(this).data('data');
+                        currentOutputs[data.hasOwnProperty('i') ? data.i : data._i] = i;
+                    });
+                    outputCount.val(JSON.stringify(currentOutputs));
+                },
+                sortItems: function (entity_values) {
+                    //Change indexes on sorting
+                    var currentOutputs = JSON.parse(outputCount.val() || "{}");
+                    var entity_values = $("#node-input-value-container").editableList('items');
+                    entity_values.each(function (i) {
+                        $(this).find(".node-input-entity-value-index").html(index_sym + 1);
+                        var data = $(this).data('data');
+                        currentOutputs[data.hasOwnProperty('i') ? data.i : data._i] = i;
+                    });
+                    outputCount.val(JSON.stringify(currentOutputs));
+                },
+                sortable: true,
+                removable: true
             });
 
 
@@ -491,7 +518,7 @@
             //     this.dialog_type = node.dialog_type;
             // }
 
-            updateData(this.dialog_type, this.dialog_value, this.condition,this.conditionChoices);
+            updateData(this.dialog_type, this.dialog_value, this.condition, this.conditionChoices);
 
             $("#node-input-name").val(this.name);
 
@@ -734,7 +761,6 @@
             ///INTENT SAVING
             this.intentName = $("#node-input-intentName").val();
             this.intentDescription = $("#node-input-intentDescription").val();
-
 
 
             var exampleList = $('#node-input-example-container').editableList('items');
