@@ -20,12 +20,19 @@ module.exports = function(RED) {
 
         var nodeId = config.dialogName;
         var dialogTitle = config.dialogName;
-        var output = config.output;
+        var outputs = [];
         var policy = config.selection_policy; //how are reponse texts set
         var condition = "#" + config.name;
         var resType = "text";
         var previousDialog = "Welcome";
         var dialogType = "standard";
+
+        for (var i=0; i < config.outputs.length;i++) {
+            var output = config.outputs[i];
+            outputs.push({
+                text: output.outputContent
+            });
+        };
 
 
         node.on('input', function(msg) {
@@ -77,8 +84,11 @@ module.exports = function(RED) {
                             var hasDialog = false;
 
                             if(object.result.dialog_nodes.length > 0){
+                                //set the previous dialog node
                                 previousDialog = object.result.dialog_nodes[0].dialog_node;
                                 console.log("first dialog:" + previousDialog);
+
+                                //reset the dialog nodeId
                                 for (let i = 0; i < object.result.dialog_nodes.length; i++) {
                                     if (object.result.dialog_nodes[i].dialog_node === nodeId) {
                                         nodeId = createId(i);
@@ -87,6 +97,7 @@ module.exports = function(RED) {
                                 }
                             }
                             else{
+                                //for the first dialog node
                                 previousDialog = '';
                                 console.log("no dialog:" + previousDialog);
                             }
@@ -101,15 +112,17 @@ module.exports = function(RED) {
                                 dialogNode : nodeId,
                                 conditions: condition,
                                 //parent: n.parent,
-                                //previousSibling: previousDialog,
+                                previousSibling: previousDialog,
                                 output: {
                                     generic: [
                                         {
-                                            values: [
+                                            values: outputs,
+                                            /*[
                                                 {
-                                                    text: output, //response text
+                                                    text: outputs, //response text
                                                 }
                                             ],
+                                            */
                                             response_type: resType,
                                             selection_policy: policy,  //sequential,random,multiline
                                         }
