@@ -51,7 +51,6 @@ module.exports = function (RED) {
         this.intentDescription = n.intentDescription;
         node.on('input', function (msg) {
 
-            var flows = this.context().flow;
             try {
                 this.assistant = this.context().flow.get("assistant");
             } catch (e) {
@@ -89,10 +88,10 @@ module.exports = function (RED) {
             //for creating dialog node
             let params = {
                 workspaceId: msg.payload.workspaceId,
-                // parent: msg.payload.nodeID,
+                parent: msg.payload.nodeID,
                 dialogNode: this.id + "", //needs to be unique
-                // conditions: getReferenceValue(n.dialog_type,n.dialog_value, n.condition, n.conditionChoices),
-                // title: n.name
+                conditions: getReferenceValue(n.dialog_type,n.dialog_value, n.condition, n.conditionChoices),
+                title: n.name
             };
 
 
