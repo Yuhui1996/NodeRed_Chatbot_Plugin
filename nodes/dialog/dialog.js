@@ -49,8 +49,8 @@ module.exports = function (RED) {
         this.name = n.name;
         this.intentName = n.intentName;
         this.intentDescription = n.intentDescription;
+        console.log("start dialog");
         node.on('input', function (msg) {
-
             var flows = this.context().flow;
             try {
                 this.assistant = this.context().flow.get("assistant");
@@ -87,32 +87,38 @@ module.exports = function (RED) {
 
             console.log(this.id);
             //for creating dialog node
-            let params = {
-                workspaceId: msg.payload.workspaceId,
-                // parent: msg.payload.nodeID,
-                dialogNode: this.id + "", //needs to be unique
-                // conditions: getReferenceValue(n.dialog_type,n.dialog_value, n.condition, n.conditionChoices),
-                // title: n.name
-            };
+            //if()
+            var dialog_response = n.dialog_response;
+            for(var response in dialog_response) {
+                var type = response.response_type;
+                console.log("response type:" + type);
+                /*
+                let params = {
+                    workspaceId: msg.payload.workspaceId,
+                    // parent: msg.payload.nodeID,
+                    dialogNode: this.id + "", //needs to be unique
+                    // conditions: getReferenceValue(n.dialog_type,n.dialog_value, n.condition, n.conditionChoices),
+                    // title: n.name
+                };
+
+                this.assistant.createDialogNode(params)
+                    .then(res => {
+
+                        json = JSON.stringify(res, null, 2);
+                        let object = JSON.parse(json);
+                        let nodeID = this.id + "";
+                        msg.payload.nodeID = nodeID;
+
+                        node.send(msg);
 
 
+                    })
+                    .catch(err => {
+                        console.log("THIS IS ERROR OF" + this.id + "__________________________-\n\n" + err)
+                    });
 
-            this.assistant.createDialogNode(params)
-                .then(res => {
-
-                    json = JSON.stringify(res, null, 2);
-                    let object = JSON.parse(json);
-                    let nodeID = this.id + "";
-                    msg.payload.nodeID = nodeID;
-
-                    node.send(msg);
-
-
-                })
-                .catch(err => {
-                    console.log("THIS IS ERROR OF" + this.id + "__________________________-\n\n" + err)
-                });
-
+                 */
+            }
 
         });
     }

@@ -420,13 +420,17 @@
             conditionChoices: {
                 value: ""
             },
-            //dialog_image
-            dialog_response_image: {
+            //dialog_response
+            dialog_response: {
                 value: [{
                     response_type: "",
-                    title: "",
-                    description: "",
-                    source: ""
+                    image: {
+                        response_type: "",
+                        title: "",
+                        description: "",
+                        source: ""
+                        //container_index: 0
+                    }
                 }]
             }
         },
@@ -437,7 +441,6 @@
             return this.name || "create dialog";
         },
         oneditprepare: function () {
-
             //INTENT MODIFICATIONS
             $("#node-input-value-container").editableList({
                 addButton: "Add assistant response",
@@ -466,12 +469,44 @@
                         group0.append($("<option></option>").val(options[d].v).text(/^switch/
                             .test(options[d].t) ? node._(options[d].t) : options[d].t));
                     }
-                    var textInput = $('<input/>', {
-                        id: "node-input-case-" + i,
-                        class: "node-input-case",
-                        type: "text",
-                        placeholder: "Enter response text"
-                    }).appendTo(row2);
+                    selectField.on("change", function () {
+                        var type = selectField.val();
+                        if (type === "text") {
+                            row2.empty();
+                            addVariationButton.show();
+                            var textInput = $('<input/>', {
+                                id: "node-input-case-" + i,
+                                class: "node-input-case",
+                                type: "text",
+                                placeholder: "Enter response text"
+                            }).appendTo(row2);
+                        }
+                        //image
+                        else if (type === "image") {
+                            row2.empty();
+                            addVariationButton.hide();
+
+                            var textInput = $('<input/>', {
+                                id: "node-input-imageTitle-" + i,
+                                type: "text",
+                                placeholder: "Add title(optional)"
+                            }).appendTo(row2);
+
+                            var textInput = $('<input/>', {
+                                style: "margin-top: 5px;",
+                                id: "node-input-imageDescription-" + i,
+                                type: "text",
+                                placeholder: "Add image description(optional)"
+                            }).appendTo(row2);
+
+                            var textInput = $('<input/>', {
+                                style: "margin-top: 5px;",
+                                id: "node-input-imageUrl-" + i,
+                                type: "text",
+                                placeholder: "Add image Source"
+                            }).appendTo(row2);
+                        }
+                    });
                     var addVariationButton = $('<button/>', {
                         id: "node-button-add-variation" + i,
                         type: "button",
@@ -486,11 +521,44 @@
                             placeholder: "Enter response text"
                         }).appendTo(row2)
                     });
-                    selectField.on("change", function () {
-                        var type = selectField.val();
-                        if (type === "text") {
-                            row2.empty();
-                            addVariationButton.show();
+
+                    if (!data.hasOwnProperty('response_type')) {
+                        var textInput = $('<input/>', {
+                            id: "node-input-case-" + i,
+                            class: "node-input-case",
+                            type: "text",
+                            placeholder: "Enter response text"
+                        }).appendTo(row2);
+                    }
+                    else{
+                        //image
+                        if(data.response_type === "image"){
+                            addVariationButton.hide();
+                            var imageElement = data.image;
+                            selectField.val("image");
+                            var textInput = $('<input/>', {
+                                id: "node-input-imageTitle-" + i,
+                                type: "text",
+                                value: imageElement.title
+                            }).appendTo(row2);
+
+                            var textInput = $('<input/>', {
+                                style: "margin-top: 5px;",
+                                id: "node-input-imageDescription-" + i,
+                                type: "text",
+                                value:imageElement.description
+                            }).appendTo(row2);
+
+                            var textInput = $('<input/>', {
+                                style: "margin-top: 5px;",
+                                id: "node-input-imageUrl-" + i,
+                                type: "text",
+                                value: imageElement.source
+                            }).appendTo(row2);
+
+                        }
+                        //other type
+                        else{
                             var textInput = $('<input/>', {
                                 id: "node-input-case-" + i,
                                 class: "node-input-case",
@@ -498,35 +566,7 @@
                                 placeholder: "Enter response text"
                             }).appendTo(row2);
                         }
-                        //image
-                        else if(type === "image"){
-                            row2.empty();
-                            addVariationButton.hide();
-
-                            var textInput = $('<input/>', {
-                                id: "node-input-imageTitle-" + i,
-                                //class: ""
-                                type: "text",
-                                placeholder: "Add title(optional)"
-                            }).appendTo(row2);
-
-                            var textInput = $('<input/>', {
-                                style: "margin-top: 5px;",
-                                id: "node-input-imageDescription-" + i,
-                                //id: "node-input-imageDescription",
-                                type: "text",
-                                placeholder: "Add image description(optional)"
-                            }).appendTo(row2);
-
-                            var textInput = $('<input/>', {
-                                style: "margin-top: 5px;",
-                                id: "node-input-imageUrl-" + i,
-                                //id: "node-input-imageUrl",
-                                type: "text",
-                                placeholder: "Add image Source"
-                            }).appendTo(row2);
-                        }
-                    });
+                    }
                 },
                 removeItem: function (opt_syn) {
                     //Remove item from the list
@@ -559,6 +599,10 @@
                 removable: true
             });
 
+            for (var i = 0; i < this.dialog_response.length; i++) {
+                var response = this.dialog_response[i];
+                $("#node-input-value-container").editableList('addItem',response);
+            }
 
             // if (this.dialog_type == undefined){
             //     this.dialog_type = node.dialog_type;
@@ -807,6 +851,7 @@
             var responselist = $('#node-input-value-container').editableList('items');
             var node = this;
             node.dialog_response_image = [];
+            node.dialog_response = [];
             responselist.each(function (i) {
                 var typeid = "node-input-response_type-" + i;
                 var type = $('#'+typeid).val();
@@ -823,9 +868,29 @@
                         title: title,
                         description: description,
                         source: url
+                        //container_index: i
                     }
+                    /*
                     console.log(imageElement);
                     node.dialog_response_image.push(imageElement);
+                    console.log(node.dialog_response_image);
+
+                     */
+
+                    var responseElement = {
+                        response_type: type,
+                        image: imageElement
+                    }
+                    node.dialog_response.push(responseElement);
+                    console.log("image:" + node.dialog_response);
+
+                }
+                else{
+                    var responseElement = {
+                        response_type: type
+                    }
+                    node.dialog_response.push(responseElement);
+                    console.log(node.dialog_response);
                 }
             });
 
@@ -893,8 +958,7 @@
                 node.entity_values.push(value);
             });
         }
-    })
-    ;
+    });
 
 
 </script>
