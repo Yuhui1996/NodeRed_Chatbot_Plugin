@@ -1,11 +1,10 @@
 const AssistantV1 = require('ibm-watson/assistant/v1');
-
 const {
     IamAuthenticator
 } = require('ibm-watson/auth');
 
 let workspaceid;
-
+const promise_queue = require('../scripts/queue.js');
 
 module.exports = function (RED) {
 
@@ -85,38 +84,39 @@ module.exports = function (RED) {
 
 
             console.log(this.id);
+
+            this.id = this.id + Math.random().toString(36).substr(2, 10);
             //for creating dialog node
             let params = {
                 workspaceId: msg.payload.workspaceId,
                 parent: msg.payload.nodeID,
-                dialogNode: this.id + "", //needs to be unique
-                conditions: getReferenceValue(n.dialog_type,n.dialog_value, n.condition, n.conditionChoices),
+                dialogNode: this.id, //needs to be unique
+                conditions: getReferenceValue(n.dialog_type, n.dialog_value, n.condition, n.conditionChoices),
                 title: n.name
             };
 
 
+            let top = this;
+            // top.assistant.createDialogNode(params)
+            //
 
-            this.assistant.createDialogNode(params)
+            promise_queue.addToQueue(() => top.assistant.createDialogNode(params))
                 .then(res => {
 
                     json = JSON.stringify(res, null, 2);
                     let object = JSON.parse(json);
-                    let nodeID = this.id + "";
+                    let nodeID = top.id;
                     msg.payload.nodeID = nodeID;
-
                     node.send(msg);
 
 
                 })
                 .catch(err => {
-                    console.log("THIS IS ERROR OF" + this.id + "__________________________-\n\n" + err)
+                    console.log(err)
+                    //    "THIS IS ERROR OF" + this.id + "__________________________-\n\n" +
                 });
-
-
         });
     }
 
     RED.nodes.registerType("dialog", createDialog);
-
-
 }
