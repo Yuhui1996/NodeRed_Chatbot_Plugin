@@ -1,4 +1,6 @@
 const AssistantV1 = require('ibm-watson/assistant/v1');
+
+const fs  = require("fs");
 const {
     IamAuthenticator
 } = require('ibm-watson/auth');
@@ -12,11 +14,39 @@ let json;
 
 module.exports = function (RED) {
 
-    let dialog_queue = [];
-    let mutex = 1;
+    function writeData(){
 
-    console.log(this.global_data);
+        try {
+            let data = JSON.stringify(this.global_data, null, 2);
+
+            fs.writeFile('./global_data.json', data, (err) => {
+                if (err) throw err;
+                console.log('Data written to file');
+            });
+        }catch (e) {
+            console.log("Failed to save data");
+        }
+    }
+
+    function readData(){
+        try{
+            let jsonData = require('../global_data.json');
+            return jsonData;
+        }catch (e) {
+            console.log("failed to load data");
+            return undefined;
+        }
+
+    }
+
+
     this.global_data = require('../scripts/global_data.js');
+
+    let tempData = readData();
+
+    if (tempData != undefined){
+        this.global_data.data = tempData;
+    }
 
     //Unused slow function that has been replaced by used on creation
     function send_pre_data(current_assistant, msg) {
@@ -122,6 +152,9 @@ module.exports = function (RED) {
         return entities;
     }
 
+
+
+
     function createWatson(config) {
 
 
@@ -185,6 +218,11 @@ module.exports = function (RED) {
                                             workspaceid = object.result.workspace_id;
                                             msg.payload.workspaceId = workspaceid;
                                             node.send(msg); //send workspace id to next
+
+
+                                            writeData();
+
+
 
                                         })
                                         .catch(err => {
