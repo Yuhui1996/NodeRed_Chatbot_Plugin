@@ -1,11 +1,10 @@
 const AssistantV1 = require('ibm-watson/assistant/v1');
-
 const {
     IamAuthenticator
 } = require('ibm-watson/auth');
 
 let workspaceid;
-
+const promise_queue = require('../scripts/queue.js');
 
 module.exports = function (RED) {
 
@@ -51,7 +50,7 @@ module.exports = function (RED) {
         this.intentDescription = n.intentDescription;
         console.log("start dialog");
         node.on('input', function (msg) {
-            var flows = this.context().flow;
+
             try {
                 this.assistant = this.context().flow.get("assistant");
             } catch (e) {
@@ -86,44 +85,41 @@ module.exports = function (RED) {
 
 
             console.log(this.id);
+
+            this.id = this.id + Math.random().toString(36).substr(2, 10);
             //for creating dialog node
-            //if()
-            var dialog_response = n.dialog_response;
-            for(var response in dialog_response) {
-                var type = response.response_type;
-                console.log("response type:" + type);
-                /*
-                let params = {
-                    workspaceId: msg.payload.workspaceId,
-                    // parent: msg.payload.nodeID,
-                    dialogNode: this.id + "", //needs to be unique
-                    // conditions: getReferenceValue(n.dialog_type,n.dialog_value, n.condition, n.conditionChoices),
-                    // title: n.name
-                };
 
-                this.assistant.createDialogNode(params)
-                    .then(res => {
-
-                        json = JSON.stringify(res, null, 2);
-                        let object = JSON.parse(json);
-                        let nodeID = this.id + "";
-                        msg.payload.nodeID = nodeID;
-
-                        node.send(msg);
+            let params = {
+                workspaceId: msg.payload.workspaceId,
+                parent: msg.payload.nodeID,
+                dialogNode: this.id, //needs to be unique
+                conditions: getReferenceValue(n.dialog_type, n.dialog_value, n.condition, n.conditionChoices),
+                title: n.name
+            };
 
 
-                    })
-                    .catch(err => {
-                        console.log("THIS IS ERROR OF" + this.id + "__________________________-\n\n" + err)
-                    });
+            let top = this;
+            // top.assistant.createDialogNode(params)
+            //
 
-                 */
-            }
+            promise_queue.addToQueue(() => top.assistant.createDialogNode(params))
+                .then(res => {
+
+                    json = JSON.stringify(res, null, 2);
+                    let object = JSON.parse(json);
+                    let nodeID = top.id;
+                    msg.payload.nodeID = nodeID;
+                    node.send(msg);
+
+
+                })
+                .catch(err => {
+                    console.log(err)
+                    //    "THIS IS ERROR OF" + this.id + "__________________________-\n\n" +
+                });
 
         });
     }
 
     RED.nodes.registerType("dialog", createDialog);
-
-
 }

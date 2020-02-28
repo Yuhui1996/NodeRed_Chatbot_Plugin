@@ -18,20 +18,6 @@ module.exports = function (RED) {
     console.log(this.global_data);
     this.global_data = require('../scripts/global_data.js');
 
-    // if (saved_data == undefined){
-    //    saved_data = this.global_data.data;
-    // } else{
-    //     this.global_data.data = saved_data;
-    // }
-
-
-    // if (this.context().flow.get("global_data") == undefined){
-    //     this.global_data = require('../scripts/global_data.js');
-    // }else{
-    //     this.global_data = this.context().flow.get("global_data");
-    // }
-    //
-
     //Unused slow function that has been replaced by used on creation
     function send_pre_data(current_assistant, msg) {
 
@@ -152,7 +138,6 @@ module.exports = function (RED) {
 
             // this.context().flow.set("saved_data", this.global_data.data);
             try {
-                this.context().flow.set("dialog_queue", dialog_queue);
                 this.context().flow.set("ids",1);
                 this.assistant = this.context().flow.get("assistant");
 
@@ -199,19 +184,7 @@ module.exports = function (RED) {
                                             let object = JSON.parse(json);
                                             workspaceid = object.result.workspace_id;
                                             msg.payload.workspaceId = workspaceid;
-
-                                            // send_pre_data(this.assistant, msg);
-
-
                                             node.send(msg); //send workspace id to next
-
-                                            while (true){
-                                                if (dialog_queue.length > 0){
-
-                                                }
-                                            }
-
-
 
                                         })
                                         .catch(err => {
@@ -279,13 +252,6 @@ module.exports = function (RED) {
     });
 
 
-    RED.httpAdmin.post('/send_dialog', RED.auth.needsPermission("global_data.write"), function (req, res) {
-
-        let new_data = req.body;
-
-        
-
-    });
 
 
 
