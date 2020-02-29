@@ -1,4 +1,6 @@
 const AssistantV1 = require('ibm-watson/assistant/v1');
+
+const fs  = require("fs");
 const {
     IamAuthenticator
 } = require('ibm-watson/auth');
@@ -12,11 +14,35 @@ let json;
 
 module.exports = function (RED) {
 
-    let dialog_queue = [];
-    let mutex = 1;
+    function writeData(){
 
-    console.log(this.global_data);
+        try {
+            let data = JSON.stringify(this.global_data.data, null, 2);
+
+                fs.writeFile('global_data.json', data, (err) => {
+                console.log('Data written to file');
+            });
+        }catch (e) {
+            console.log("Failed to save data");
+        }
+    }
+
+    function readData(){
+        try{
+            let  jsonData = JSON.parse(fs.readFileSync('global_data.json', 'utf8'));
+            return jsonData;
+        }catch (e) {
+            console.log("failed to load data");
+            return undefined;
+        }
+
+    }
+
+
     this.global_data = require('../scripts/global_data.js');
+    let global_top = this;
+
+
 
     //Unused slow function that has been replaced by used on creation
     function send_pre_data(current_assistant, msg) {
@@ -25,6 +51,7 @@ module.exports = function (RED) {
 
         for (let next_intent in this.global_data.data.intents) {
 
+            console.log(next_intent);
             console.log(this.global_data.data.intents[next_intent].examples);
             let params = {
                 workspaceId: msg.payload.workspaceId,
@@ -122,8 +149,10 @@ module.exports = function (RED) {
         return entities;
     }
 
-    function createWatson(config) {
 
+
+
+    function createWatson(config) {
 
 
         // test_data();
@@ -136,6 +165,12 @@ module.exports = function (RED) {
 
         node.on('input', function (msg) {
 
+            if (global_top.global_data.data == undefined){
+                global_top.global_data.data = {
+                    entities:{},
+                    intents:{}
+                }
+            }
             // this.context().flow.set("saved_data", this.global_data.data);
             try {
                 this.context().flow.set("ids",1);
@@ -198,9 +233,29 @@ module.exports = function (RED) {
                             this.assistant.deleteWorkspace(workspace_to_delete)
                                 .then(res => {
                                     console.log("delete success");
+<<<<<<< HEAD
                                     createWatson();
                                     not_found = false;
 
+=======
+                                    this.assistant.createWorkspace(workspace)
+                                        .then(res => {
+                                            json = JSON.stringify(res, null, 2);
+                                            let object = JSON.parse(json);
+                                            workspaceid = object.result.workspace_id;
+                                            msg.payload.workspaceId = workspaceid;
+                                            node.send(msg); //send workspace id to next
+
+
+                                            writeData();
+
+
+
+                                        })
+                                        .catch(err => {
+                                            console.log(err);
+                                        });
+>>>>>>> test_dialog_node_system
                                 })
                                 .catch(err => {
                                     console.log(err);
@@ -234,8 +289,20 @@ module.exports = function (RED) {
     RED.httpAdmin.get("/global_data", RED.auth.needsPermission('global_data.read'), function (req, res) {
         //send all data to node
 
+        if (this.global_data.data == undefined ){
+            let old_data = readData();
+            if (old_data != undefined){
+                this.global_data.data = old_data;
+            }else{
+                this.global_data.data = {
+                    entities: {},
+                    intents: {}
+                }
+            }
+        }
         res.json(this.global_data.data);
     });
+
 
        RED.httpAdmin.post('/global_data', RED.auth.needsPermission("global_data.write"), function (req, res) {
 

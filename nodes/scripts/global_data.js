@@ -1,4 +1,5 @@
 var global_data = module.exports = {
+<<<<<<< HEAD
     data: {
         entities: {
             "Test_Entity": {
@@ -17,6 +18,9 @@ var global_data = module.exports = {
             }
         }
     },
+=======
+    data: undefined,
+>>>>>>> test_dialog_node_system
     add_intent: function (send_data) {
 
         let intent_data = {
