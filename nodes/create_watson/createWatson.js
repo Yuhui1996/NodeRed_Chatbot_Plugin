@@ -40,13 +40,7 @@ module.exports = function (RED) {
 
 
     this.global_data = require('../scripts/global_data.js');
-
-    // try{
-    //     this.old_data = require('../data/global_data.json');
-    // }catch (e) {
-    //     console.log("No old data");
-    // }
-
+    let global_top = this;
 
 
 
@@ -57,6 +51,7 @@ module.exports = function (RED) {
 
         for (let next_intent in this.global_data.data.intents) {
 
+            console.log(next_intent);
             console.log(this.global_data.data.intents[next_intent].examples);
             let params = {
                 workspaceId: msg.payload.workspaceId,
@@ -170,6 +165,12 @@ module.exports = function (RED) {
 
         node.on('input', function (msg) {
 
+            if (global_top.global_data.data == undefined){
+                global_top.global_data.data = {
+                    entities:{},
+                    intents:{}
+                }
+            }
             // this.context().flow.set("saved_data", this.global_data.data);
             try {
                 this.context().flow.set("ids",1);
