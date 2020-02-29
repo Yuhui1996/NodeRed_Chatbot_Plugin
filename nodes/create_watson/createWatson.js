@@ -164,13 +164,33 @@ module.exports = function (RED) {
                 entities: createEntities()
             }
 
+            let top = this;
+
+            function createWatson(){
+                top.assistant.createWorkspace(workspace)
+                    .then(res => {
+                        json = JSON.stringify(res, null, 2);
+                        let object = JSON.parse(json);
+                        workspaceid = object.result.workspace_id;
+                        msg.payload.workspaceId = workspaceid;
+                        node.send(msg); //send workspace id to next
+
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    });
+            }
+
 
             this.assistant.listWorkspaces()
                 .then(res => {
+                    console.log("Workspace Found")
                     json = JSON.stringify(res, null, 2);
                     const object = JSON.parse(json);
+                    let not_found = true;
                     for (let i = 0; i < object.result.workspaces.length; i++) {
                         if (object.result.workspaces[i].name == msg.payload.chatbot_name) {//if the workspce exist
+
                             console.log(object.result.workspaces[i].name);
                             const workspace_to_delete = {
                                 workspaceId: object.result.workspaces[i].workspace_id,
@@ -178,24 +198,22 @@ module.exports = function (RED) {
                             this.assistant.deleteWorkspace(workspace_to_delete)
                                 .then(res => {
                                     console.log("delete success");
-                                    this.assistant.createWorkspace(workspace)
-                                        .then(res => {
-                                            json = JSON.stringify(res, null, 2);
-                                            let object = JSON.parse(json);
-                                            workspaceid = object.result.workspace_id;
-                                            msg.payload.workspaceId = workspaceid;
-                                            node.send(msg); //send workspace id to next
+                                    createWatson();
+                                    not_found = false;
 
-                                        })
-                                        .catch(err => {
-                                            console.log(err);
-                                        });
                                 })
                                 .catch(err => {
                                     console.log(err);
+                                    not_found = false;
+                                    console.log("delete not applied");
+                                    createWatson();
                                 });
                         }
 
+                    }
+
+                    if (not_found){
+                        createWatson();
                     }
 
 
