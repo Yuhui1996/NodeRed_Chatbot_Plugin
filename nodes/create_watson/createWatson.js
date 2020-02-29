@@ -1,4 +1,6 @@
 const AssistantV1 = require('ibm-watson/assistant/v1');
+
+const fs  = require("fs");
 const {
     IamAuthenticator
 } = require('ibm-watson/auth');
@@ -12,22 +14,35 @@ let json;
 
 module.exports = function (RED) {
 
-    console.log(this.global_data);
+    function writeData(){
+
+        try {
+            let data = JSON.stringify(this.global_data.data, null, 2);
+
+                fs.writeFile('global_data.json', data, (err) => {
+                console.log('Data written to file');
+            });
+        }catch (e) {
+            console.log("Failed to save data");
+        }
+    }
+
+    function readData(){
+        try{
+            let  jsonData = JSON.parse(fs.readFileSync('global_data.json', 'utf8'));
+            return jsonData;
+        }catch (e) {
+            console.log("failed to load data");
+            return undefined;
+        }
+
+    }
+
+
     this.global_data = require('../scripts/global_data.js');
-
-    // if (saved_data == undefined){
-    //    saved_data = this.global_data.data;
-    // } else{
-    //     this.global_data.data = saved_data;
-    // }
+    let global_top = this;
 
 
-    // if (this.context().flow.get("global_data") == undefined){
-    //     this.global_data = require('../scripts/global_data.js');
-    // }else{
-    //     this.global_data = this.context().flow.get("global_data");
-    // }
-    //
 
     //Unused slow function that has been replaced by used on creation
     function send_pre_data(current_assistant, msg) {
@@ -36,6 +51,7 @@ module.exports = function (RED) {
 
         for (let next_intent in this.global_data.data.intents) {
 
+            console.log(next_intent);
             console.log(this.global_data.data.intents[next_intent].examples);
             let params = {
                 workspaceId: msg.payload.workspaceId,
@@ -108,6 +124,7 @@ module.exports = function (RED) {
 
            intents.push(intent);
         }
+        console.log("Intents_______________\n" + intents);
         return intents;
     }
 
@@ -127,11 +144,15 @@ module.exports = function (RED) {
 
             entities.push(entity)
         }
+
+        console.log("ENTITIES_______________\n" + entities);
         return entities;
     }
 
-    function createWatson(config) {
 
+
+
+    function createWatson(config) {
 
 
         // test_data();
@@ -144,9 +165,18 @@ module.exports = function (RED) {
 
         node.on('input', function (msg) {
 
+            if (global_top.global_data.data == undefined){
+                global_top.global_data.data = {
+                    entities:{},
+                    intents:{}
+                }
+            }
             // this.context().flow.set("saved_data", this.global_data.data);
             try {
+                this.context().flow.set("ids",1);
                 this.assistant = this.context().flow.get("assistant");
+
+
             } catch (e) {
                 console.log("context not found");
             } finally {
@@ -183,6 +213,23 @@ module.exports = function (RED) {
                             this.assistant.deleteWorkspace(workspace_to_delete)
                                 .then(res => {
                                     console.log("delete success");
+                                    this.assistant.createWorkspace(workspace)
+                                        .then(res => {
+                                            json = JSON.stringify(res, null, 2);
+                                            let object = JSON.parse(json);
+                                            workspaceid = object.result.workspace_id;
+                                            msg.payload.workspaceId = workspaceid;
+                                            node.send(msg); //send workspace id to next
+
+
+                                            writeData();
+
+
+
+                                        })
+                                        .catch(err => {
+                                            console.log(err);
+                                        });
                                 })
                                 .catch(err => {
                                     console.log(err);
@@ -190,30 +237,15 @@ module.exports = function (RED) {
                         }
 
                     }
-                    this.assistant.createWorkspace(workspace)
-                        .then(res => {
-                            json = JSON.stringify(res, null, 2);
-                            let object = JSON.parse(json);
-                            workspaceid = object.result.workspace_id;
-                            msg.payload.workspaceId = workspaceid;
 
-                            // send_pre_data(this.assistant, msg);
-
-
-                            node.send(msg); //send workspace id to next
-
-                        })
-                        .catch(err => {
-                            console.log(err);
-                        });
 
                 })
                 .catch(err => {
                     console.log(err);
                 });
-
-
         });
+
+
     }
 
 
@@ -224,10 +256,22 @@ module.exports = function (RED) {
     RED.httpAdmin.get("/global_data", RED.auth.needsPermission('global_data.read'), function (req, res) {
         //send all data to node
 
+        if (this.global_data.data == undefined ){
+            let old_data = readData();
+            if (old_data != undefined){
+                this.global_data.data = old_data;
+            }else{
+                this.global_data.data = {
+                    entities: {},
+                    intents: {}
+                }
+            }
+        }
         res.json(this.global_data.data);
     });
 
-    RED.httpAdmin.post('/global_data', RED.auth.needsPermission("global_data.write"), function (req, res) {
+
+       RED.httpAdmin.post('/global_data', RED.auth.needsPermission("global_data.write"), function (req, res) {
 
         let new_data = req.body;
         ///Handle creation on new intent or entity from node
@@ -258,6 +302,9 @@ module.exports = function (RED) {
         }
 
     });
+
+
+
 
 
 }

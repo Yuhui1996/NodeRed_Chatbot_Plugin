@@ -1,22 +1,5 @@
 var global_data = module.exports = {
-    data: {
-        entities: {
-            "Test_Entity": {
-                values: [{
-                    value: "Menu",
-                    synonyms: ["Veg", "Normal", "Special_Menu"]
-                }],
-                description: "Hello",
-                fuzzy_match: true
-            }
-        },
-        intents: {
-            "Test_Intent": {
-                description: "",
-                examples: [{text: "Hello"}, {text: "Hi"}]
-            }
-        }
-    },
+    data: undefined,
     add_intent: function (send_data) {
 
         let intent_data = {
