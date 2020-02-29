@@ -1,8 +1,5 @@
 var global_data = module.exports = {
-    data: {
-        entities: {},
-        intents: {}
-    },
+    data: undefined,
     add_intent: function (send_data) {
 
         let intent_data = {

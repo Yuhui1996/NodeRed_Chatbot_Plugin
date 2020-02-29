@@ -17,10 +17,9 @@ module.exports = function (RED) {
     function writeData(){
 
         try {
-            let data = JSON.stringify(this.global_data, null, 2);
+            let data = JSON.stringify(this.global_data.data, null, 2);
 
-            fs.writeFile('./global_data.json', data, (err) => {
-                if (err) throw err;
+                fs.writeFile('global_data.json', data, (err) => {
                 console.log('Data written to file');
             });
         }catch (e) {
@@ -30,7 +29,7 @@ module.exports = function (RED) {
 
     function readData(){
         try{
-            let jsonData = require('../global_data.json');
+            let  jsonData = JSON.parse(fs.readFileSync('global_data.json', 'utf8'));
             return jsonData;
         }catch (e) {
             console.log("failed to load data");
@@ -42,11 +41,14 @@ module.exports = function (RED) {
 
     this.global_data = require('../scripts/global_data.js');
 
-    let tempData = readData();
+    // try{
+    //     this.old_data = require('../data/global_data.json');
+    // }catch (e) {
+    //     console.log("No old data");
+    // }
 
-    if (tempData != undefined){
-        this.global_data.data = tempData;
-    }
+
+
 
     //Unused slow function that has been replaced by used on creation
     function send_pre_data(current_assistant, msg) {
@@ -158,7 +160,6 @@ module.exports = function (RED) {
     function createWatson(config) {
 
 
-
         // test_data();
 
         RED.nodes.createNode(this, config);
@@ -254,8 +255,20 @@ module.exports = function (RED) {
     RED.httpAdmin.get("/global_data", RED.auth.needsPermission('global_data.read'), function (req, res) {
         //send all data to node
 
+        if (this.global_data.data == undefined ){
+            let old_data = readData();
+            if (old_data != undefined){
+                this.global_data.data = old_data;
+            }else{
+                this.global_data.data = {
+                    entities: {},
+                    intents: {}
+                }
+            }
+        }
         res.json(this.global_data.data);
     });
+
 
        RED.httpAdmin.post('/global_data', RED.auth.needsPermission("global_data.write"), function (req, res) {
 
