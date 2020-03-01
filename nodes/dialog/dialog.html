@@ -417,7 +417,7 @@
             response_values: {
                 value: [{
                     responseType: "",
-                    responseContent: ""
+                    responseContent: []
                 }]
             },
             condition: {
@@ -446,7 +446,8 @@
                     });
                     var row = $('<div/>').appendTo(container);
                     var row2 = $('<div/>', {
-                        style: "padding-left: 10px; display: flex; flex-direction: column;"
+                        style: "padding-left: 10px; display: flex; flex-direction: column;",
+                        class: "node-input-text-responses"
                     }).appendTo(container);
                     var row3 = $('<div/>', {
                         style: "padding-left: 10px; display: flex; margin-bottom: 2px;"
@@ -477,7 +478,7 @@
                     addVariationButton.on("click", function () {
                         $('<input/>', {
                             id: "node-input-case-" + i,
-                            class: "node-input-case",
+                            class: "node-input-response",
                             type: "text",
                             placeholder: "Enter response text"
                         }).appendTo(row2)
@@ -520,6 +521,7 @@
                 removable: true
             });
             
+            // Initialize list with saved responses
             if(this.response_values){
                 for (var i = 0; i < this.response_values.length; i++) {
                     var response = this.response_values[i];
@@ -856,7 +858,7 @@
 
             var responseList = $("#node-input-value-container").editableList('items');
 
-            console.log(responseList);
+            //console.log(responseList);
 
             var node = this;
             node.response_values = [];
@@ -864,14 +866,13 @@
             responseList.each(function (i) {
                 var responseElement = $(this);
                 var response = responseElement.find(".node-input-response").val();
-                console.log(response);
+                var responses = responseElement.find(".node-input-text-responses").children;
+                console.log("responses " + responses.length);
                 var listElement = {
                     responseContent: response
                 };
                 node.response_values.push(listElement);
             });
-            console.log(node.response_values);
-            console.log(node.response_values[0].responseContent);
             
         }
     })
