@@ -201,20 +201,6 @@ module.exports = function (RED) {
 
             let top = this;
 
-            function createWatson(){
-                top.assistant.createWorkspace(workspace)
-                    .then(res => {
-                        json = JSON.stringify(res, null, 2);
-                        let object = JSON.parse(json);
-                        workspaceid = object.result.workspace_id;
-                        msg.payload.workspaceId = workspaceid;
-                        node.send(msg); //send workspace id to next
-
-                    })
-                    .catch(err => {
-                        console.log(err);
-                    });
-            }
 
 
             this.assistant.listWorkspaces()
@@ -233,11 +219,8 @@ module.exports = function (RED) {
                             this.assistant.deleteWorkspace(workspace_to_delete)
                                 .then(res => {
                                     console.log("delete success");
-<<<<<<< HEAD
-                                    createWatson();
-                                    not_found = false;
 
-=======
+
                                     this.assistant.createWorkspace(workspace)
                                         .then(res => {
                                             json = JSON.stringify(res, null, 2);
@@ -255,22 +238,18 @@ module.exports = function (RED) {
                                         .catch(err => {
                                             console.log(err);
                                         });
->>>>>>> test_dialog_node_system
+
                                 })
                                 .catch(err => {
                                     console.log(err);
                                     not_found = false;
                                     console.log("delete not applied");
-                                    createWatson();
+
                                 });
+                            break;
                         }
 
                     }
-
-                    if (not_found){
-                        createWatson();
-                    }
-
 
                 })
                 .catch(err => {

@@ -89,10 +89,7 @@ module.exports = function (RED) {
             this.id = this.id + Math.random().toString(36).substr(2, 10);
             //for creating dialog node
 
-<<<<<<< HEAD
-=======
-            
->>>>>>> test_dialog_node_system
+
             let params = {
                 workspaceId: msg.payload.workspaceId,
                 parent: msg.payload.nodeID,

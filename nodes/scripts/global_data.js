@@ -1,26 +1,5 @@
 var global_data = module.exports = {
-<<<<<<< HEAD
-    data: {
-        entities: {
-            "Test_Entity": {
-                values: [{
-                    value: "Menu",
-                    synonyms: ["Veg", "Normal", "Special_Menu"]
-                }],
-                description: "Hello",
-                fuzzy_match: true
-            }
-        },
-        intents: {
-            "Test_Intent": {
-                description: "",
-                examples: [{text: "Hello"}, {text: "Hi"}]
-            }
-        }
-    },
-=======
     data: undefined,
->>>>>>> test_dialog_node_system
     add_intent: function (send_data) {
 
         let intent_data = {
