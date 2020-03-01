@@ -421,7 +421,7 @@
             response_values: {
                 value: [{
                     responseType: "",
-                    responseContent: []
+                    responseContent: ""
                 }]
             },
             condition: {
@@ -473,6 +473,7 @@
                         placeholder: "Enter response text",
                         value: data.responseContent,
                     }).appendTo(row2);
+                    /*
                     var addVariationButton = $('<button/>', {
                         id: "node-button-add-variation" + i,
                         type: "button",
@@ -487,6 +488,7 @@
                             placeholder: "Enter response text"
                         }).appendTo(row2)
                     });
+                    */
                     selectField.on("change", function () {
                         var type = selectField.val();
                         if (type === "text") {
@@ -524,14 +526,8 @@
                 sortable: true,
                 removable: true
             });
-<<<<<<< HEAD
-            
-            // Initialize list with saved responses
-            if(this.response_values){
-=======
 
             if (this.response_values) {
->>>>>>> 8962c2692d33dbe5c7fe938d8d1949993cf34c6b
                 for (var i = 0; i < this.response_values.length; i++) {
                     var response = this.response_values[i];
                     $("#node-input-value-container").editableList('addItem', response);
@@ -875,20 +871,14 @@
             responseList.each(function (i) {
                 var responseElement = $(this);
                 var response = responseElement.find(".node-input-response").val();
-                var responses = responseElement.find(".node-input-text-responses").children;
-                console.log("responses " + responses.length);
                 var listElement = {
                     responseContent: response
                 };
                 node.response_values.push(listElement);
             });
-<<<<<<< HEAD
-            
-=======
-            console.log(node.response_values);
-            console.log(node.response_values[0].responseContent);
 
->>>>>>> 8962c2692d33dbe5c7fe938d8d1949993cf34c6b
+            console.log(node.response_values);
+
         }
     })
     ;
