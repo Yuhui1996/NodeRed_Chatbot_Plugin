@@ -9,11 +9,12 @@ const {
 
 const api_origional = 'NYLBfhff5TKngBCwOxjfRp7dIipvFPm_v1yo_XlR_K7W';
 const instance_origional = 'https://api.eu-gb.assistant.watson.cloud.ibm.com/instances/a20b257b-83f7-44a4-8093-2553e67aa381';
-module.exports = function(RED) {
+module.exports = function (RED) {
+
+
 
 
     function MetadataNode(node_data) {
-        console.log(node_data);
         // console.log(n.instance);
         RED.nodes.createNode(this, node_data);
         var node = this;
@@ -30,7 +31,10 @@ module.exports = function(RED) {
         // var old = this.context().flow.get("assistant");
         this.context().flow.set("assistant", assistant);
 
-        this.on("input", function(msg) {
+
+
+
+        this.on("input", function (msg) {
             msg.payload = {
                 chatbot_name: node_data.chatbotName,
                 wa_api_key: node_data.wa,
@@ -46,10 +50,9 @@ module.exports = function(RED) {
     }
 
 
-
     RED.nodes.registerType("metadata", MetadataNode);
 
-    RED.httpAdmin.post("/metadata/:id", RED.auth.needsPermission("inject.write"), function(req, res) {
+    RED.httpAdmin.post("/metadata/:id", RED.auth.needsPermission("inject.write"), function (req, res) {
         var node = RED.nodes.getNode(req.params.id);
         if (node != null) {
             try {
@@ -65,4 +68,9 @@ module.exports = function(RED) {
             res.sendStatus(404);
         }
     });
+
+
+
+
+
 }
