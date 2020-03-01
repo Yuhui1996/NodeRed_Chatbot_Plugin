@@ -88,13 +88,32 @@ module.exports = function (RED) {
             this.id = this.id + Math.random().toString(36).substr(2, 10);
             //for creating dialog node
 
+            function getResponses(){
+                var output = {
+                    generic: []
+                }
+                console.log(n.response_values[0].responseContent);
+                for(var i = 0; i < n.response_values.length; i++){
+                    output.generic.push({
+                        values: [
+                            {
+                                text: n.response_values[i].responseContent
+                            }
+                        ],
+                        response_type: "text"
+                    })
+                }
+
+                return output;
+            }
             
             let params = {
                 workspaceId: msg.payload.workspaceId,
                 parent: msg.payload.nodeID,
                 dialogNode: this.id, //needs to be unique
                 conditions: getReferenceValue(n.dialog_type, n.dialog_value, n.condition, n.conditionChoices),
-                title: n.name
+                title: n.name,
+                output: getResponses()
             };
 
 
