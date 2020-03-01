@@ -14,6 +14,8 @@ let json;
 
 module.exports = function (RED) {
 
+
+
     function writeData(){
 
         try {
@@ -36,6 +38,20 @@ module.exports = function (RED) {
             return undefined;
         }
 
+    }
+
+    function startData() {
+        if (this.global_data.data == undefined ){
+            let old_data = readData();
+            if (old_data != undefined){
+                this.global_data.data = old_data;
+            }else{
+                this.global_data.data = {
+                    entities: {},
+                    intents: {}
+                }
+            }
+        }
     }
 
 
@@ -165,6 +181,11 @@ module.exports = function (RED) {
 
         node.on('input', function (msg) {
 
+            startData();
+
+
+            let self = this;
+
             if (global_top.global_data.data == undefined){
                 global_top.global_data.data = {
                     entities:{},
@@ -200,7 +221,28 @@ module.exports = function (RED) {
             }
 
 
-            this.assistant.listWorkspaces()
+
+            function createWatson() {
+                self.assistant.createWorkspace(workspace)
+                    .then(res => {
+                        json = JSON.stringify(res, null, 2);
+                        let object = JSON.parse(json);
+                        workspaceid = object.result.workspace_id;
+                        msg.payload.workspaceId = workspaceid;
+                        node.send(msg); //send workspace id to next
+                        console.log(config);
+                        config.nodeData = global_top.global_data.data;
+                        writeData();
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    });
+            }
+
+
+
+
+            self.assistant.listWorkspaces()
                 .then(res => {
                     json = JSON.stringify(res, null, 2);
                     const object = JSON.parse(json);
@@ -210,26 +252,11 @@ module.exports = function (RED) {
                             const workspace_to_delete = {
                                 workspaceId: object.result.workspaces[i].workspace_id,
                             };
-                            this.assistant.deleteWorkspace(workspace_to_delete)
+                            self.assistant.deleteWorkspace(workspace_to_delete)
                                 .then(res => {
                                     console.log("delete success");
-                                    this.assistant.createWorkspace(workspace)
-                                        .then(res => {
-                                            json = JSON.stringify(res, null, 2);
-                                            let object = JSON.parse(json);
-                                            workspaceid = object.result.workspace_id;
-                                            msg.payload.workspaceId = workspaceid;
-                                            node.send(msg); //send workspace id to next
+                                    node.error("delete success");
 
-
-                                            writeData();
-
-
-
-                                        })
-                                        .catch(err => {
-                                            console.log(err);
-                                        });
                                 })
                                 .catch(err => {
                                     console.log(err);
@@ -237,6 +264,8 @@ module.exports = function (RED) {
                         }
 
                     }
+
+                    createWatson();
 
 
                 })
@@ -256,17 +285,7 @@ module.exports = function (RED) {
     RED.httpAdmin.get("/global_data", RED.auth.needsPermission('global_data.read'), function (req, res) {
         //send all data to node
 
-        if (this.global_data.data == undefined ){
-            let old_data = readData();
-            if (old_data != undefined){
-                this.global_data.data = old_data;
-            }else{
-                this.global_data.data = {
-                    entities: {},
-                    intents: {}
-                }
-            }
-        }
+        startData();
         res.json(this.global_data.data);
     });
 

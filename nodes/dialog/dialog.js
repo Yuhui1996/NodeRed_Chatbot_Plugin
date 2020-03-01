@@ -109,12 +109,14 @@ module.exports = function (RED) {
                     let object = JSON.parse(json);
                     let nodeID = top.id;
                     msg.payload.nodeID = nodeID;
+                    node.status({fill:"green",shape:"ring",text:"Complete"});
                     node.send(msg);
 
 
                 })
                 .catch(err => {
                     console.log(err)
+                    this.status({fill:"red",shape:"ring",text:"failed"});
                     //    "THIS IS ERROR OF" + this.id + "__________________________-\n\n" +
                 });
         });
