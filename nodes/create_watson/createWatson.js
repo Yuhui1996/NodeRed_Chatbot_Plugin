@@ -19,7 +19,7 @@ module.exports = function (RED) {
         try {
             let data = JSON.stringify(this.global_data.data, null, 2);
 
-                fs.writeFile('global_data.json', data, (err) => {
+            fs.writeFile('global_data.json', data, (err) => {
                 console.log('Data written to file');
             });
         }catch (e) {
@@ -122,7 +122,7 @@ module.exports = function (RED) {
                 examples: this.global_data.data.intents[next_intent].examples
             };
 
-           intents.push(intent);
+            intents.push(intent);
         }
         console.log("Intents_______________\n" + intents);
         return intents;
@@ -283,7 +283,7 @@ module.exports = function (RED) {
     });
 
 
-       RED.httpAdmin.post('/global_data', RED.auth.needsPermission("global_data.write"), function (req, res) {
+    RED.httpAdmin.post('/global_data', RED.auth.needsPermission("global_data.write"), function (req, res) {
 
         let new_data = req.body;
         ///Handle creation on new intent or entity from node

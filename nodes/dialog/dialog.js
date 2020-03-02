@@ -90,12 +90,32 @@ module.exports = function (RED) {
             //for creating dialog node
 
 
+            function getResponses(){
+                var output = {
+                    generic: []
+                }
+                console.log(n.response_values[0].responseContent);
+                for(var i = 0; i < n.response_values.length; i++){
+                    output.generic.push({
+                        values: [
+                            {
+                                text: n.response_values[i].responseContent
+                            }
+                        ],
+                        response_type: "text"
+                    })
+                }
+
+                return output;
+            }
+
             let params = {
                 workspaceId: msg.payload.workspaceId,
                 parent: msg.payload.nodeID,
                 dialogNode: this.id, //needs to be unique
                 conditions: getReferenceValue(n.dialog_type, n.dialog_value, n.condition, n.conditionChoices),
-                title: n.name
+                title: n.name,
+                output: getResponses()
             };
 
 
@@ -110,12 +130,14 @@ module.exports = function (RED) {
                     let object = JSON.parse(json);
                     let nodeID = top.id;
                     msg.payload.nodeID = nodeID;
+                    node.status({fill:"green",shape:"ring",text:"Complete"});
                     node.send(msg);
 
 
                 })
                 .catch(err => {
                     console.log(err)
+                    this.status({fill:"red",shape:"ring",text:"failed"});
                     //    "THIS IS ERROR OF" + this.id + "__________________________-\n\n" +
                 });
 

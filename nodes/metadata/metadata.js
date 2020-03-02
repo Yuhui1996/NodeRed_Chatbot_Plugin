@@ -15,7 +15,6 @@ module.exports = function (RED) {
 
 
     function MetadataNode(node_data) {
-        console.log(node_data);
         // console.log(n.instance);
         RED.nodes.createNode(this, node_data);
         var node = this;
