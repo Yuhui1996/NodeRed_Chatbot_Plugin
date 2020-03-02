@@ -521,7 +521,12 @@
                             }).appendTo(row2);
                         }
                     });
-
+                    $('<input/>', {
+                        id: "node-input-case-" + index_res,
+                        class: "node-input-response",
+                        type: "text",
+                        placeholder: "Enter response text"
+                    }).appendTo(row2);
                     var addVariationButton = $('<button/>', {
                         id: "node-button-add-variation" + index_res,
                         type: "button",
@@ -538,6 +543,7 @@
                     });
 
                     if (!data.hasOwnProperty('response_type')) {
+                        row2.empty();
                         //selectField.val("text");
                         var textInput = $('<input/>', {
                             id: "node-input-case-" + index_res,
@@ -552,6 +558,7 @@
                     } else {
                         //text
                         if (data.response_type === "text") {
+                            row2.empty();
                             selectField.val("text");
                             var textInput = $('<input/>', {
                                 id: "node-input-case-" + index_res,
