@@ -14,6 +14,8 @@ let json;
 
 module.exports = function (RED) {
 
+
+
     function writeData(){
 
         try {
@@ -36,6 +38,20 @@ module.exports = function (RED) {
             return undefined;
         }
 
+    }
+
+    function startData() {
+        if (this.global_data.data == undefined ){
+            let old_data = readData();
+            if (old_data != undefined){
+                this.global_data.data = old_data;
+            }else{
+                this.global_data.data = {
+                    entities: {},
+                    intents: {}
+                }
+            }
+        }
     }
 
 
@@ -165,6 +181,11 @@ module.exports = function (RED) {
 
         node.on('input', function (msg) {
 
+            startData();
+
+
+            let self = this;
+
             if (global_top.global_data.data == undefined){
                 global_top.global_data.data = {
                     entities:{},
@@ -199,57 +220,53 @@ module.exports = function (RED) {
                 entities: createEntities()
             }
 
-            let top = this;
+
+
+            function createWatson() {
+                self.assistant.createWorkspace(workspace)
+                    .then(res => {
+                        json = JSON.stringify(res, null, 2);
+                        let object = JSON.parse(json);
+                        workspaceid = object.result.workspace_id;
+                        msg.payload.workspaceId = workspaceid;
+                        node.send(msg); //send workspace id to next
+                        console.log(config);
+                        config.nodeData = global_top.global_data.data;
+                        writeData();
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    });
+            }
 
 
 
-            this.assistant.listWorkspaces()
+
+            self.assistant.listWorkspaces()
                 .then(res => {
-                    console.log("Workspace Found")
                     json = JSON.stringify(res, null, 2);
                     const object = JSON.parse(json);
-                    let not_found = true;
                     for (let i = 0; i < object.result.workspaces.length; i++) {
                         if (object.result.workspaces[i].name == msg.payload.chatbot_name) {//if the workspce exist
-
                             console.log(object.result.workspaces[i].name);
                             const workspace_to_delete = {
                                 workspaceId: object.result.workspaces[i].workspace_id,
                             };
-                            this.assistant.deleteWorkspace(workspace_to_delete)
+                            self.assistant.deleteWorkspace(workspace_to_delete)
                                 .then(res => {
                                     console.log("delete success");
-
-
-                                    this.assistant.createWorkspace(workspace)
-                                        .then(res => {
-                                            json = JSON.stringify(res, null, 2);
-                                            let object = JSON.parse(json);
-                                            workspaceid = object.result.workspace_id;
-                                            msg.payload.workspaceId = workspaceid;
-                                            node.send(msg); //send workspace id to next
-
-
-                                            writeData();
-
-
-
-                                        })
-                                        .catch(err => {
-                                            console.log(err);
-                                        });
+                                    node.error("delete success");
 
                                 })
                                 .catch(err => {
                                     console.log(err);
-                                    not_found = false;
-                                    console.log("delete not applied");
-
                                 });
-                            break;
                         }
 
                     }
+
+                    createWatson();
+
 
                 })
                 .catch(err => {
@@ -268,17 +285,7 @@ module.exports = function (RED) {
     RED.httpAdmin.get("/global_data", RED.auth.needsPermission('global_data.read'), function (req, res) {
         //send all data to node
 
-        if (this.global_data.data == undefined ){
-            let old_data = readData();
-            if (old_data != undefined){
-                this.global_data.data = old_data;
-            }else{
-                this.global_data.data = {
-                    entities: {},
-                    intents: {}
-                }
-            }
-        }
+        startData();
         res.json(this.global_data.data);
     });
 

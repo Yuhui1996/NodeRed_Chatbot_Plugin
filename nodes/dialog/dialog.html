@@ -473,8 +473,9 @@
 
                     var selectField = $('<select/>', {
                         style: "width:120px; margin-left: 5px; text-align: center;",
-                        id: "node-input-response_type-" + i
+                        id: "node-input-response_type-" + index_res
                     }).appendTo(row);
+
                     var group0 = $('<optgroup/>', {
                         label: "Response type"
                     }).appendTo(selectField);
@@ -488,7 +489,7 @@
                             row2.empty();
                             addVariationButton.show();
                             var textInput = $('<input/>', {
-                                id: "node-input-case-" + i,
+                                id: "node-input-case-" + index_res,
                                 class: "node-input-case",
                                 type: "text",
                                 placeholder: "Enter response text"
@@ -500,44 +501,36 @@
                             addVariationButton.hide();
 
                             var textInput = $('<input/>', {
-                                id: "node-input-imageTitle-" + i,
+                                id: "node-input-imageTitle-" + index_res,
                                 type: "text",
                                 placeholder: "Add title(optional)"
                             }).appendTo(row2);
 
                             var textInput = $('<input/>', {
                                 style: "margin-top: 5px;",
-                                id: "node-input-imageDescription-" + i,
+                                id: "node-input-imageDescription-" + index_res,
                                 type: "text",
                                 placeholder: "Add image description(optional)"
                             }).appendTo(row2);
 
                             var textInput = $('<input/>', {
                                 style: "margin-top: 5px;",
-                                id: "node-input-imageUrl-" + i,
+                                id: "node-input-imageUrl-" + index_res,
                                 type: "text",
                                 placeholder: "Add image Source"
                             }).appendTo(row2);
                         }
                     });
 
-                    var textInput = $('<input/>', {
-                        id: "node-input-case-" + i,
-                        class: "node-input-response",
-                        type: "text",
-                        placeholder: "Enter response text",
-                        value: data.responseContent,
-                    }).appendTo(row2);
-
                     var addVariationButton = $('<button/>', {
-                        id: "node-button-add-variation" + i,
+                        id: "node-button-add-variation" + index_res,
                         type: "button",
                         style: "margin-top: auto; height: 30px"
                     }).appendTo(row3);
                     addVariationButton.text('+');
                     addVariationButton.on("click", function () {
                         $('<input/>', {
-                            id: "node-input-case-" + i,
+                            id: "node-input-case-" + index_res,
                             class: "node-input-response",
                             type: "text",
                             placeholder: "Enter response text"
@@ -545,17 +538,23 @@
                     });
 
                     if (!data.hasOwnProperty('response_type')) {
+                        //selectField.val("text");
                         var textInput = $('<input/>', {
-                            id: "node-input-case-" + i,
+                            id: "node-input-case-" + index_res,
                             class: "node-input-case",
                             type: "text",
                             placeholder: "Enter response text"
                         }).appendTo(row2);
+
+                        var typeid = "node-input-response_type-" + index_res;
+                        var type = $('#'+typeid).val();
+                        console.log("add:" + index_res + "- " + type);
                     } else {
                         //text
                         if (data.response_type === "text") {
+                            selectField.val("text");
                             var textInput = $('<input/>', {
-                                id: "node-input-case-" + i,
+                                id: "node-input-case-" + index_res,
                                 class: "node-input-case",
                                 type: "text",
                                 value: data.responseContent
@@ -563,25 +562,26 @@
                         }
                         //image
                         else if (data.response_type === "image") {
+                            row2.empty();
                             addVariationButton.hide();
                             var imageElement = data.image;
                             selectField.val("image");
                             var textInput = $('<input/>', {
-                                id: "node-input-imageTitle-" + i,
+                                id: "node-input-imageTitle-" + index_res,
                                 type: "text",
                                 value: imageElement.title
                             }).appendTo(row2);
 
                             var textInput = $('<input/>', {
                                 style: "margin-top: 5px;",
-                                id: "node-input-imageDescription-" + i,
+                                id: "node-input-imageDescription-" + index_res,
                                 type: "text",
                                 value: imageElement.description
                             }).appendTo(row2);
 
                             var textInput = $('<input/>', {
                                 style: "margin-top: 5px;",
-                                id: "node-input-imageUrl-" + i,
+                                id: "node-input-imageUrl-" + index_res,
                                 type: "text",
                                 value: imageElement.source
                             }).appendTo(row2);
@@ -895,6 +895,7 @@
             responselist.each(function (i) {
                 var typeid = "node-input-response_type-" + i;
                 var type = $('#'+typeid).val();
+                console.log(i + ": " + type);
 
                 if(type === "image"){
                     var titleid = "node-input-imageTitle-" + i;
@@ -918,7 +919,7 @@
                     node.dialog_response.push(responseElement);
                     console.log("image:" + node.dialog_response);
                 }
-                else{
+                else if(type === "text"){
                     //text
                     var textid = "node-input-case-" + i;
                     var content = $('#'+textid).val();

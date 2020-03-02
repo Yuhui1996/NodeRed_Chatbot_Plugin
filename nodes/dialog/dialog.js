@@ -94,18 +94,36 @@ module.exports = function (RED) {
                 var output = {
                     generic: []
                 }
-                console.log(n.response_values[0].responseContent);
-                for(var i = 0; i < n.response_values.length; i++){
-                    output.generic.push({
-                        values: [
-                            {
-                                text: n.response_values[i].responseContent
-                            }
-                        ],
-                        response_type: "text"
-                    })
-                }
+                var responses = n.dialog_response;
+                for(var i =0; i < responses.length; i++){
+                    if(responses[i].response_type === "image"){
+                        var image = responses[i].image;
+                        var response = {};
+                        response.response_type = "image";
 
+                        //if(responses[i].url != undefined){
+                        response.source = image.source;
+                        //console.log("source:" + image.source);
+                        //}
+                        if(image.title != undefined){
+                            response.title = image.title;
+                        }
+                        if(image.description != undefined){
+                            response.description = image.description;
+                        }
+                        output.generic.push(response);
+                    }
+                    else if (responses[i].response_type === "text"){
+                        output.generic.push({
+                            values: [
+                                {
+                                    text: responses[i].responseContent
+                                }
+                            ],
+                            response_type: "text"
+                        })
+                    }
+                }
                 return output;
             }
 
