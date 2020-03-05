@@ -806,14 +806,16 @@
             var node = this;
             node.examples = [];
 			
+			console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>JW Log Start<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 			completeExamples = [];
 			$.getJSON('global_data', function (global_data) {
 				for (var next_intent in global_data.intents) {
 					examples = global_data.intents[next_intent].examples;
+					console.log(examples);
 					completeExamples.push.apply(completeExamples,examples);
 				}
 			});
-			console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>JW Log Start<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+			
 			console.log(completeExamples);
 			console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>JW Log End<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 
