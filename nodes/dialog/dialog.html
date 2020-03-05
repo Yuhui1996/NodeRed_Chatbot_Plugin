@@ -807,11 +807,11 @@
             node.examples = [];
 			
 			console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>JW Log Start<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+			// get all the existing examples in the global_data
 			completeExamples = [];
 			$.getJSON('global_data', function (global_data) {
 				for (var next_intent in global_data.intents) {
 					examples = global_data.intents[next_intent].examples;
-					// console.log(examples);
 					completeExamples.push.apply(completeExamples,examples);
 				}
 			});
@@ -821,6 +821,11 @@
             exampleList.each(function (i) {
                 var exampleElement = $(this);
                 var example = exampleElement.find(".node-input-examle").val();
+				
+				// get all the examples from the current intent
+				var exampleText = exampleElement.find(".node-input-examle").text();
+				console.log(exampleText);
+				
 				console.log(example);
                 var listElement = {
                     exampleContent: example
