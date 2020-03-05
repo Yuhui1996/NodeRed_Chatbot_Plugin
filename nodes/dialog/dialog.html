@@ -349,7 +349,7 @@
 
 
         new_entity.values = entity_list;
-        // console.log("New Entity:\n\n"+new_entity);
+        console.log("New Entity:\n\n"+new_entity);
         $.post("/global_data", new_entity)
             .done(function (data) {
                 alert("Data Loaded: " + data);
