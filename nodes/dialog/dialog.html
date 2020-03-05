@@ -280,14 +280,18 @@
 		
 		console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>JW Log Start<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 		// add by Jiahao 2020-03-05 START
-		let completeExamples = new Array();
+		
 		$.getJSON('global_data', function (global_data) {
+		
+			let completeExamples = new Array();
 			for (let next_intent in global_data.intents) {
 				examples = global_data.intents[next_intent].examples;
 				completeExamples.push.apply(completeExamples,examples);
 			}
+			console.log(completeExamples);
+			console.log(completeExamples.length);
 		});
-		console.log(completeExamples);
+		
 		// add by Jiahao 2020-03-05 END
 		
         exampleList.each(function (i) {
