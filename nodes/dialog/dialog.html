@@ -286,7 +286,10 @@
 			let completeExamples = new Array();
 			for (let next_intent in global_data.intents) {
 				examples = global_data.intents[next_intent].examples;
-				completeExamples.push.apply(completeExamples,examples);
+				for (let exampleElement in examples){
+					completeExamples.push.apply(completeExamples,exampleElement);
+				}
+				// completeExamples.push.apply(completeExamples,examples);
 			}
 			console.log(completeExamples);
 			console.log(completeExamples.length);
