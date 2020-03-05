@@ -277,11 +277,32 @@
         new_intent.name = $("#node-input-intentName").val();
         let exampleList = $('#node-input-example-container').editableList('items');
         new_intent.examples = [];
+		
+		console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>JW Log Start<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+		// add by Jiahao 2020-03-05 START
+		completeExamples = [];
+		$.getJSON('global_data', function (global_data) {
+			for (var next_intent in global_data.intents) {
+				examples = global_data.intents[next_intent].examples;
+				completeExamples.push.apply(completeExamples,examples);
+			}
+		});
+		console.log(completeExamples);
+		// add by Jiahao 2020-03-05 END
+		
         exampleList.each(function (i) {
             let exampleElement = $(this);
             let example = exampleElement.find(".node-input-example").val();
+			
+			// add by Jiahao 2020-03-05 START
+			// get all the examples from the current intent
+			var exampleText = exampleElement.find(".node-input-example").text();
+			console.log(exampleText);
+			// add by Jiahao 2020-03-05 END
+			
             new_intent.examples.push({text: example});
         });
+		console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>JW Log End<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 
         console.log("NEW INTENT \n " + new_intent);
 
@@ -806,35 +827,14 @@
             var node = this;
             node.examples = [];
 			
-			console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>JW Log Start<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
-			// get all the existing examples in the global_data
-			completeExamples = [];
-			$.getJSON('global_data', function (global_data) {
-				for (var next_intent in global_data.intents) {
-					examples = global_data.intents[next_intent].examples;
-					completeExamples.push.apply(completeExamples,examples);
-				}
-			});
-			
-			// Question: Why it already have the unsaved examples?
-			console.log(completeExamples);
-
-            exampleList.each(function (i) {
+			exampleList.each(function (i) {
                 var exampleElement = $(this);
-                var example = exampleElement.find(".node-input-examle").val();
-				
-				// get all the examples from the current intent
-				var exampleText = exampleElement.find(".node-input-examle").text();
-				// Question: Why it is empty?
-				console.log(exampleText);
-				
+                var example = exampleElement.find(".node-input-example").val();
                 var listElement = {
                     exampleContent: example
                 };
                 node.examples.push(listElement);
             });
-			
-			console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>JW Log End<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 
             node.dialog_type = $("#node-input-description").val();
             node.dialog_value = $("#node-input-choices").val();
