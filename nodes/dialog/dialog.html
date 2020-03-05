@@ -811,22 +811,24 @@
 			$.getJSON('global_data', function (global_data) {
 				for (var next_intent in global_data.intents) {
 					examples = global_data.intents[next_intent].examples;
-					console.log(examples);
+					// console.log(examples);
 					completeExamples.push.apply(completeExamples,examples);
 				}
 			});
 			
 			console.log(completeExamples);
-			console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>JW Log End<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 
             exampleList.each(function (i) {
                 var exampleElement = $(this);
                 var example = exampleElement.find(".node-input-examle").val();
+				console.log(example);
                 var listElement = {
                     exampleContent: example
                 };
                 node.examples.push(listElement);
             });
+			
+			console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>JW Log End<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 
             node.dialog_type = $("#node-input-description").val();
             node.dialog_value = $("#node-input-choices").val();
