@@ -284,12 +284,14 @@
 		$.getJSON('global_data', function (global_data) {
 			for (let next_intent in global_data.intents) {
 				examples = global_data.intents[next_intent].examples;
-				console.log(examples.length);
-				completeExamples.push.apply(completeExamples,examples);
+				// completeExamples.push.apply(completeExamples,examples);
+				for (let exampleElement in examples){
+					console.log(exampleElement);
+					completeExamples.push.apply(completeExamples,exampleElement);
+				}
 			}
 		});
 		console.log(completeExamples);
-		console.log(completeExamples.length);
 		// add by Jiahao 2020-03-05 END
 		
         exampleList.each(function (i) {
