@@ -283,16 +283,15 @@
 		
 		$.getJSON('global_data', function (global_data) {
 		
-			let completeExamples = new Array();
+			let globalExamples = new Array();
 			for (let next_intent in global_data.intents) {
 				examples = global_data.intents[next_intent].examples;
-				for (let exampleElement in examples){
-					completeExamples.push.apply(completeExamples,examples[exampleElement].text);
-				}
-				// completeExamples.push.apply(completeExamples,examples);
+				globalExamples.push.apply(globalExamples,examples);
 			}
-			console.log(completeExamples);
-			console.log(completeExamples.length);
+			console.log(globalExamples);
+			for (let globalExample in globalExamples){
+				console.log(globalExample);
+			}
 		});
 		
 		// add by Jiahao 2020-03-05 END
