@@ -284,11 +284,7 @@
 		$.getJSON('global_data', function (global_data) {
 			for (let next_intent in global_data.intents) {
 				examples = global_data.intents[next_intent].examples;
-				// completeExamples.push.apply(completeExamples,examples);
-				for (let exampleElement in examples){
-					console.log(exampleElement["text"]);
-					completeExamples.push.apply(completeExamples,exampleElement["text"]);
-				}
+				completeExamples.push.apply(completeExamples,examples);
 			}
 		});
 		console.log(completeExamples);
