@@ -280,17 +280,27 @@
 		
 		console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>JW Log Start<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 		// add by Jiahao 2020-03-05 START
-		
 		$.getJSON('global_data', function (global_data) {
-		
+			// list all the global examples
 			let globalExamples = new Array();
 			for (let next_intent in global_data.intents) {
 				examples = global_data.intents[next_intent].examples;
 				globalExamples.push.apply(globalExamples,examples);
 			}
+			let errorFlag = false;
+			// list the unsaved examples
+			exampleList.each(function (i) {
+				let exampleElement = $(this);
+				let example = exampleElement.find(".node-input-example").val();
+				for (let globalExample in globalExamples){
+					if (example == globalExamples[globalExample].text) {
+						errorFlag = true;
+					}
+				}
+			});
 			console.log(globalExamples);
 			for (let globalExample in globalExamples){
-				console.log(globalExamples[globalExample]);
+				console.log(globalExamples[globalExample].text);
 			}
 		});
 		
