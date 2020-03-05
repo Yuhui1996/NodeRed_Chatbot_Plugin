@@ -284,7 +284,10 @@
 		$.getJSON('global_data', function (global_data) {
 			for (var next_intent in global_data.intents) {
 				examples = global_data.intents[next_intent].examples;
-				completeExamples.push.apply(completeExamples,examples);
+				for (var example in examples) {
+					completeExamples.push(example.text);
+				}
+				// completeExamples.push.apply(completeExamples,examples);
 			}
 		});
 		console.log(completeExamples);
@@ -296,7 +299,6 @@
 			
 			// add by Jiahao 2020-03-05 START
 			// get all the examples from the current intent
-			var exampleText = exampleElement.find(".node-input-example").text();
 			console.log(example);
 			// add by Jiahao 2020-03-05 END
 			
