@@ -285,7 +285,7 @@
 			for (var next_intent in global_data.intents) {
 				examples = global_data.intents[next_intent].examples;
 				for (var example in examples) {
-					completeExamples.push(example.text);
+					completeExamples.push(example["text"]);
 				}
 				// completeExamples.push.apply(completeExamples,examples);
 			}
