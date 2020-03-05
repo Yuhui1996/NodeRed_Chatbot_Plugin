@@ -330,13 +330,13 @@
             //get list of synonyms from within this list item
 
             var list = entity.find(".node-input-entity-value-synonyms").editableList('items');
-            value.synonym = [];
+            value.synonyms = [];
 
             //loop through synonymn item
             list.each(function (j) {
                 var syn_value = $(this);
                 var next_value = syn_value.find(".node-input-entity-value-syn-value").val();
-                value.synonym.push(next_value);
+                value.synonyms.push(next_value);
             });
 
             //get value
