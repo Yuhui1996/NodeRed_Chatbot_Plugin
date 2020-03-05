@@ -280,9 +280,10 @@
 		
 		// add by Jiahao 2020-03-05 START
 		$.getJSON('global_data', function (global_data) {
-			console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>JW Log Start<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+			// console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>JW Log Start<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 			// list all the global examples
 			let globalExamples = new Array();
+			let duplicateExamples = new Array();
 			for (let next_intent in global_data.intents) {
 				examples = global_data.intents[next_intent].examples;
 				globalExamples.push.apply(globalExamples,examples);
@@ -295,19 +296,20 @@
 				for (let globalExample in globalExamples){
 					if (example == globalExamples[globalExample].text && example!="" && globalExamples[globalExample].text!="") {
 						errorFlag = true;
+						duplicateExamples.push(example);
 					}
 				}
 			});
 			// pop up warning message when found duplicate examples
 			if (errorFlag){
-				RED.notify("Please avoid duplicate examples among all the intents","warning");
+				RED.notify('Please avoid duplicate examples "'+duplicateExamples+'" among all the intents','warning');
 			}
 			
 			// console.log(globalExamples);
 			// for (let globalExample in globalExamples){
 			// 	console.log(globalExamples[globalExample].text);
 			// }
-			console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>JW Log End<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+			// console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>JW Log End<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 		});
 		
 		// add by Jiahao 2020-03-05 END
