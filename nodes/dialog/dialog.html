@@ -69,10 +69,12 @@
 
                 $("#node-input-choices").trigger("change");
 
-                document.getElementById("node-button-create-intent").style.display =
-                    "block";
-                document.getElementById("node-button-create-entity").style.display =
-                    "none";
+
+                $("#node-button-create-intent").show();
+
+                $("#node-button-edit-intent").show();
+                $("#node-button-edit-entity").hide();
+                $("#node-button-create-entity").hide();
 
             } else {
                 $("#node-input-description").val("@");
@@ -138,10 +140,12 @@
 
                 $("#node-input-choices").trigger("change");
 
-                document.getElementById("node-button-create-entity").style.display =
-                    "block";
-                document.getElementById("node-button-create-intent").style.display =
-                    "none";
+
+                $("#node-button-create-entity").show();
+        $("#node-button-edit-entity").show();
+
+                $("#node-button-create-intent").hide();
+                $("#node-button-edit-intent").hide();
             }
 
 
@@ -180,10 +184,13 @@
 
 
                     $("#node-input-choices").trigger("change");
-                    document.getElementById("node-button-create-intent").style.display =
-                        "block";
-                    document.getElementById("node-button-create-entity").style.display =
-                        "none";
+
+                    $("#node-button-create-intent").show();
+
+                    $("#node-button-edit-intent").show();
+
+                    $("#node-button-create-entity").hide();
+                    $("#node-button-edit-entity").hide();
                 } else {
 
 
@@ -229,10 +236,12 @@
 
                     });
 
-                    document.getElementById("node-button-create-entity").style.display =
-                        "block";
-                    document.getElementById("node-button-create-intent").style.display =
-                        "none";
+
+                    $("#node-button-create-entity").show();
+        $("#node-button-edit-entity").show();
+
+                    $("#node-button-create-intent").hide();
+                    $("#node-button-edit-intent").hide();
                     $("#node-input-choices").trigger("change");
 
 
@@ -245,15 +254,22 @@
 
     function clearCreation() {
 
-        document.getElementById("create-intent").style.display = "none";
-        document.getElementById("node-button-create-intent").style.display = "none";
-        document.getElementById("node-button-create-entity").style.display = "none";
-        document.getElementById("create-entity").style.display = "none";
+
+        $("#create-intent").hide();
+        $("#node-button-create-intent").hide();
+        $("#node-button-create-entity").hide();
+        $("#node-button-edit-intent").hide();
+        $("#node-button-edit-entity").hide();
+
+        $("#create-entity").hide();
     }
 
     function newIntent() {
-        document.getElementById("create-intent").style.display = "block";
-        document.getElementById("node-button-create-intent").style.display = "none";
+        $("#create-intent").show();
+
+
+        $("#node-button-create-intent").hide();
+        $("#node-button-edit-intent").hide();
 
 
     }
@@ -261,8 +277,25 @@
 
     function newEntity() {
 
-        document.getElementById("create-entity").style.display = "block";
-        document.getElementById("node-button-create-entity").style.display = "none";
+        $("#create-entity").show();
+        $("#node-button-create-entity").hide();
+        $("#node-button-edit-entity").hide();
+    }
+
+
+    function editIntent() {
+        $("#create-intent").show();
+        $("#node-button-create-intent").hide();
+        $("#node-button-edit-intent").hide();
+
+    }
+
+    function editEntity() {
+        $("#create-entity").show();
+        $("#node-button-create-entity").hide();
+        $("#node-button-edit-entity").hide();
+
+
     }
 
     function createIntent() {
@@ -294,9 +327,10 @@
 
         //Cal function to refresh the lists and set to new intent
         updateData("#", new_intent.name, "", "");
+        $("#node-button-create-intent").show();
 
-        document.getElementById("node-button-create-intent").style.display = "block";
-        document.getElementById("create-intent").style.display = "none";
+        $("#node-button-edit-intent").show();
+        $("#create-intent").hide();
         // Handle intent creation
     }
 
@@ -349,7 +383,7 @@
 
 
         new_entity.values = entity_list;
-        console.log("New Entity:\n\n"+new_entity);
+        console.log("New Entity:\n\n" + new_entity);
         $.post("/global_data", new_entity)
             .done(function (data) {
                 alert("Data Loaded: " + data);
@@ -358,19 +392,24 @@
 
         //Cal function to refresh the lists and set to new intent
         updateData("@", new_entity.name, "", "");
+        $("#node-button-create-entity").show();
+        $("#node-button-edit-entity").show();
 
-        document.getElementById("node-button-create-entity").style.display = "block";
-        document.getElementById("create-entity").style.display = "none";
+        $("#create-entity").hide();
     }
 
     function cancelIntent() {
-        document.getElementById("node-button-create-intent").style.display = "block";
-        document.getElementById("create-intent").style.display = "none";
+        $("#node-button-create-intent").show();
+
+        $("#node-button-edit-intent").show();
+        $("#create-intent").hide();
     }
 
     function cancelEntity() {
-        document.getElementById("node-button-create-entity").style.display = "block";
-        document.getElementById("create-entity").style.display = "none";
+        $("#node-button-create-entity").show();
+        $("#node-button-edit-entity").show();
+
+        $("#create-entity").hide();
     }
 
     RED.nodes.registerType('dialog', {
@@ -421,9 +460,9 @@
             response_values: {
                 value: [
                     {
-                    responseType: "",
-                    responseContent: ""
-                }]
+                        responseType: "",
+                        responseContent: ""
+                    }]
             },
             condition: {
                 value: ""
@@ -903,9 +942,14 @@
 
         </select>
     </div>
-    <div class=form-row>
+    <div class="form-row" style="margin-bottom: 10px;">
         <button id="node-button-create-intent" onclick="newIntent()">New Intent</button>
+        <button id="node-button-edit-intent" onclick="editIntent()">Edit Intent</button>
+    </div>
+
+    <div class="form-row" style="margin-bottom: 10px;">
         <button id="node-button-create-entity" onclick="newEntity()" hidden="true">New Entity</button>
+        <button id="node-button-edit-entity" onclick="editEntity()" hidden="true">Edit Entity</button>
     </div>
     <div id="create-intent" style="display: none;">
         <fieldset>
