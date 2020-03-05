@@ -816,6 +816,7 @@
 				}
 			});
 			
+			// Question: Why it already have the unsaved examples?
 			console.log(completeExamples);
 
             exampleList.each(function (i) {
@@ -824,9 +825,9 @@
 				
 				// get all the examples from the current intent
 				var exampleText = exampleElement.find(".node-input-examle").text();
+				// Question: Why it is empty?
 				console.log(exampleText);
 				
-				console.log(example);
                 var listElement = {
                     exampleContent: example
                 };
