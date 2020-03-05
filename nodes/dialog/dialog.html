@@ -274,7 +274,7 @@
         let new_intent = {};
         new_intent.control = "add";
         new_intent.type = "intent";
-        new_intent.name = $("#node-input-intentName").val();
+        new_intent.name = $("#node-input-intentName").val().toLowerCase();
         let exampleList = $('#node-input-example-container').editableList('items');
         new_intent.examples = [];
         exampleList.each(function (i) {
@@ -310,7 +310,7 @@
         let new_entity = {};
 
 
-        new_entity.name = $("#node-input-entityName").val();
+        new_entity.name = $("#node-input-entityName").val().toLowerCase();
         new_entity.description = "";
         new_entity.fuzzy_match = true;
 
