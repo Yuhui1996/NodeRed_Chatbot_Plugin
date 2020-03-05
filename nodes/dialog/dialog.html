@@ -293,13 +293,15 @@
 				let exampleElement = $(this);
 				let example = exampleElement.find(".node-input-example").val();
 				for (let globalExample in globalExamples){
-					if (example == globalExamples[globalExample].text) {
+					if (example == globalExamples[globalExample].text && example!="" && globalExamples[globalExample].text!="") {
 						errorFlag = true;
 					}
 				}
 			});
 			// pop up warning message when found duplicate examples
-			RED.notify('Test message','warning');
+			if (errorFlag){
+				RED.notify("Please avoid duplicate examples among all the intents","warning");
+			}
 			
 			// console.log(globalExamples);
 			// for (let globalExample in globalExamples){
