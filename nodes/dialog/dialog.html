@@ -312,7 +312,7 @@
         new_intent.examples = [];
         exampleList.each(function (i) {
             let exampleElement = $(this);
-            let example = exampleElement.find(".node-input-example").val();
+            let example = exampleElement.find(".node-input-example").val().toLowerCase();
             new_intent.examples.push({text: example});
         });
 
@@ -369,12 +369,12 @@
             //loop through synonymn item
             list.each(function (j) {
                 var syn_value = $(this);
-                var next_value = syn_value.find(".node-input-entity-value-syn-value").val();
+                var next_value = syn_value.find(".node-input-entity-value-syn-value").val().toLowerCase();
                 value.synonyms.push(next_value);
             });
 
             //get value
-            value.value = entity.find(".node-input-entity-value-value").val();
+            value.value = entity.find(".node-input-entity-value-value").val().toLowerCase();
             // console.log("RULE");
             // console.log(r);
             // //Save values to node default
