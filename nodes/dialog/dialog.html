@@ -497,8 +497,9 @@
                         label: "Response type"
                     }).appendTo(selectField);
                     for (var d in options) {
-                        group0.append($("<option><strong><strong/></option>").val(options[d].v).text(/^switch/
-                            .test(options[d].t) ? node._(options[d].t) : options[d].t));
+                        group0.append($("<option><strong><strong/></option>").val(options[d].v)
+                            .text(/^switch/
+                                .test(options[d].t) ? node._(options[d].t) : options[d].t));
                     }
                     selectField.on("change", function () {
                         var type = selectField.val();
@@ -534,13 +535,15 @@
                                 id: "node-input-option-list-" + index_res
                             }).appendTo(row2);
                             $("#node-input-option-list-" + index_res).editableList({
-                                addItem: function (optionRow, optionIndex, data) {
+                                addItem: function (optionRow, optionIndex,
+                                data) {
                                     optionRow.css({
                                         overflow: 'hidden',
                                         whiteSpace: 'nowrap',
                                     });
                                     $('<input/>', {
                                         id: "node-input-optionLabel-" +
+                                            index_res + "-" +
                                             optionIndex,
                                         type: "text",
                                         style: "width: 50%",
@@ -548,6 +551,7 @@
                                     }).appendTo(optionRow);
                                     $('<input/>', {
                                         id: "node-input-optionValue-" +
+                                            index_res + "-" +
                                             optionIndex,
                                         type: "text",
                                         style: "width: 50%",
@@ -630,17 +634,55 @@
                             $('<input/>', {
                                 id: "node-input-optionTitle-" + index_res,
                                 type: "text",
-                                style: "width: 50%;",
+                                style: "margin-bottom: 5px",
+                                placeholder: "Title",
                                 value: optionElement.title
                             }).appendTo(row2);
 
                             $('<input/>', {
-                                style: "margin-top: 5px;",
                                 id: "node-input-optionDescription-" + index_res,
                                 type: "text",
-                                style: "width: 50%;",
+                                style: "margin-bottom: 5px",
+                                placeholder: "Description (optional)",
                                 value: optionElement.description
                             }).appendTo(row2);
+                            $('<ol/>', {
+                                id: "node-input-option-list-" + index_res
+                            }).appendTo(row2);
+                            $("#node-input-option-list-" + index_res).editableList({
+                                addItem: function (optionRow, optionIndex,
+                                data) {
+                                    optionRow.css({
+                                        overflow: 'hidden',
+                                        whiteSpace: 'nowrap',
+                                    });
+                                    $('<input/>', {
+                                        id: "node-input-optionLabel-" +
+                                            index_res + "-" +
+                                            optionIndex,
+                                        type: "text",
+                                        style: "width: 50%",
+                                        placeholder: "Enter label",
+                                    }).appendTo(optionRow);
+                                    $('<input/>', {
+                                        id: "node-input-optionValue-" +
+                                            index_res + "-" +
+                                            optionIndex,
+                                        type: "text",
+                                        style: "width: 50%",
+                                        placeholder: "Enter value",
+                                    }).appendTo(optionRow);
+                                },
+                                removeItem: function (data) {
+                                    console.log("An item has been removed")
+                                },
+                                removable: true,
+                                sortItems: function (items) {
+                                    console.log(
+                                        "The items have changed order")
+                                },
+                                sortable: true
+                            });
                         }
                         //image
                         else if (data.response_type === "image") {
@@ -1020,7 +1062,42 @@
                 var type = $('#' + typeid).val();
                 console.log(i + ": " + type);
 
-                if (type === "image") {
+                if (type === "text") {
+                    //text
+                    var textid = "node-input-case-" + i;
+                    var content = $('#' + textid).val();
+                    var responseElement = {
+                        response_type: type,
+                        responseContent: content,
+                        image: {}
+                    }
+                    node.dialog_response.push(responseElement);
+                    console.log(node.dialog_response);
+                } else if (type === "option") {
+                    //option
+                    var titleid = "node-input-optionTitle-" + i;
+                    var title = $('#' + titleid).val();
+                    var descriptionid = "node-input-optionDescription-" + i;
+                    var description = $('#' + descriptionid).val();
+                    var urlid = "node-input-imageUrl-" + i;
+                    var url = $('#' + urlid).val();
+                    var optionElement = {
+                        response_type: "option",
+                        title: title,
+                        description: description,
+                        list: {}
+                    }
+
+                    var responseElement = {
+                        response_type: type,
+                        responseContent: "",
+                        option: optionElement,
+                        image: {}
+                    }
+                    node.dialog_response.push(responseElement);
+                    console.log("image:" + node.dialog_response);
+                } else if (type === "image") {
+                    //image
                     var titleid = "node-input-imageTitle-" + i;
                     var title = $('#' + titleid).val();
                     var descriptionid = "node-input-imageDescription-" + i;
@@ -1041,28 +1118,6 @@
                     }
                     node.dialog_response.push(responseElement);
                     console.log("image:" + node.dialog_response);
-                } else if (type === "text") {
-                    //text
-                    var textid = "node-input-case-" + i;
-                    var content = $('#' + textid).val();
-                    var responseElement = {
-                        response_type: type,
-                        responseContent: content,
-                        image: {}
-                    }
-                    node.dialog_response.push(responseElement);
-                    console.log(node.dialog_response);
-                } else if (type === "option") {
-                    //option
-                    var optionId = "node-input-case-" + i;
-                    var content = $('#' + textid).val();
-                    var responseElement = {
-                        response_type: type,
-                        responseContent: content,
-                        image: {}
-                    }
-                    node.dialog_response.push(responseElement);
-                    console.log(node.dialog_response);
                 }
             });
 
