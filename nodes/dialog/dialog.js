@@ -117,6 +117,7 @@ module.exports = function (RED) {
             };
 
 
+            console.log(params);
             let top = this;
             // top.assistant.createDialogNode(params)
             //

@@ -509,7 +509,7 @@
     function newIntent() {
 
 
-        $("#node-input-example-container").editableList('empty');
+
         let choice = "Intent Name";
         let data = {
             description: "This is an example description",
@@ -531,7 +531,6 @@
     function newEntity() {
 
 
-        $("#node-input-entity-value-container").editableList('empty');
 
         let choice = "Entity_name";
         let data = {
@@ -683,7 +682,6 @@
                 alert("Data Loaded: " + data);
             });
 
-
         //Cal function to refresh the lists and set to new intent
         updateData("@", new_entity.name, "", "");
         $("#node-button-create-entity").show();
@@ -708,9 +706,46 @@
 
     function deleteIntent(){
 
+        let choice = $("#node-input-choices").val();
+
+        let delete_intent = {};
+        delete_intent.name = choice;
+        delete_intent.control = "remove";
+        delete_intent.type = "intent";
+
+        $.post("/global_data", delete_intent)
+            .done(function (data) {
+                alert("Data Loaded: " + data);
+            });
+
+        updateData("#","","","");
+
+        $("#node-button-create-intent").show();
+
+        $("#node-button-edit-intent").show();
+        $("#create-intent").hide();
+
     }
 
     function deleteEntitiy(){
+        let choice = $("#node-input-choices").val();
+
+        let delete_entity = {};
+        delete_entity.name = choice;
+        delete_entity.control = "remove";
+        delete_entity.type = "entity";
+
+        $.post("/global_data", new_entity)
+            .done(function (data) {
+                alert("Data Loaded: " + data);
+            });
+
+        updateData("@","","","");
+        $("#node-button-create-entity").show();
+        $("#node-button-edit-entity").show();
+
+        $("#create-entity").hide();
+
 
     }
 
@@ -1127,67 +1162,67 @@
         oneditsave: function () {
 
             ///INTENT SAVING
-            this.intentName = $("#node-input-intentName").val();
-            this.intentDescription = $("#node-input-intentDescription").val();
+            // this.intentName = $("#node-input-intentName").val();
+            // this.intentDescription = $("#node-input-intentDescription").val();
+            //
+            //
+            // var exampleList = $('#node-input-example-container').editableList('items');
+            // var node = this;
+            // node.examples = [];
+            //
+            // exampleList.each(function (i) {
+            //     var exampleElement = $(this);
+            //     var example = exampleElement.find(".node-input-example").val();
+            //     var listElement = {
+            //         exampleContent: example
+            //     };
+            //     node.examples.push(listElement);
+            // });
 
-
-            var exampleList = $('#node-input-example-container').editableList('items');
-            var node = this;
-            node.examples = [];
-
-            exampleList.each(function (i) {
-                var exampleElement = $(this);
-                var example = exampleElement.find(".node-input-example").val();
-                var listElement = {
-                    exampleContent: example
-                };
-                node.examples.push(listElement);
-            });
-
-            node.dialog_type = $("#node-input-description").val();
-            node.dialog_value = $("#node-input-choices").val();
 
 
             //ENTITY SAVING
-
-            this.entity_name = $("#node-input-entityName").val();
-            var enitity_values = $("#node-input-entity-value-container").editableList('items');
+            //
+            // this.entity_name = $("#node-input-entityName").val();
+            // var enitity_values = $("#node-input-entity-value-container").editableList('items');
+            // node.entity_values = [];
 
             var node = this;
-            node.entity_values = [];
 
 
             node.condition = $("#node-input-condition").val();
             node.conditionChoices = $("#node-input-conditionChoices").val();
+            node.dialog_type = $("#node-input-description").val();
+            node.dialog_value = $("#node-input-choices").val();
 
-            console.log(node.conditionChoices);
-
-            //Loop through Items to save the data
-            enitity_values.each(function (i) {
-
-                //crete data variable
-                var entityData = $(this).data('data');
-                var entity = $(this);
-                var value = {};
-                //get list of synonyms from within this list item
-
-                var list = entity.find(".node-input-entity-value-synonyms").editableList('items');
-                value.s = [];
-
-                //loop through synonymn item
-                list.each(function (j) {
-                    var syn_value = $(this);
-                    var next_value = syn_value.find(".node-input-entity-value-syn-value").val();
-                    value.s.push(next_value);
-                });
-
-                //get value
-                value.v = entity.find(".node-input-entity-value-value").val();
-                // console.log("RULE");
-                // console.log(r);
-                // //Save values to node default
-                node.entity_values.push(value);
-            });
+            // console.log(node.conditionChoices);
+            //
+            // //Loop through Items to save the data
+            // enitity_values.each(function (i) {
+            //
+            //     //crete data variable
+            //     var entityData = $(this).data('data');
+            //     var entity = $(this);
+            //     var value = {};
+            //     //get list of synonyms from within this list item
+            //
+            //     var list = entity.find(".node-input-entity-value-synonyms").editableList('items');
+            //     value.s = [];
+            //
+            //     //loop through synonymn item
+            //     list.each(function (j) {
+            //         var syn_value = $(this);
+            //         var next_value = syn_value.find(".node-input-entity-value-syn-value").val();
+            //         value.s.push(next_value);
+            //     });
+            //
+            //     //get value
+            //     value.v = entity.find(".node-input-entity-value-value").val();
+            //     // console.log("RULE");
+            //     // console.log(r);
+            //     // //Save values to node default
+            //     node.entity_values.push(value);
+            // });
 
             //RESPONSE SAVING
 
