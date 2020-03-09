@@ -436,6 +436,10 @@
                 value: [{
                     response_type: "",
                     responseContent: "",
+                    option: {
+                        title: "",
+                        description: "",
+                    },
                     image: {
                         response_type: "",
                         title: "",
@@ -495,6 +499,25 @@
                                 placeholder: "Enter response text"
                             }).appendTo(row2);
                         }
+                        //option
+                        else if (type === "option") {
+                            row2.empty();
+                            addVariationButton.hide();
+                            var optionElement = data.option;
+                            selectField.val("option");
+                            $('<input/>', {
+                                id: "node-input-optionTitle-" + index_res,
+                                type: "text",
+                                placeholder: "Title"
+                            }).appendTo(row2);
+
+                            $('<input/>', {
+                                style: "margin-top: 5px;",
+                                id: "node-input-imageDescription-" + index_res,
+                                type: "text",
+                                placeholder: "Description (optional)"
+                            }).appendTo(row2);
+                        }
                         //image
                         else if (type === "image") {
                             row2.empty();
@@ -503,14 +526,14 @@
                             var textInput = $('<input/>', {
                                 id: "node-input-imageTitle-" + index_res,
                                 type: "text",
-                                placeholder: "Add title(optional)"
+                                placeholder: "Title"
                             }).appendTo(row2);
 
                             var textInput = $('<input/>', {
                                 style: "margin-top: 5px;",
-                                id: "node-input-imageDescription-" + index_res,
+                                id: "node-input-optionDescription-" + index_res,
                                 type: "text",
-                                placeholder: "Add image description(optional)"
+                                placeholder: "Description (optional)"
                             }).appendTo(row2);
 
                             var textInput = $('<input/>', {
@@ -565,6 +588,25 @@
                                 class: "node-input-case",
                                 type: "text",
                                 value: data.responseContent
+                            }).appendTo(row2);
+                        }
+                        //option
+                        else if (data.response_type === "option") {
+                            row2.empty();
+                            addVariationButton.hide();
+                            var optionElement = data.option;
+                            selectField.val("option");
+                            $('<input/>', {
+                                id: "node-input-optionTitle-" + index_res,
+                                type: "text",
+                                value: optionElement.title
+                            }).appendTo(row2);
+
+                            $('<input/>', {
+                                style: "margin-top: 5px;",
+                                id: "node-input-optionDescription-" + index_res,
+                                type: "text",
+                                value: optionElement.description
                             }).appendTo(row2);
                         }
                         //image
@@ -1004,6 +1046,8 @@
                 node.entity_values.push(value);
             });
 
+            /*
+
             //RESPONSE SAVING
 
             var responseList = $("#node-input-value-container").editableList('items');
@@ -1023,6 +1067,7 @@
             });
 
             console.log(node.response_values);
+            */
 
         }
     });
