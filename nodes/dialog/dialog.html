@@ -706,6 +706,14 @@
         $("#create-entity").hide();
     }
 
+    function deleteIntent(){
+
+    }
+
+    function deleteEntitiy(){
+
+    }
+
     RED.nodes.registerType('dialog', {
 
         category: 'Watson Designer',
@@ -1252,6 +1260,7 @@
             </div>
             <div class="form-row" style="margin-bottom: 10px;">
                 <button onclick="createIntent()">Save intent</button>
+                <button onclick="deleteIntent()">Delete intent</button>
                 <button onclick="cancelIntent()">Cancel</button>
             </div>
             <legend></legend>
@@ -1274,6 +1283,7 @@
 
             <div class="form-row" style="margin-bottom: 10px;">
                 <button onclick="createEntity()">Save entity</button>
+                <button onclick="deleteEntitiy()">Delete entity</button>
                 <button onclick="cancelEntity()">Cancel</button>
             </div>
             <legend></legend>
