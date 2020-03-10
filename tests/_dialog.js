@@ -33,7 +33,8 @@ const testValue = 'forDialogTest_Value';
 const testSym1 = 'forDialogTest_Sym1';
 const testSym2 = 'forDialogTest_Sym2';
 
-const testDialog = 'testDialog';
+const testDialog1 = 'testDialog1';
+const testDialog2 = 'testDialog2';
 const dia1_type = 'text';
 const dia1_response = 'I will show you pics';
 const dia2_type = 'image';
@@ -65,7 +66,7 @@ describe('test dialog', function() {
         helper.stopServer(done);
     });
 
-    /*
+/*
     after(function(done) { //doesnt get run after last test. not working
         const param = {
             workspaceId: testNodeId,
@@ -80,25 +81,31 @@ describe('test dialog', function() {
         done();
     });
 
-     */
+*/
 
 
     it('should be loaded', function(done) {
         var flow = [{
             id: "n1",
             type: "dialog",
-            name: testDialog
+            name: testDialog1
+        },{
+            id: "n2",
+            type: "dialog",
+            name: testDialog2
         }];
         helper.load(dialog, flow, function() {
             var n1 = helper.getNode("n1");
-            n1.should.have.property('name', testDialog);
+            var n2 = helper.getNode("n2");
+            n1.should.have.property('name', testDialog1);
+            n2.should.have.property('name', testDialog2);
             done();
         });
     });
 
 
 
-    it('workspace should be created', function(done) {
+    it('workspace should be prepared', function(done) {
         this.timeout(20000);
         var found = false;
         var flow = [{
@@ -150,23 +157,24 @@ describe('test dialog', function() {
     });
 
 
-    it('Dialog should be created', function(done) {
-        //this.timeout(20000);
+    it('Dialog for intent should be created', function(done) {
+        this.timeout(20000);
         var found = false;
         var flow = [{
             id: "n1",
             type: "dialog",
-            name: testDialog,
+            name: testDialog1,
+            dialog_value: testIntent,
+            dialog_type: '#',
+
             //testIntent
             intentName: testIntent,
             intentDescription: "",
             examples: [testExample1,testExample2],
-            //testEntity
-            entityName: testEntity,
-            entity_values: {
-                v: testEntity,
-                s: [testSym1,testSym2]
-            },
+
+            condition: '! is',
+            conditionChoices: testIntent,
+
             //dialog
             dialog_response:[{
                 response_type: dia1_type,
@@ -176,7 +184,78 @@ describe('test dialog', function() {
                 image:{
                     source: dia2_source
                 }
-            },{
+            }],
+            wires: [
+                ["n2"]
+            ]
+        },
+            {
+                id: "n2",
+                type: "helper"
+            }
+        ];
+
+
+        helper.load(dialog, flow, function() {
+            var found = false;
+            var n1 = helper.getNode("n1");
+            var n2 = helper.getNode("n2");
+            n1.receive({
+                payload: {
+                    wa_api_key: apikey,
+                    ta_api_key: "",
+                    discovery_api_key: "",
+                    instance_url: urlHost,
+                    workspaceId: testNodeId
+                }
+            });
+            n2.on("input", function(msg) {
+                var param = {
+                    workspaceId: testNodeId
+                }
+                watson_assistant.listDialogNodes(param)
+                    .then(res => {
+                        json = JSON.stringify(res, null, 2);
+                        const object = JSON.parse(json);
+                        for (let i = 0; i < object.result.dialog_nodes.length; i++) {
+                            if (object['result']['dialog_nodes'][i]['title'] === testDialog1) {
+                                found = true;
+                            }
+                        }
+                        should.equal(found, true);
+                        done();
+                    })
+                    .catch(err => {
+                        done(err);
+                    });
+            });
+        });
+
+    });
+
+
+    it('Dialog for entity should be created', function(done) {
+        this.timeout(20000);
+        var found = false;
+        var flow = [{
+            id: "n1",
+            type: "dialog",
+            name: testDialog2,
+            dialog_value: testEntity,
+            dialog_type: '@',
+
+            //testEntity
+            entityName: testEntity,
+            entity_values: {
+                v: testEntity,
+                s: [testSym1,testSym2]
+            },
+
+            condition: 'any',
+            conditionChoices: testValue,
+
+            //dialog
+            dialog_response:[{
                 response_type: dia3_type,
                 responseContent: dia3_response
             },{
@@ -185,8 +264,6 @@ describe('test dialog', function() {
                     source: dia4_source
                 }
             }],
-            //assistant: watson_assistant,
-            //assistant: null,
             ids: 1,
             wires: [
                 ["n2"]
@@ -198,14 +275,8 @@ describe('test dialog', function() {
             }
         ];
 
-        //flow.assistant = watson_assistant;
-        flow.assistant = null;
-        flow.ids = 1;
-        //console.log("test3:" + testNodeId);
-        //done();
 
         helper.load(dialog, flow, function() {
-            //flow.set("assistant", watson_assistant);
 
             var found = false;
             var n1 = helper.getNode("n1");
@@ -228,7 +299,7 @@ describe('test dialog', function() {
                         json = JSON.stringify(res, null, 2);
                         const object = JSON.parse(json);
                         for (let i = 0; i < object.result.dialog_nodes.length; i++) {
-                            if (object['result']['dialog_nodes'][i]['title'] === testDialog) {
+                            if (object['result']['dialog_nodes'][i]['title'] === testDialog2) {
                                 found = true;
                             }
                         }

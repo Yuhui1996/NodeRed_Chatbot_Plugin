@@ -85,7 +85,7 @@ module.exports = function (RED) {
                     this.context().flow.set("ids", this.id);
                 }
                 catch (e) {
-                    console.log("error");
+                    console.log("flow write error");
                 }
                 
             }
