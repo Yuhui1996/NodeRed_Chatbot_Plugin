@@ -18,6 +18,10 @@
         },
     ];
 
+    var intents = [];
+    var entities = [];
+
+
 
     //Function to update the system with the current data.
     function updateData(type_given, selected_value, condition, conditionChoice) {
@@ -246,6 +250,8 @@
             });
 
         });
+        intents = global_data.intents;
+        entities = global_data.entities;
     }
 
 
@@ -536,7 +542,7 @@
                             }).appendTo(row2);
                             $("#node-input-option-list-" + index_res).editableList({
                                 addItem: function (optionRow, optionIndex,
-                                data) {
+                                    data) {
                                     optionRow.css({
                                         overflow: 'hidden',
                                         whiteSpace: 'nowrap',
@@ -559,12 +565,9 @@
                                     }).appendTo(optionRow);
                                 },
                                 removeItem: function (data) {
-                                    console.log("An item has been removed")
                                 },
                                 removable: true,
                                 sortItems: function (items) {
-                                    console.log(
-                                        "The items have changed order")
                                 },
                                 sortable: true
                             });
@@ -651,7 +654,7 @@
                             }).appendTo(row2);
                             $("#node-input-option-list-" + index_res).editableList({
                                 addItem: function (optionRow, optionIndex,
-                                data) {
+                                    listData) {
                                     optionRow.css({
                                         overflow: 'hidden',
                                         whiteSpace: 'nowrap',
@@ -663,6 +666,7 @@
                                         type: "text",
                                         style: "width: 50%",
                                         placeholder: "Enter label",
+                                        value: listData.label
                                     }).appendTo(optionRow);
                                     $('<input/>', {
                                         id: "node-input-optionValue-" +
@@ -671,6 +675,7 @@
                                         type: "text",
                                         style: "width: 50%",
                                         placeholder: "Enter value",
+                                        value: listData.value
                                     }).appendTo(optionRow);
                                 },
                                 removeItem: function (data) {
@@ -683,6 +688,16 @@
                                 },
                                 sortable: true
                             });
+
+
+                            for (var i = 0; i < data.option.list.length; i++) {
+                                var listItem = data.option.list[i];
+                                $("#node-input-option-list-" + index_res).editableList(
+                                    'addItem',
+                                    listItem);
+                            }
+
+
                         }
                         //image
                         else if (data.response_type === "image") {
@@ -747,6 +762,8 @@
                 removable: true
             });
 
+
+
             for (var i = 0; i < this.dialog_response.length; i++) {
                 var response = this.dialog_response[i];
                 $("#node-input-value-container").editableList('addItem', response);
@@ -800,6 +817,7 @@
                 removable: true
 
             });
+
 
             for (var i = 0; i < this.examples.length; i++) {
                 var example = this.examples[i];
@@ -1055,13 +1073,11 @@
             //RESPONSE
             var responselist = $('#node-input-value-container').editableList('items');
             var node = this;
-            node.dialog_response_image = [];
             node.dialog_response = [];
             responselist.each(function (i) {
                 var typeid = "node-input-response_type-" + i;
                 var type = $('#' + typeid).val();
                 console.log(i + ": " + type);
-
                 if (type === "text") {
                     //text
                     var textid = "node-input-case-" + i;
@@ -1072,20 +1088,38 @@
                         image: {}
                     }
                     node.dialog_response.push(responseElement);
-                    console.log(node.dialog_response);
                 } else if (type === "option") {
                     //option
                     var titleid = "node-input-optionTitle-" + i;
                     var title = $('#' + titleid).val();
                     var descriptionid = "node-input-optionDescription-" + i;
                     var description = $('#' + descriptionid).val();
-                    var urlid = "node-input-imageUrl-" + i;
-                    var url = $('#' + urlid).val();
+
+                    var optionList = $('#node-input-option-list-' + i).editableList('items');
+                    var listTemp = [];
+
+                    // Save the options list
+                    optionList.each(function (j) {
+                        var optionListElement = $(this);
+                        var label = optionListElement.find("#node-input-optionLabel-" + i +
+                            "-" + j).val();
+                        var value = optionListElement.find("#node-input-optionValue-" + i +
+                            "-" + j).val();
+                        var listElement = {
+                            label: label,
+                            value: value,
+                            intents: intents,
+                            entities: entities
+                        };
+                        listTemp.push(listElement);
+                    });
+
+
                     var optionElement = {
                         response_type: "option",
                         title: title,
                         description: description,
-                        list: {}
+                        list: listTemp
                     }
 
                     var responseElement = {
@@ -1094,8 +1128,8 @@
                         option: optionElement,
                         image: {}
                     }
+
                     node.dialog_response.push(responseElement);
-                    console.log("image:" + node.dialog_response);
                 } else if (type === "image") {
                     //image
                     var titleid = "node-input-imageTitle-" + i;
@@ -1116,8 +1150,8 @@
                         responseContent: "",
                         image: imageElement
                     }
+
                     node.dialog_response.push(responseElement);
-                    console.log("image:" + node.dialog_response);
                 }
             });
 
@@ -1185,30 +1219,6 @@
                 // //Save values to node default
                 node.entity_values.push(value);
             });
-
-            /*
-
-            //RESPONSE SAVING
-
-            var responseList = $("#node-input-value-container").editableList('items');
-
-            //console.log(responseList);
-
-            var node = this;
-            node.response_values = [];
-
-            responseList.each(function (i) {
-                var responseElement = $(this);
-                var response = responseElement.find(".node-input-response").val();
-                var listElement = {
-                    responseContent: response
-                };
-                node.response_values.push(listElement);
-            });
-
-            console.log(node.response_values);
-            */
-
         }
     });
 </script>
