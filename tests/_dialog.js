@@ -20,21 +20,24 @@ const watson_assistant = new AssistantV1({
     url: urlHost
 });
 
-
-//const testNode = 'testCreateWatson';
 const testWorksp = 'testDialog';
 
-const testIntent = 'testDialog_Intent';
-const testExample1 = 'forDialogTest_Example1';
-const testExample2 = 'forDialogTest_Example2';
+const testIntent = 'testParentDialog_Intent';
+const testExample1 = 'forParentDialogTest_Example1';
+const testExample2 = 'forParentDialogTest_Example2';
 
-const testEntity = 'testDialog_Entity';
-const testValue = 'forDialogTest_Value';
-const testSym1 = 'forDialogTest_Sym1';
-const testSym2 = 'forDialogTest_Sym2';
+const testIntent2 = 'testDialog_Intent';
+const testExample2_1 = 'forDialogTest_Example1';
+const testExample2_2 = 'forDialogTest_Example2';
+
+const testEntity = 'testChildDialog_Entity';
+const testValue = 'forChildDialogTest_Value';
+const testSym1 = 'forChildDialogTest_Sym1';
+const testSym2 = 'forChildDialogTest_Sym2';
 
 const testDialog1 = 'testDialog1';
 const testDialog2 = 'testDialog2';
+const testDialog3 = 'testDialog3';
 const dia1_type = 'text';
 const dia1_response = 'I will show you pics';
 const dia2_type = 'image';
@@ -43,8 +46,13 @@ const dia3_type = 'text';
 const dia3_response = 'Please wait';
 const dia4_type = 'image';
 const dia4_source = 'https://i.ibb.co/1JzkDf1/u-1557923839-2018084581-fm-26-gp-0.jpg';
+const dia5_type = 'text';
+const dia5_response1 = 'Current version cannot handle multiple text responses';
+const dia5_response2 = 'For test multiple text2';
+const dia5_response3 = 'For test multiple text3'; //text type cannot handle multiple text responses
 
 let testNodeId;
+let Parent_NodeId;
 let json;
 
 
@@ -66,7 +74,6 @@ describe('test dialog', function() {
         helper.stopServer(done);
     });
 
-
     after(function(done) { //doesnt get run after last test. not working
         const param = {
             workspaceId: testNodeId,
@@ -80,9 +87,6 @@ describe('test dialog', function() {
             });
         done();
     });
-
-
-
 
     it('should be loaded', function(done) {
         var flow = [{
@@ -102,8 +106,6 @@ describe('test dialog', function() {
             done();
         });
     });
-
-
 
     it('workspace should be prepared', function(done) {
         this.timeout(20000);
@@ -156,8 +158,7 @@ describe('test dialog', function() {
 
     });
 
-
-    it('Dialog for intent should be created', function(done) {
+    it('Parent_Dialog for intent should be created', function(done) {
         this.timeout(20000);
         var found = false;
         var flow = [{
@@ -166,15 +167,12 @@ describe('test dialog', function() {
             name: testDialog1,
             dialog_value: testIntent,
             dialog_type: '#',
-
+            condition: '! is',
+            conditionChoices: testIntent,
             //testIntent
             intentName: testIntent,
             intentDescription: "",
             examples: [testExample1,testExample2],
-
-            condition: '! is',
-            conditionChoices: testIntent,
-
             //dialog
             dialog_response:[{
                 response_type: dia1_type,
@@ -194,8 +192,6 @@ describe('test dialog', function() {
                 type: "helper"
             }
         ];
-
-
         helper.load(dialog, flow, function() {
             var found = false;
             var n1 = helper.getNode("n1");
@@ -212,7 +208,7 @@ describe('test dialog', function() {
             n2.on("input", function(msg) {
                 var param = {
                     workspaceId: testNodeId
-                }
+                };
                 watson_assistant.listDialogNodes(param)
                     .then(res => {
                         json = JSON.stringify(res, null, 2);
@@ -220,6 +216,7 @@ describe('test dialog', function() {
                         for (let i = 0; i < object.result.dialog_nodes.length; i++) {
                             if (object['result']['dialog_nodes'][i]['title'] === testDialog1) {
                                 found = true;
+                                Parent_NodeId = object['result']['dialog_nodes'][i]['dialog_node'];
                             }
                         }
                         should.equal(found, true);
@@ -230,11 +227,9 @@ describe('test dialog', function() {
                     });
             });
         });
-
     });
 
-
-    it('Dialog for entity should be created', function(done) {
+    it('Child_Dialog for entity should be created', function(done) {
         this.timeout(20000);
         var found = false;
         var flow = [{
@@ -243,17 +238,14 @@ describe('test dialog', function() {
             name: testDialog2,
             dialog_value: testEntity,
             dialog_type: '@',
-
+            condition: 'any',
+            conditionChoices: testValue,
             //testEntity
             entityName: testEntity,
             entity_values: {
                 v: testEntity,
                 s: [testSym1,testSym2]
             },
-
-            condition: 'any',
-            conditionChoices: testValue,
-
             //dialog
             dialog_response:[{
                 response_type: dia3_type,
@@ -274,10 +266,7 @@ describe('test dialog', function() {
                 type: "helper"
             }
         ];
-
-
         helper.load(dialog, flow, function() {
-
             var found = false;
             var n1 = helper.getNode("n1");
             var n2 = helper.getNode("n2");
@@ -287,13 +276,14 @@ describe('test dialog', function() {
                     ta_api_key: "",
                     discovery_api_key: "",
                     instance_url: urlHost,
-                    workspaceId: testNodeId
+                    workspaceId: testNodeId,
+                    nodeID: Parent_NodeId
                 }
             });
             n2.on("input", function(msg) {
                 var param = {
                     workspaceId: testNodeId
-                }
+                };
                 watson_assistant.listDialogNodes(param)
                     .then(res => {
                         json = JSON.stringify(res, null, 2);
@@ -312,5 +302,70 @@ describe('test dialog', function() {
             });
         });
 
+    });
+
+    it('Parallel Dialog should be created', function(done) {
+        this.timeout(20000);
+        var found = false;
+        var flow = [{
+            id: "n1",
+            type: "dialog",
+            name: testDialog3,
+            dialog_value: testIntent2,
+            dialog_type: '#',
+            condition: '! is',
+            conditionChoices: testIntent2,
+            //testIntent
+            intentName: testIntent2,
+            intentDescription: "",
+            examples: [testExample2_1,testExample2_2],
+            //dialog
+            dialog_response:[{
+                response_type: dia5_type,
+                responseContent: dia5_response1
+            }],
+            wires: [
+                ["n2"]
+            ]
+        },
+            {
+                id: "n2",
+                type: "helper"
+            }
+        ];
+        helper.load(dialog, flow, function() {
+            var found = false;
+            var n1 = helper.getNode("n1");
+            var n2 = helper.getNode("n2");
+            n1.receive({
+                payload: {
+                    wa_api_key: apikey,
+                    ta_api_key: "",
+                    discovery_api_key: "",
+                    instance_url: urlHost,
+                    workspaceId: testNodeId
+                }
+            });
+            n2.on("input", function(msg) {
+                var param = {
+                    workspaceId: testNodeId
+                };
+                watson_assistant.listDialogNodes(param)
+                    .then(res => {
+                        json = JSON.stringify(res, null, 2);
+                        const object = JSON.parse(json);
+                        for (let i = 0; i < object.result.dialog_nodes.length; i++) {
+                            if (object['result']['dialog_nodes'][i]['title'] === testDialog3) {
+                                found = true;
+                            }
+                        }
+                        should.equal(found, true);
+                        done();
+                    })
+                    .catch(err => {
+                        done(err);
+                    });
+            });
+        });
     });
 });
