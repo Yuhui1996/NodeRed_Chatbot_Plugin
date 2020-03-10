@@ -66,7 +66,7 @@ describe('test dialog', function() {
         helper.stopServer(done);
     });
 
-/*
+
     after(function(done) { //doesnt get run after last test. not working
         const param = {
             workspaceId: testNodeId,
@@ -81,7 +81,7 @@ describe('test dialog', function() {
         done();
     });
 
-*/
+
 
 
     it('should be loaded', function(done) {
