@@ -79,8 +79,15 @@ module.exports = function (RED) {
                 let nextID = this.id + 1;
                 this.context().flow.set("ids", nextID);
             } catch (e) {
+                console.log("catch error");
                 this.id = 1;
-                this.context().flow.set("ids", this.id);
+                try{
+                    this.context().flow.set("ids", this.id);
+                }
+                catch (e) {
+                    console.log("error");
+                }
+                
             }
 
 

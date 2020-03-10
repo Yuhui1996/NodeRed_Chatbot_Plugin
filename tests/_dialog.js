@@ -151,7 +151,7 @@ describe('test dialog', function() {
 
 
     it('Dialog should be created', function(done) {
-        this.timeout(20000);
+        //this.timeout(20000);
         var found = false;
         var flow = [{
             id: "n1",
@@ -170,7 +170,7 @@ describe('test dialog', function() {
             //dialog
             dialog_response:[{
                 response_type: dia1_type,
-                response: dia1_response
+                responseContent: dia1_response
             },{
                 response_type: dia2_type,
                 image:{
@@ -178,7 +178,7 @@ describe('test dialog', function() {
                 }
             },{
                 response_type: dia3_type,
-                response: dia3_response
+                responseContent: dia3_response
             },{
                 response_type: dia4_type,
                 image:{
@@ -187,6 +187,7 @@ describe('test dialog', function() {
             }],
             //assistant: watson_assistant,
             //assistant: null,
+            ids: 1,
             wires: [
                 ["n2"]
             ]
@@ -219,7 +220,10 @@ describe('test dialog', function() {
                 }
             });
             n2.on("input", function(msg) {
-                watson_assistant.listDialogNodes()
+                var param = {
+                    workspaceId: testNodeId
+                }
+                watson_assistant.listDialogNodes(param)
                     .then(res => {
                         json = JSON.stringify(res, null, 2);
                         const object = JSON.parse(json);
