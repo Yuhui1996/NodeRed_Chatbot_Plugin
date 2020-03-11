@@ -42,6 +42,7 @@ module.exports = function (RED) {
 
     function startData() {
         if (this.global_data.data == undefined ){
+            console.log("startData!");
             let old_data = readData();
             if (old_data != undefined){
                 this.global_data.data = old_data;
@@ -218,7 +219,8 @@ module.exports = function (RED) {
                 description: 'this is the first chatbot created using node.js',
                 intents: createIntents(),
                 entities: createEntities()
-            }
+            };
+            console.log(createIntents());
 
 
 
@@ -230,6 +232,7 @@ module.exports = function (RED) {
                         workspaceid = object.result.workspace_id;
                         msg.payload.workspaceId = workspaceid;
                         node.send(msg); //send workspace id to next
+                        console.log("config");
                         console.log(config);
                         config.nodeData = global_top.global_data.data;
                         writeData();
