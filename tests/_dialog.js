@@ -2,6 +2,7 @@ var should = require("should");
 var helper = require("node-red-node-test-helper");
 var createWatsonNode = require("../nodes/create_watson/createWatson.js");
 var dialog = require("../nodes/dialog/dialog.js");
+this.global_data = require('../nodes/scripts/global_data.js');
 
 const AssistantV1 = require('ibm-watson/assistant/v1');
 
@@ -35,6 +36,31 @@ const testValue = 'forChildDialogTest_Value';
 const testSym1 = 'forChildDialogTest_Sym1';
 const testSym2 = 'forChildDialogTest_Sym2';
 
+this.global_data.data = {
+    intents: [],
+    entities: {
+        "testChildDialog_Entity": {
+            values: [{
+                value: testValue,
+                synonyms: [testSym1, testSym2]
+            }],
+            description: "Hello",
+            fuzzy_match: true
+        }
+    }
+};
+let intent1 = {
+    description: "",
+    examples: [{text:testExample1},{text:testExample2}]
+};
+this.global_data.data.intents[testIntent] = intent1;
+let intent2 = {
+    description: "",
+    examples: [{text:testExample2_1},{text:testExample2_2}]
+};
+this.global_data.data.intents[testIntent2] = intent2;
+
+
 const testDialog1 = 'testDialog1';
 const testDialog2 = 'testDialog2';
 const testDialog3 = 'testDialog3';
@@ -54,7 +80,6 @@ const dia5_response3 = 'For test multiple text3'; //text type cannot handle mult
 let testNodeId;
 let Parent_NodeId;
 let json;
-
 
 function waitFor(time) {
     // wait time and resolve
@@ -87,6 +112,8 @@ describe('test dialog', function() {
             });
         done();
     });
+
+
 
     it('should be loaded', function(done) {
         var flow = [{
