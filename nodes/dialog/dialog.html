@@ -454,7 +454,9 @@
                         description: "",
                         list: [{
                             label: "",
-                            value: ""
+                            value: "",
+                            intents: [],
+                            entities: []
                         }]
                     },
                     image: {
@@ -563,11 +565,9 @@
                                         placeholder: "Enter value"
                                     }).appendTo(optionRow);
                                 },
-                                removeItem: function (data) {
-                                },
+                                removeItem: function (data) {},
                                 removable: true,
-                                sortItems: function (items) {
-                                },
+                                sortItems: function (items) {},
                                 sortable: true
                             });
                         }
@@ -1104,10 +1104,19 @@
                             "-" + j).val();
                         var value = optionListElement.find("#node-input-optionValue-" + i +
                             "-" + j).val();
+                        var intentArray = [];
+                        for(var k = 0; k < Object.getOwnPropertyNames(intents).length; k++){
+                            intentArray.push({
+                                intent: Object.getOwnPropertyNames(intents)[k],
+                                confidence: 1
+                            })
+                        }
+
+                        console.log(intentArray);
                         var listElement = {
                             label: label,
                             value: value,
-                            intents: intents,
+                            intents: intentArray,
                             entities: entities
                         };
                         listTemp.push(listElement);
@@ -1127,6 +1136,8 @@
                         option: optionElement,
                         image: {}
                     }
+
+                    console.log(responseElement);
 
                     node.dialog_response.push(responseElement);
                 } else if (type === "image") {
@@ -1148,6 +1159,7 @@
                         response_type: type,
                         responseContent: "",
                         image: imageElement
+
                     }
 
                     node.dialog_response.push(responseElement);

@@ -131,7 +131,7 @@ module.exports = function (RED) {
                                       text: option.list[i].value  
                                     },
                                     intents: option.list[i].intents,
-                                    entities: option.list[i].entities
+                                    entities: []
                                 }
                             });
                         }
