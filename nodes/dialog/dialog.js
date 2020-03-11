@@ -83,7 +83,21 @@ module.exports = function (RED) {
                 }
 
 
-                console.log(this.id);
+                function addID(newID) {
+                    let siblings = this.context().flow.get("siblings");
+                    let previous_siblings = "";
+
+                    if (siblings[msg.payload.nodeID] != undefined){
+
+                        previous_siblings = siblings[msg.payload.nodeID];
+                        siblings[msg.payload.nodeID] = newID;
+                    }else{
+                        siblings[msg.payload.nodeID] = newID;
+                    }
+
+                    this.context().flow.set("siblings",ids);
+                    return previous_siblings;
+                }
 
                 this.id = this.id + Math.random().toString(36).substr(2, 10);
 
@@ -112,9 +126,11 @@ module.exports = function (RED) {
                     return output;
                 }
 
+
                 let params = {
                     workspaceId: msg.payload.workspaceId,
                     parent: msg.payload.nodeID,
+                    previous_sibling: addID(this.id),
                     dialogNode: this.id, //needs to be unique
                     conditions: getReferenceValue(n.dialog_type, n.dialog_value, n.condition, n.conditionChoices),
                     title: n.name,
@@ -124,8 +140,7 @@ module.exports = function (RED) {
 
                 console.log(params);
                 let top = this;
-                // top.assistant.createDialogNode(params)
-                //
+
 
                 promise_queue.addToQueue(() => top.assistant.createDialogNode(params))
                     .then(res => {

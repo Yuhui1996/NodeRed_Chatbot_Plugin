@@ -183,7 +183,11 @@ module.exports = function (RED) {
 
             startData();
 
+            let startIDs = {
 
+            };
+
+            this.context().flow.set("siblings",startIDs);
             let self = this;
 
             if (global_top.global_data.data == undefined){
