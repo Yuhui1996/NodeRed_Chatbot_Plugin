@@ -51,7 +51,7 @@ module.exports = function (RED) {
         console.log("start dialog");
         node.on('input', function (msg) {
 
-            let self = this;
+                let self = this;
 
                 try {
                     this.assistant = this.context().flow.get("assistant");
@@ -92,8 +92,7 @@ module.exports = function (RED) {
 
                     let siblings = self.context().flow.get("siblings");
                     let previous_siblings = "";
-
-                    if (siblings[msg.payload.nodeID] != undefined){
+                    if (siblings[msg.payload.nodeID] != undefined) {
 
                         previous_siblings = siblings[msg.payload.nodeID].id;
                         console.log("->  " + siblings[msg.payload.nodeID].name);
@@ -102,62 +101,62 @@ module.exports = function (RED) {
                             name: n.name
                         };
 
-                    }else{
+                    } else {
                         siblings[msg.payload.nodeID] = {
                             id: newID,
                             name: n.name
                         };
                     }
 
-                    self.context().flow.set("siblings",siblings);
+                    self.context().flow.set("siblings", siblings);
                     return previous_siblings;
                 }
 
                 this.id = this.id + Math.random().toString(36).substr(2, 10);
 
                 //for creating dialog node
-   function getResponses(){
-                var output = {
-                    generic: []
-                }
-                var responses = n.dialog_response;
-                for(var i =0; i < responses.length; i++){
-                    if(responses[i].response_type === "image"){
-                        var image = responses[i].image;
-                        var response = {};
-                        response.response_type = "image";
+                function getResponses() {
+                    var output = {
+                        generic: []
+                    }
 
-                        //if(responses[i].url != undefined){
-                        response.source = image.source;
-                        //console.log("source:" + image.source);
-                        //}
-                        if(image.title != undefined){
-                            response.title = image.title;
+                    var responses = n.dialog_response;
+                    for (var i = 0; i < responses.length; i++) {
+                        if (responses[i].response_type === "image") {
+                            var image = responses[i].image;
+                            var response = {};
+                            response.response_type = "image";
+
+                            //if(responses[i].url != undefined){
+                            response.source = image.source;
+                            //console.log("source:" + image.source);
+                            //}
+                            if (image.title != undefined) {
+                                response.title = image.title;
+                            }
+                            if (image.description != undefined) {
+                                response.description = image.description;
+                            }
+                            output.generic.push(response);
+                        } else if (responses[i].response_type === "text") {
+                            output.generic.push({
+                                values: [
+                                    {
+                                        text: responses[i].responseContent
+                                    }
+                                ],
+                                response_type: "text"
+                            })
                         }
-                        if(image.description != undefined){
-                            response.description = image.description;
-                        }
-                        output.generic.push(response);
                     }
-                    else if (responses[i].response_type === "text"){
-                        output.generic.push({
-                            values: [
-                                {
-                                    text: responses[i].responseContent
-                                }
-                            ],
-                            response_type: "text"
-                        })
-                    }
+                    return output;
                 }
-                return output;
-            }
 
 
                 let params = {
                     workspaceId: msg.payload.workspaceId,
                     parent: msg.payload.nodeID,
-                    previous_sibling: addID(this.id),
+                     previous_sibling: addID(this.id),
                     dialogNode: this.id, //needs to be unique
                     conditions: getReferenceValue(n.dialog_type, n.dialog_value, n.condition, n.conditionChoices),
                     title: n.name,

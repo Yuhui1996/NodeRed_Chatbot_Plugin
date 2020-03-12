@@ -173,7 +173,7 @@ module.exports = function (RED) {
 
 
     function createWatson(config) {
-
+        startData();
 
         // test_data();
 
@@ -189,10 +189,10 @@ module.exports = function (RED) {
             startData();
 
 
-            let startIDs = {}
+            let startIDs = {};
 
             try{
-                global_top.context().flow.set("siblings",startIDs);
+                node.context().flow.set("siblings",startIDs);
             }catch (errors) {
                 console.log("failed to set flows");
             }
