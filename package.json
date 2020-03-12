@@ -29,7 +29,10 @@
             "meta": "nodes/metadata/metadata.js",
             "dialog": "nodes/dialog/dialog.js",
             "createWatson": "nodes/create_watson/createWatson.js",
-            "deleteWatson": "nodes/delete_watson/deleteWatson.js"
+            "deleteWatson": "nodes/delete_watson/deleteWatson.js",
+            "createDiscovery": "nodes/createDiscovery/createDiscovery.js",
+            "discoveryDocument":"nodes/discoveryDocuments/discoveryDocument.js",
+            "deleteDiscovery":"nodes/deleteDiscovery/deleteDiscovery.js"
         }
     },
     "devDependencies": {
