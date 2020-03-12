@@ -229,6 +229,7 @@ module.exports = function (RED) {
                         let object = JSON.parse(json);
                         workspaceid = object.result.workspace_id;
                         msg.payload.workspaceId = workspaceid;
+                        msg.payload.discovery_api_key=msg.payload.discovery_api_key;
                         node.send(msg); //send workspace id to next
                         console.log(config);
                         config.nodeData = global_top.global_data.data;
