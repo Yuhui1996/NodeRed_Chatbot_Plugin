@@ -115,18 +115,23 @@ describe('create Watson Node', function() {
                     ta_api_key: "",
                     discovery_api_key: "",
                     instance_url: urlHost,
+
                 }
             });
             n2.on("input", function(msg) {
+
                 waitFor(10000).then(() => { //wait for internal api call from node red. currently no way of accessing promise from n1
+
                     watson_assistant.listWorkspaces()
                         //.then(res => {n1.receive({ payload: testNode }); return res;})//not really working. does not wait for node red
                         .then(res => {
+
                             json = JSON.stringify(res, null, 2);
                             const object = JSON.parse(json);
                             for (let i = 0; i < object.result.workspaces.length; i++) {
                                 if (object['result']['workspaces'][i]['name'] === testNode) {
                                     found = true;
+
                                 }
                             }
                             should.equal(found, true);
