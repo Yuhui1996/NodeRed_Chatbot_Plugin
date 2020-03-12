@@ -73,38 +73,38 @@ describe('create Watson Node', function() {
             });
     });
 
-    it('should be loaded', function(done) {
-        var flow = [{
-            id: "n1",
-            type: "createWatson",
-            name: testNode
-        }];
-        helper.load(createWatsonNode, flow, function() {
-            var n1 = helper.getNode("n1");
-            console.log(n1);
-            n1.should.have.property('name', testNode);
-            done();
-        });
-    });
-
-
-
-    it('workspace should be created', function(done) {
-        this.timeout(20000);
-        var found = false;
-        var flow = [{
+        it('should be loaded', function(done) {
+            var flow = [{
                 id: "n1",
                 type: "createWatson",
-                name: testNode,
-                wires: [
-                    ["n2"]
-                ]
-            },
-            {
-                id: "n2",
-                type: "helper"
-            }
-        ];
+                name: testNode
+            }];
+            helper.load(createWatsonNode, flow, function() {
+                var n1 = helper.getNode("n1");
+                console.log(n1);
+                n1.should.have.property('name', testNode);
+                done();
+            });
+        });
+
+
+
+        it('workspace should be created', function(done) {
+            this.timeout(20000);
+            var found = false;
+            var flow = [{
+                    id: "n1",
+                    type: "createWatson",
+                    name: testNode,
+                    wires: [
+                        ["n2"]
+                    ]
+                },
+                {
+                    id: "n2",
+                    type: "helper"
+                }
+            ];
         helper.load(createWatsonNode, flow, function() {
             var n1 = helper.getNode("n1");
             var n2 = helper.getNode("n2");
@@ -115,18 +115,23 @@ describe('create Watson Node', function() {
                     ta_api_key: "",
                     discovery_api_key: "",
                     instance_url: urlHost,
+
                 }
             });
             n2.on("input", function(msg) {
+
                 waitFor(10000).then(() => { //wait for internal api call from node red. currently no way of accessing promise from n1
+
                     watson_assistant.listWorkspaces()
                         //.then(res => {n1.receive({ payload: testNode }); return res;})//not really working. does not wait for node red
                         .then(res => {
+
                             json = JSON.stringify(res, null, 2);
                             const object = JSON.parse(json);
                             for (let i = 0; i < object.result.workspaces.length; i++) {
                                 if (object['result']['workspaces'][i]['name'] === testNode) {
                                     found = true;
+
                                 }
                             }
                             should.equal(found, true);
