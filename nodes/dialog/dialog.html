@@ -509,7 +509,6 @@
     function newIntent() {
 
 
-
         let choice = "Intent Name";
         let data = {
             description: "This is an example description",
@@ -531,7 +530,6 @@
     function newEntity() {
 
 
-
         let choice = "Entity_name";
         let data = {
             description: "This is an example description",
@@ -546,7 +544,7 @@
             ]
         };
 
-        showEntity(data,choice);
+        showEntity(data, choice);
 
         $("#create-entity").show();
         $("#node-button-create-entity").hide();
@@ -704,7 +702,7 @@
         $("#create-entity").hide();
     }
 
-    function deleteIntent(){
+    function deleteIntent() {
 
         let choice = $("#node-input-choices").val();
 
@@ -718,7 +716,7 @@
                 alert("Data Loaded: " + data);
             });
 
-        updateData("#","","","");
+        updateData("#", "", "", "");
 
         $("#node-button-create-intent").show();
 
@@ -727,7 +725,7 @@
 
     }
 
-    function deleteEntitiy(){
+    function deleteEntitiy() {
         let choice = $("#node-input-choices").val();
 
         let delete_entity = {};
@@ -740,7 +738,7 @@
                 alert("Data Loaded: " + data);
             });
 
-        updateData("@","","","");
+        updateData("@", "", "", "");
         $("#node-button-create-entity").show();
         $("#node-button-edit-entity").show();
 
@@ -806,6 +804,9 @@
             },
             conditionChoices: {
                 value: ""
+            },
+            userAction:{
+                value: "get_user_input"
             }
         },
         inputs: 1,
@@ -1180,7 +1181,6 @@
             // });
 
 
-
             //ENTITY SAVING
             //
             // this.entity_name = $("#node-input-entityName").val();
@@ -1194,6 +1194,9 @@
             node.conditionChoices = $("#node-input-conditionChoices").val();
             node.dialog_type = $("#node-input-description").val();
             node.dialog_value = $("#node-input-choices").val();
+
+
+            node.userAction = $("#node-input-userAction").val();
 
             // console.log(node.conditionChoices);
             //
@@ -1343,7 +1346,17 @@
             </select>
         </div>
     </div>
+<!--    <div class="form-row">-->
     <ol id="node-input-value-container"></ol>
+<!--    </div>-->
+
+    <div  class="form-row" style="margin-top: 12px">
+        <label for="node-input-userAction"><i class="icon-tag"></i>Next action</label>
+        <select  name="" id="node-input-userAction">
+            <option value="get_user_input" selected="selected">Wait For Reply</option>
+            <option value="skip_user_input">Skip User Input</option>
+        </select>
+    </div>
 </script>
 
 <style>

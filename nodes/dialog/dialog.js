@@ -20,11 +20,11 @@ module.exports = function (RED) {
                     break;
                 }
                 case "is": {
-                    result = sendType + sendValue + " : " + relationValue;
+                    result = sendType + sendValue + ":" + relationValue;
                     break;
                 }
                 case "is_not": {
-                    result = sendType + sendValue + " != " + relationValue;
+                    result = sendType + sendValue + " != \"" + relationValue + "\"";
                     break;
                 }
                 case "greater": {
@@ -49,6 +49,8 @@ module.exports = function (RED) {
         this.intentName = n.intentName;
         this.intentDescription = n.intentDescription;
         node.on('input', function (msg) {
+
+            let self = this;
 
                 try {
                     this.assistant = this.context().flow.get("assistant");
@@ -84,18 +86,29 @@ module.exports = function (RED) {
 
 
                 function addID(newID) {
-                    let siblings = this.context().flow.get("siblings");
+
+                    console.log(n.name);
+
+                    let siblings = self.context().flow.get("siblings");
                     let previous_siblings = "";
 
                     if (siblings[msg.payload.nodeID] != undefined){
 
-                        previous_siblings = siblings[msg.payload.nodeID];
-                        siblings[msg.payload.nodeID] = newID;
+                        previous_siblings = siblings[msg.payload.nodeID].id;
+                        console.log("->  " + siblings[msg.payload.nodeID].name);
+                        siblings[msg.payload.nodeID] = {
+                            id: newID,
+                            name: n.name
+                        };
+
                     }else{
-                        siblings[msg.payload.nodeID] = newID;
+                        siblings[msg.payload.nodeID] = {
+                            id: newID,
+                            name: n.name
+                        };
                     }
 
-                    this.context().flow.set("siblings",ids);
+                    self.context().flow.set("siblings",siblings);
                     return previous_siblings;
                 }
 
@@ -127,6 +140,8 @@ module.exports = function (RED) {
                 }
 
 
+            console.log("Action -> " + n.userAction);
+
                 let params = {
                     workspaceId: msg.payload.workspaceId,
                     parent: msg.payload.nodeID,
@@ -134,11 +149,14 @@ module.exports = function (RED) {
                     dialogNode: this.id, //needs to be unique
                     conditions: getReferenceValue(n.dialog_type, n.dialog_value, n.condition, n.conditionChoices),
                     title: n.name,
-                    output: getResponses()
+                    output: getResponses(),
+                    nextStep: {
+                        behavior: n.userAction
+                    }
                 };
 
 
-                console.log(params);
+                // console.log(params);
                 let top = this;
 
 
