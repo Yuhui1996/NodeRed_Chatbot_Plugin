@@ -129,6 +129,7 @@ module.exports = function (RED) {
                     let nodeID = top.id;
                     msg.payload.nodeID = nodeID;
                     msg.payload.discovery_api_key=msg.payload.discovery_api_key;
+                    msg.payload.discoveryUrl= msg.payload.discoveryUrl;
                     node.status({fill:"green",shape:"ring",text:"Complete"});
                     node.send(msg);
 

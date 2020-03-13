@@ -21,7 +21,7 @@ module.exports = function(RED) {
                 authenticator: new IamAuthenticator({
                     apikey: msg.payload.discovery_api_key,
                 }),
-                url: 'https://api.eu-gb.discovery.watson.cloud.ibm.com/instances/74281b85-e9d8-4490-80aa-69a48ef50d37',
+                url: msg.payload.discoveryUrl
             });
 
             discovery.listEnvironments()
@@ -37,6 +37,7 @@ module.exports = function(RED) {
                             };
                             discovery.deleteEnvironment(deleteparams)
                                 .then(deleteEnvironmentResponse => {
+                                    enviromentMap.delete(node_data.discoveryname)
                                     msg.payload = "deleted"
                                     node.send(msg)
                                     jsonObject = JSON.stringify(deleteEnvironmentResponse, null, 2);

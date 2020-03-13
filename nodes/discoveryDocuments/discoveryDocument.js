@@ -14,6 +14,7 @@ module.exports = function(RED) {
         var node = this
         node.on("input", function(msg){
             console.log(node_data.filepath + "hello")
+            console.log(msg)
             function waitFor(time) {
                 // wait time and resolve
                 return new Promise(resolve => setTimeout(resolve, time))
@@ -23,7 +24,7 @@ module.exports = function(RED) {
                 authenticator: new IamAuthenticator({
                     apikey: msg.payload.discovery_api_key,
                 }),
-                url: 'https://api.eu-gb.discovery.watson.cloud.ibm.com/instances/74281b85-e9d8-4490-80aa-69a48ef50d37',
+                url: msg.payload.discoveryUrl
             });
             enviroment_id = msg.payload.enviroment_id
             configuration_id= msg.payload.configuration_id

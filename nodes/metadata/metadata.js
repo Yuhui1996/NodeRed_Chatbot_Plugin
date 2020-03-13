@@ -41,6 +41,7 @@ module.exports = function (RED) {
                 ta_api_key: node_data.ta,
                 discovery_api_key: node_data.discovery,
                 instance_url: node_data.instance,
+                discoveryUrl:node_data.discoveryUrl,
             }
 
 

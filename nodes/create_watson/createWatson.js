@@ -230,6 +230,7 @@ module.exports = function (RED) {
                         workspaceid = object.result.workspace_id;
                         msg.payload.workspaceId = workspaceid;
                         msg.payload.discovery_api_key=msg.payload.discovery_api_key;
+                        msg.payload.discoveryUrl= msg.payload.discoveryUrl;
                         node.send(msg); //send workspace id to next
                         console.log(config);
                         config.nodeData = global_top.global_data.data;
