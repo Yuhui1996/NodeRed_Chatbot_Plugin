@@ -18,13 +18,12 @@ module.exports = function(RED) {
         var node = this
         var enviromentMap = new Map();
         node.on("input", function(msg){
-            console.log("this is fucked "+ msg.payload.discovery_api_key)
             const discovery = new DiscoveryV1({
                 version: '2020-02-10',
                 authenticator: new IamAuthenticator({
                     apikey: msg.payload.discovery_api_key,
                 }),
-                url: 'https://api.eu-gb.discovery.watson.cloud.ibm.com/instances/74281b85-e9d8-4490-80aa-69a48ef50d37',
+                url: msg.payload.discoveryUrl
             });
             const createParams = {
                 name: node_data.discoveryname,
@@ -46,64 +45,65 @@ module.exports = function(RED) {
                         enviromentMap.set(object.result.environments[i].name, object.result.environments[i].environment_id)
                     }
                     if(enviromentMap.has(node_data.discoveryname))
-                            {
-                            const deleteparams={
-                                environmentId : enviromentMap.get(node_data.discoveryname)
-                            };
-                            discovery.deleteEnvironment(deleteparams)
-                                .then(deleteEnvironmentResponse => {
-                                    discovery.createEnvironment(createParams)
-                                        .then(environment => {
-                                            jsonObject = JSON.stringify(environment, null, 2);
-                                            let object = JSON.parse(jsonObject);
-                                            enviroment_id = object.result.environment_id;
-                                            const configurationParams={
-                                                environmentId: enviroment_id,
-                                                name:node_data.discoveryname,
-                                            };
-                                            discovery.createConfiguration(configurationParams)
-                                                .then(configuration => {
-                                                    let configurationObject = JSON.parse(JSON.stringify(configuration, null, 2));
-                                                    configuration_id =configurationObject.result.configuration_id;
-                                                    const createCollectionParams={
-                                                        environmentId:enviroment_id,
-                                                        name: node_data.discoveryname,
+                    {
+                        const deleteparams={
+                            environmentId : enviromentMap.get(node_data.discoveryname)
+                        };
+                        discovery.deleteEnvironment(deleteparams)
+                            .then(deleteEnvironmentResponse => {
+                                discovery.createEnvironment(createParams)
+                                    .then(environment => {
+                                        jsonObject = JSON.stringify(environment, null, 2);
+                                        let object = JSON.parse(jsonObject);
+                                        enviroment_id = object.result.environment_id;
+                                        const configurationParams={
+                                            environmentId: enviroment_id,
+                                            name:node_data.discoveryname,
+                                        };
+                                        discovery.createConfiguration(configurationParams)
+                                            .then(configuration => {
+                                                let configurationObject = JSON.parse(JSON.stringify(configuration, null, 2));
+                                                configuration_id =configurationObject.result.configuration_id;
+                                                const createCollectionParams={
+                                                    environmentId:enviroment_id,
+                                                    name: node_data.discoveryname,
+                                                }
+
+                                                discovery.createCollection(createCollectionParams).then(collection=>{
+                                                    let collectionobject = JSON.parse((JSON.stringify(collection,null, 2)));
+                                                    collection_id =collectionobject.result.collection_id;
+                                                    msg.payload = {
+                                                        enviroment_id: enviroment_id,
+                                                        configuration_id: configuration_id,
+                                                        collection_id: collection_id,
+                                                        discovery_api_key: msg.payload.discovery_api_key,
+                                                        discoveryUrl:msg.payload.discoveryUrl,
+                                                        success: true
                                                     }
+                                                    node.send(msg)
+                                                    console.log(collectionobject)
 
-                                                    discovery.createCollection(createCollectionParams).then(collection=>{
-                                                        let collectionobject = JSON.parse((JSON.stringify(collection,null, 2)));
-                                                        collection_id =collectionobject.result.collection_id;
-                                                        msg.payload = {
-                                                            enviroment_id: enviroment_id,
-                                                            configuration_id: configuration_id,
-                                                            collection_id: collection_id,
-                                                            discovery_api_key: msg.payload.discovery_api_key,
-                                                            success: true
-                                                        }
-                                                        node.send(msg)
-                                                        console.log(collectionobject)
-
-                                                    }).catch(err=>{
-                                                        msg.payload = err
-                                                        node.send(msg)
-                                                    })
-
-                                                })
-                                                .catch(err => {
+                                                }).catch(err=>{
                                                     msg.payload = err
                                                     node.send(msg)
-                                                });
-                                        })
-                                        .catch(err => {
-                                            msg.payload = err
-                                            node.send(msg)
-                                        });
-                                })
-                                .catch(err => {
-                                    msg.payload = err
-                                    node.send(msg)
-                                })
-                        }else{
+                                                })
+
+                                            })
+                                            .catch(err => {
+                                                msg.payload = err
+                                                node.send(msg)
+                                            });
+                                    })
+                                    .catch(err => {
+                                        msg.payload = err
+                                        node.send(msg)
+                                    });
+                            })
+                            .catch(err => {
+                                msg.payload = err
+                                node.send(msg)
+                            })
+                    }else{
                         discovery.createEnvironment(createParams)
                             .then(environment => {
                                 jsonObject = JSON.stringify(environment, null, 2);
@@ -130,6 +130,7 @@ module.exports = function(RED) {
                                                 configuration_id: configuration_id,
                                                 collection_id: collection_id,
                                                 discovery_api_key: msg.payload.discovery_api_key,
+                                                discoveryUrl:msg.payload.discoveryUrl,
                                                 success: true
                                             }
                                             node.send(msg)

@@ -189,7 +189,42 @@ module.exports = function (RED) {
                         //    "THIS IS ERROR OF" + this.id + "__________________________-\n\n" +
                     });
             }
-        );
+
+            
+            let params = {
+                workspaceId: msg.payload.workspaceId,
+                parent: msg.payload.nodeID,
+                dialogNode: this.id, //needs to be unique
+                conditions: getReferenceValue(n.dialog_type, n.dialog_value, n.condition, n.conditionChoices),
+                title: n.name,
+                output: getResponses()
+            };
+
+
+            let top = this;
+            // top.assistant.createDialogNode(params)
+            //
+
+            promise_queue.addToQueue(() => top.assistant.createDialogNode(params))
+                .then(res => {
+
+                    json = JSON.stringify(res, null, 2);
+                    let object = JSON.parse(json);
+                    let nodeID = top.id;
+                    msg.payload.nodeID = nodeID;
+                    msg.payload.discovery_api_key=msg.payload.discovery_api_key;
+                    msg.payload.discoveryUrl= msg.payload.discoveryUrl;
+                    node.status({fill:"green",shape:"ring",text:"Complete"});
+                    node.send(msg);
+
+
+                })
+                .catch(err => {
+                    console.log(err)
+                    this.status({fill:"red",shape:"ring",text:"failed"});
+                    //    "THIS IS ERROR OF" + this.id + "__________________________-\n\n" +
+                });
+        });
     }
 
     RED.nodes.registerType("dialog", createDialog);
