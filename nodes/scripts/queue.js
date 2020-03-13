@@ -15,7 +15,7 @@ class Queue {
 
     //not that space efficient
     static processPromise() {
-        console.log(this.queue);
+        // console.log(this.queue);
 
         //check if locked
         if (this.mutex_locked) {

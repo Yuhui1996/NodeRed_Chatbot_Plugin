@@ -13,15 +13,15 @@ let json;
 
 
 module.exports = function (RED) {
-
+    let global_top = this;
 
 
     function writeData(){
 
         try {
-            let data = JSON.stringify(this.global_data.data, null, 2);
+            let data = JSON.stringify(global_top.global_data.data, null, 2);
 
-                fs.writeFile('global_data.json', data, (err) => {
+            fs.writeFile('global_data.json', data, (err) => {
                 console.log('Data written to file');
             });
         }catch (e) {
@@ -41,22 +41,26 @@ module.exports = function (RED) {
     }
 
     function startData() {
-        if (this.global_data.data == undefined ){
+        if (global_top.global_data.data == undefined ){
             let old_data = readData();
+
+
             if (old_data != undefined){
-                this.global_data.data = old_data;
+                global_top.global_data.data = old_data;
             }else{
-                this.global_data.data = {
+                global_top.global_data.data = {
                     entities: {},
                     intents: {}
                 }
             }
+
+            console.log("Making the red");
         }
     }
 
 
     this.global_data = require('../scripts/global_data.js');
-    let global_top = this;
+
 
 
 
@@ -138,7 +142,7 @@ module.exports = function (RED) {
                 examples: this.global_data.data.intents[next_intent].examples
             };
 
-           intents.push(intent);
+            intents.push(intent);
         }
         console.log("Intents_______________\n" + intents);
         return intents;
@@ -169,7 +173,7 @@ module.exports = function (RED) {
 
 
     function createWatson(config) {
-
+        startData();
 
         // test_data();
 
@@ -181,7 +185,17 @@ module.exports = function (RED) {
 
         node.on('input', function (msg) {
 
+
             startData();
+
+
+            let startIDs = {};
+
+            try{
+                node.context().flow.set("siblings",startIDs);
+            }catch (errors) {
+                console.log("failed to set flows");
+            }
 
 
             let self = this;
@@ -292,7 +306,7 @@ module.exports = function (RED) {
     });
 
 
-       RED.httpAdmin.post('/global_data', RED.auth.needsPermission("global_data.write"), function (req, res) {
+    RED.httpAdmin.post('/global_data', RED.auth.needsPermission("global_data.write"), function (req, res) {
 
         let new_data = req.body;
         ///Handle creation on new intent or entity from node
