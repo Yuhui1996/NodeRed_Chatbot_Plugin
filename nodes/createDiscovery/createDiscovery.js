@@ -90,7 +90,8 @@ module.exports = function(RED) {
                 .then(listEnvironmentsResponse => {
 
                     jsonObject = JSON.stringify(listEnvironmentsResponse, null, 2);
-                    //console.log(jsonObject)
+                    console.log('listing out envs-------------------------------')
+                    console.log(jsonObject)
                     let object  = JSON.parse(jsonObject);
                     for(let i = 0;i<object.result.environments.length; i++ ) {
                         enviromentMap.set(object.result.environments[i].name, object.result.environments[i].environment_id)

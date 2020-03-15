@@ -118,7 +118,7 @@
 
 <body bgcolor="white">
     <div>
-        <font size="7" id="mainHeader">Testing chatbot</font>
+        <font size="7" id="mainHeader">Chat</font>
         <br>
 
         <table style="width:100%" id="topTable">
@@ -235,7 +235,7 @@
                         var x = document.getElementById("workspaces");
                         var option;
                         var i;
-                        console.log(JSON.stringify(json.workspaces));
+                        //console.log(JSON.stringify(json.workspaces));
                         for (i = 0; i < json.workspaces.length; i++) {
                             option = document.createElement("option");
                             option.text = json.workspaces[i].name;
@@ -302,7 +302,6 @@
                 if (typeof contextid !== 'undefined') {//context for on-going converstion (reaching sub dialog node if exist)
                     dataString = '{"input": {"text": "' + inputtextValue + '"}, "context":  ' + contextid + '}';
                 } else {
-                    console.log("hey hey");
                     dataString = '{"input": {"text": "' + inputtextValue + '"}}';
                 }
 
@@ -339,12 +338,13 @@
 
 
                                     //if dialog node is in the dialog_discovery_map then redirect to discovery
+                                    //console.log(json.output.nodes_visited);
                                     if (jsonData[json.output.nodes_visited[json.output.nodes_visited.length-1]] != undefined){
                                         var xhttp_discovery = new XMLHttpRequest();
 
                             
                                         var passages_count_string = '3';
-                                        var query_string = 'abs plastic';
+                                        var query_string = inputtextValue;
                                         query_string = query_string.split(' ').join('%20');
 
                                         var dataString = 'deduplicate=false&highlight=true&passages=true&passages.count=' + passages_count_string + '&passages.fields=text&natural_language_query=' + query_string;
