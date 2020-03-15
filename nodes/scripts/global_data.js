@@ -70,4 +70,29 @@ var global_data = module.exports = {
             return 1;
         }
     },
+    add_dialog_discovery_map: function (send_data) {
+
+        let discoveryID = send_data.discoveryID;
+        this.data.dialogDiscoveryMap[send_data.dialog] = discoveryID;
+        return 1;
+    },
+    remove_dialog_discovery_map: function (send_data) {
+
+        if (this.data.dialogDiscoveryMap[send_data.dialog] == undefined) {
+            return -1;
+        } else {
+            delete this.data.dialogDiscoveryMap[send_data.dialog];
+            return 1;
+        }
+
+    },
+    edit_dialog_discovery_map: function (send_data) {
+        if (this.data.dialogDiscoveryMap[send_data.dialog] == undefined) {
+            return -1;
+        } else {
+            let discoveryID = send_data.discoveryID;
+            this.data.dialogDiscoveryMap[send_data.dialog] = discoveryID;
+            return 1;
+        }
+    },
 }

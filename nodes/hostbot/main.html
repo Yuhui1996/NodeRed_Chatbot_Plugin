@@ -1,0 +1,396 @@
+<!-- saved from url=(0206)http://watsonchatbot.epizy.com/main/main.html?msg=hello&&api=z8WUAfCBIG89N3tOBqPjC8Y15enB0ZEtNGydxl6YrSbt&&url=https://api.eu-gb.assistant.watson.cloud.ibm.com/instances/053163e0-715a-4378-b2bf-5492452e7f9a -->
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            margin: 0 auto;
+            max-width: 360px;
+            max-height: : 360px;
+            padding: 0 20px;
+            font-family: Arial, Helvetica, sans-serif;
+            //font-family: "Arial Black", Gadget, sans-serif;
+        }
+        
+        input[type=text] {
+            width: 100%;
+            padding: 12px 20px;
+            margin: 8px 0;
+            box-sizing: border-box;
+            border: none;
+            border-bottom: 3px solid LightBlue;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 16px
+        }
+        
+        input[type=text]:focus {
+            border-bottom: 6px solid MediumTurquoise;
+        }
+        /* width */
+        
+        ::-webkit-scrollbar {
+            width: 7px;
+        }
+        /* Track */
+        
+        ::-webkit-scrollbar-track {
+            background: white;
+            box-shadow: inset 0 0 5px grey;
+            border-radius: 10px;
+        }
+        /* Handle */
+        
+        ::-webkit-scrollbar-thumb {
+            background: grey;
+            border-radius: 10px;
+        }
+        /* Handle on hover */
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: LightSlateGray;
+        }
+        
+        .sendButton {
+            border-radius: 20px;
+            height: 40px;
+            background-color: DodgerBlue;
+            color: white;
+            border: 0px;
+            font-size: 17px
+        }
+        
+        .container {
+            background-color: LightCyan;
+            padding: 3px;
+            padding-right: 15px;
+            padding-left: 15px;
+            margin: 8px;
+            border-radius: 8px;
+            float: left;
+            width: 82%;
+        }
+        
+        .darker {
+            float: right;
+            background-color: #34a1eb;
+            color: white;
+        }
+        
+        .start {
+            background-color: #2c62bf;
+            color: white;
+            text-align: center;
+        }
+        
+        .convoWindow {
+            background-image: linear-gradient(Azure, white);
+            height: 360px;
+            overflow: auto;
+            margin-bottom: 4px;
+            border-radius: 6px;
+        }
+        
+        .time-right {
+            float: right;
+            color: #aaa;
+        }
+        
+        .time-left {
+            float: left;
+            color: #999;
+        }
+        
+        .chatInput {
+            position: relative;
+            float: left;
+            height: 280px;
+            width: 150px;
+        }
+        
+        .imgDetails p {
+            position: absolute;
+            bottom: 0;
+        }
+    </style>
+</head>
+
+<body bgcolor="white">
+    <div>
+        <font size="7" id="mainHeader">Chat</font>
+        <br>
+
+        <table style="width:100%" id="topTable">
+            <tbody>
+                <tr>
+                    <th align="left">
+                        <font size="3" color="grey" id="botConnectionStatus">Status: </font><font size="3" id="botStatus" color="red" style="color: red;">Not connected</font>
+                    </th>
+                    <th align="right">
+                        <label id="workspacesLabel">Instance: </label>
+                        <select id="workspaces">
+                            <option value="null">--Select workspace--</option>
+                            <!--<option value="a4fa373e-ef2b-4a8f-a58d-dd39b8fba4d0">Bathtub toaster</option>-->
+                            <!--<option value="9676c103-611f-4954-8ef7-5f304300cdad">First</option>-->
+                        </select>
+                    </th>
+                </tr>
+            </tbody>
+        </table>
+
+        <br>
+
+        <div id="convo" class="convoWindow">
+
+        </div>
+
+        <div class="chatInput" style="width:101%">
+            <input type="text" name="text" autocomplete="off" placeholder="Please enter message here..." style="width:80%" id="inputtext">
+            <button class="sendButton" type="button" onclick="getReply()" style="width:18%" id="sendBtn">Send</button>
+
+        </div>
+
+        <script>
+            //var fs = require("fs");
+            var contextid;//global
+
+            //press enter to send msg
+            var input = document.getElementById("inputtext");
+            input.addEventListener("keyup", function(event) {
+                if (event.keyCode === 13) {
+                    event.preventDefault();
+                    document.getElementById("sendBtn").click();
+                }
+            });
+            
+
+            function removeElement(elementId) {//remove HTML element from doc
+                var element = document.getElementById(elementId);
+                element.parentNode.removeChild(element);
+            }
+
+            //get arguments from url. (not used by node anymore)
+            var parts = window.location.search.substr(1).split("&&");
+            var $_GET = {};
+            for (var i = 0; i < parts.length; i++) {
+                var temp = parts[i].split("=");
+                $_GET[decodeURIComponent(temp[0])] = decodeURIComponent(temp[1]);
+            }
+            passMsg = $_GET['msg'];
+            passApi = $_GET['api'];
+            passUrl = $_GET['url'];
+            passWorkspace = $_GET['workspace'];
+            if (typeof passMsg !== 'undefined') {
+                document.getElementById("inputtext").value = passMsg;
+            };
+
+            //arguments_for_WA_should_be_inserted_here
+            //IMPORTANT: DO NOT EDIT THE COMMENT ABOVE
+
+
+            //if workspace id can be found in the argument then remove the workspace dropdown
+            if (typeof passApi !== 'undefined' && typeof passUrl !== 'undefined') {
+                if (typeof passWorkspace !== 'undefined') {
+                    removeElement("workspaces");
+                    removeElement("workspacesLabel");
+                    removeElement("botStatus");
+                    removeElement("botConnectionStatus");
+                    removeElement("topTable");
+                } else {
+                    getWorkspaces();
+                }
+            } else {
+                alert('Failed to conenct: no login detail')
+            }
+
+
+            function getWorkspaces() {//get list of workspaces for the api key
+                //get api key and url for WA
+                var apiValue;
+                var urlValue;
+                if (typeof passApi !== 'undefined' && typeof passUrl !== 'undefined') {
+                    apiValue = passApi;
+                    urlValue = passUrl;
+                } else {
+                    apiValue = document.getElementById("api").value;
+                    urlValue = document.getElementById("url").value;
+                }
+
+
+                //construct HTTP request to WA  ************************************ 
+                var url = urlValue + "/v1/workspaces?version=2019-02-28";
+                var xhttp = new XMLHttpRequest();
+                xhttp.open("GET", url, true);
+                xhttp.setRequestHeader("Authorization", "Basic " + btoa("apikey" + ":" + apiValue))
+
+
+                //add WA's workspace to dropdown
+                xhttp.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        document.getElementById("botStatus").innerHTML = "ready";
+                        document.getElementById("botStatus").style.color = "green";
+
+                        var json = JSON.parse(this.responseText);
+                        var x = document.getElementById("workspaces");
+                        var option;
+                        var i;
+                        //console.log(JSON.stringify(json.workspaces));
+                        for (i = 0; i < json.workspaces.length; i++) {
+                            option = document.createElement("option");
+                            option.text = json.workspaces[i].name;
+                            option.value = json.workspaces[i].workspace_id;
+                            x.appendChild(option);
+                            document.getElementById("workspaces").selectedIndex = "1";
+                        }
+
+                    } else if (this.readyState == 4 && this.status != 200) {
+                        alert("login failed. API-key might be wrong or ibm cloud could be down.")
+                    }
+                };
+
+
+                //send HTTP POST request
+                xhttp.send();
+            }
+
+
+            function getReply() {//get reply for the user input msg
+                //get api key and url for WA
+                var apiValue;
+                var urlValue;
+                if (typeof passApi !== 'undefined' && typeof passUrl !== 'undefined') {
+                    apiValue = passApi;
+                    urlValue = passUrl;
+                } else {
+                    apiValue = document.getElementById("api").value;
+                    urlValue = document.getElementById("url").value;
+                }
+
+
+                //get workspace/instance/skill ID
+                var e = document.getElementById("workspaces");
+                var workspaceValue;
+                if (typeof passWorkspace !== 'undefined') {
+                    workspaceValue = passWorkspace;
+                } else {
+                    workspaceValue = e.options[e.selectedIndex].value;
+                }
+
+
+                //get user's input msg
+                var inputtextValue = document.getElementById("inputtext").value;
+                if (inputtextValue === "") {
+                    return;
+                }
+                document.getElementById("inputtext").value = "";//clear textbox when done
+
+
+                //add user's msg entry to conversation window
+                var myDiv = document.getElementById("convo");
+                myDiv.innerHTML += '<div class="container darker"><p>' + inputtextValue + '</p></div>';
+                myDiv.scrollTop = myDiv.scrollHeight;//scroll down to bottom
+
+
+                //construct HTTP request to WA  ************************************
+                var xhttp = new XMLHttpRequest();
+                var url = urlValue + "/v1/workspaces/" + workspaceValue + "/message?version=2019-02-28";
+                xhttp.open("POST", url, true);
+                xhttp.setRequestHeader("Content-Type", "application/json");
+                xhttp.setRequestHeader("Authorization", "Basic " + btoa("apikey" + ":" + apiValue))
+                var dataString;
+                if (typeof contextid !== 'undefined') {//context for on-going converstion (reaching sub dialog node if exist)
+                    dataString = '{"input": {"text": "' + inputtextValue + '"}, "context":  ' + contextid + '}';
+                } else {
+                    dataString = '{"input": {"text": "' + inputtextValue + '"}}';
+                }
+
+                var environment_id_value;
+                var collection_id_value;
+
+
+                //add WA's reply to converstion window
+                xhttp.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        var json = JSON.parse(this.responseText);
+                        contextid = JSON.stringify(json.context);
+
+
+
+
+                        var request = new XMLHttpRequest();
+                        request.open('GET', "http://localhost:8080/dialog_discovery_map.json", true);
+                        request.send(null);
+                        request.onreadystatechange = function () {
+                            if (request.readyState === 4 && request.status === 200) {
+                                var type = request.getResponseHeader('Content-Type');
+                                if (type.indexOf("text") !== 1) {
+                                    let fileString = request.responseText;
+                                    let jsonData;
+
+                                    if (fileString.length != 0){
+                                        jsonData = JSON.parse(fileString);
+                                        environment_id_value = jsonData.envAndCol.split('split')[0];
+                                        collection_id_value = jsonData.envAndCol.split('split')[1];
+                                    }else{
+                                        jsonData = {};
+                                    }
+
+
+                                    //if dialog node is in the dialog_discovery_map then redirect to discovery
+                                    //console.log(json.output.nodes_visited);
+                                    if (jsonData[json.output.nodes_visited[json.output.nodes_visited.length-1]] != undefined){
+                                        var xhttp_discovery = new XMLHttpRequest();
+
+                            
+                                        var passages_count_string = '3';
+                                        var query_string = inputtextValue;
+                                        query_string = query_string.split(' ').join('%20');
+
+                                        var dataString = 'deduplicate=false&highlight=true&passages=true&passages.count=' + passages_count_string + '&passages.fields=text&natural_language_query=' + query_string;
+
+                                        xhttp_discovery.open('GET', discoveryUrlValue+'/v1/environments/'+environment_id_value+'/collections/'+collection_id_value+'/query?version=2018-12-03&'+dataString, true);
+                                        xhttp_discovery.setRequestHeader("Authorization", "Basic " + btoa("apikey" + ":" + discoveryApiValue));
+
+                                        xhttp_discovery.onreadystatechange = function() {
+                                        if (this.readyState == 4 && this.status == 200) {
+                                            var json = JSON.parse(this.responseText);
+                                            var i;
+                                            for (i = 0; i < json.passages.length; i++) {
+                                                //console.log(json.passages[i].passage_text);
+                                                document.getElementById("convo").innerHTML += '<div class="container"><p>' + json.passages[i].passage_text + '</p></div>';
+                                                myDiv.scrollTop = myDiv.scrollHeight;
+                                            }
+
+                                        } else if (this.readyState == 4 && this.status != 200) {
+                                            alert(this.status);
+                                        }
+                                    };
+
+                            xhttp_discovery.send(null);
+                            }else{
+                                document.getElementById("convo").innerHTML += '<div class="container"><p>' + json.output.text + '</p></div>';
+                                myDiv.scrollTop = myDiv.scrollHeight;
+                            }
+                                }
+                            }
+                        }
+
+
+
+                        myDiv.scrollTop = myDiv.scrollHeight;
+                    } else if (this.readyState == 4 && this.status != 200) {
+                        alert("login failed. API-key might be wrong or ibm cloud could be down.")
+                    }
+                };
+
+
+                //send HTTP POST request
+                xhttp.send(dataString);
+            }
+        </script>
+    </div>
+
+</body>
+
+</html>

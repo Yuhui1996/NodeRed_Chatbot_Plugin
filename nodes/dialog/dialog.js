@@ -20,11 +20,11 @@ module.exports = function (RED) {
                     break;
                 }
                 case "is": {
-                    result = sendType + sendValue + " : " + relationValue;
+                    result = sendType + sendValue + ":" + relationValue;
                     break;
                 }
                 case "is_not": {
-                    result = sendType + sendValue + " != " + relationValue;
+                    result = sendType + sendValue + " != \"" + relationValue + "\"";
                     break;
                 }
                 case "greater": {
@@ -50,6 +50,8 @@ module.exports = function (RED) {
         this.intentDescription = n.intentDescription;
         console.log("start dialog");
         node.on('input', function (msg) {
+
+            let self = this;
 
             try {
                 this.assistant = this.context().flow.get("assistant");
@@ -91,19 +93,43 @@ module.exports = function (RED) {
             }
 
 
-            console.log(this.id);
+            function addID(newID) {
+
+                console.log(n.name);
+
+                let siblings = self.context().flow.get("siblings");
+                let previous_siblings = "";
+                if (siblings[msg.payload.nodeID] != undefined) {
+
+                    previous_siblings = siblings[msg.payload.nodeID].id;
+                    console.log("->  " + siblings[msg.payload.nodeID].name);
+                    siblings[msg.payload.nodeID] = {
+                        id: newID,
+                        name: n.name
+                    };
+
+                } else {
+                    siblings[msg.payload.nodeID] = {
+                        id: newID,
+                        name: n.name
+                    };
+                }
+
+                self.context().flow.set("siblings", siblings);
+                return previous_siblings;
+            }
 
             this.id = this.id + Math.random().toString(36).substr(2, 10);
+
             //for creating dialog node
-
-
-            function getResponses(){
+            function getResponses() {
                 var output = {
                     generic: []
                 }
+
                 var responses = n.dialog_response;
-                for(var i =0; i < responses.length; i++){
-                    if(responses[i].response_type === "image"){
+                for (var i = 0; i < responses.length; i++) {
+                    if (responses[i].response_type === "image") {
                         var image = responses[i].image;
                         var response = {};
                         response.response_type = "image";
@@ -112,15 +138,14 @@ module.exports = function (RED) {
                         response.source = image.source;
                         //console.log("source:" + image.source);
                         //}
-                        if(image.title != undefined){
+                        if (image.title != undefined) {
                             response.title = image.title;
                         }
-                        if(image.description != undefined){
+                        if (image.description != undefined) {
                             response.description = image.description;
                         }
                         output.generic.push(response);
-                    }
-                    else if (responses[i].response_type === "text"){
+                    } else if (responses[i].response_type === "text") {
                         output.generic.push({
                             values: [
                                 {
@@ -134,19 +159,24 @@ module.exports = function (RED) {
                 return output;
             }
 
+
             let params = {
                 workspaceId: msg.payload.workspaceId,
                 parent: msg.payload.nodeID,
+                previous_sibling: addID(this.id),
                 dialogNode: this.id, //needs to be unique
                 conditions: getReferenceValue(n.dialog_type, n.dialog_value, n.condition, n.conditionChoices),
                 title: n.name,
-                output: getResponses()
+                output: getResponses(),
+                nextStep: {
+                    behavior: n.userAction
+                }
             };
 
 
+            // console.log(params);
             let top = this;
-            // top.assistant.createDialogNode(params)
-            //
+
 
             promise_queue.addToQueue(() => top.assistant.createDialogNode(params))
                 .then(res => {
@@ -155,18 +185,20 @@ module.exports = function (RED) {
                     let object = JSON.parse(json);
                     let nodeID = top.id;
                     msg.payload.nodeID = nodeID;
-                    node.status({fill:"green",shape:"ring",text:"Complete"});
+                    msg.payload.discovery_api_key = msg.payload.discovery_api_key;
+                    msg.payload.discoveryUrl = msg.payload.discoveryUrl;
+                    node.status({fill: "green", shape: "ring", text: "Complete"});
                     node.send(msg);
 
 
                 })
                 .catch(err => {
                     console.log(err)
-                    this.status({fill:"red",shape:"ring",text:"failed"});
+                    this.status({fill: "red", shape: "ring", text: "failed"});
                     //    "THIS IS ERROR OF" + this.id + "__________________________-\n\n" +
                 });
-
         });
+
     }
 
     RED.nodes.registerType("dialog", createDialog);

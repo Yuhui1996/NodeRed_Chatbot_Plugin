@@ -1,0 +1,38 @@
+<script type="text/javascript">
+    RED.nodes.registerType('discoveryDocument', {
+        category: 'Watson Designer',
+        color: '#a6bbcf',
+        defaults: {
+            filepath:{
+                value:"",
+                required: true
+            }
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "comment.svg",
+        label: function() {
+            return this.discoveryname || "add document";
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="discoveryDocument">
+    <div class="form-row">
+        <label for="node-input-filepath"><i class="icon-tag"></i> file path</label>
+        <input type="text" id="node-input-filepath" placeholder="file path">
+    </div>
+  
+</script>
+
+<script type="text/html" data-help-name="discoveryDocument">
+    <p>the node requries you to enter the exact path of the file you can either right the file and property,
+        then the location is exact path of the file</p>
+</script>
+
+
+
+<html>
+
+
+</html>
