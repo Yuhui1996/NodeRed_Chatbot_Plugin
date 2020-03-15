@@ -7,7 +7,7 @@ module.exports = function(RED) {
         node.on('input', function(msg) {
 
             var connect = require('connect');
-            var varsInHtml = 'passApi = "' + msg.payload['wa_api_key'] +'";\npassUrl = "' + msg.payload['instance_url'] + '";\n'
+            var varsInHtml = 'passApi = "' + msg.payload['wa_api_key'] +'";\npassUrl = "' + msg.payload['instance_url'] + '";\n'+'discoveryUrlValue = "' + msg.payload['discoveryUrl'] + '";\n'+'discoveryApiValue = "' + msg.payload['discovery_api_key'] + '";\n';
             if (typeof msg.payload.workspaceId !== "undefined"){//TODO: need to confirm this ===> [workspaceId]
                 varsInHtml += 'passWorkspace = "' + msg.payload.workspaceId +'";\n';
             }

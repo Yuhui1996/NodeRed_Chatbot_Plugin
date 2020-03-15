@@ -152,6 +152,7 @@
         </div>
 
         <script>
+            //var fs = require("fs");
             var contextid;//global
 
             //press enter to send msg
@@ -305,14 +306,78 @@
                     dataString = '{"input": {"text": "' + inputtextValue + '"}}';
                 }
 
+                var environment_id_value;
+                var collection_id_value;
+
 
                 //add WA's reply to converstion window
                 xhttp.onreadystatechange = function() {
                     if (this.readyState == 4 && this.status == 200) {
                         var json = JSON.parse(this.responseText);
                         contextid = JSON.stringify(json.context);
-                        document.getElementById("convo").innerHTML += '<div class="container"><p>' + json.output.text + '</p></div>';
-                        //var myDiv = document.getElementById("convo");
+
+
+
+
+                        var request = new XMLHttpRequest();
+                        request.open('GET', "http://localhost:8080/dialog_discovery_map.json", true);
+                        request.send(null);
+                        request.onreadystatechange = function () {
+                            if (request.readyState === 4 && request.status === 200) {
+                                var type = request.getResponseHeader('Content-Type');
+                                if (type.indexOf("text") !== 1) {
+                                    let fileString = request.responseText;
+                                    let jsonData;
+
+                                    if (fileString.length != 0){
+                                        jsonData = JSON.parse(fileString);
+                                        environment_id_value = jsonData.envAndCol.split('split')[0];
+                                        collection_id_value = jsonData.envAndCol.split('split')[1];
+                                    }else{
+                                        jsonData = {};
+                                    }
+
+
+                                    //if dialog node is in the dialog_discovery_map then redirect to discovery
+                                    if (jsonData[json.output.nodes_visited[json.output.nodes_visited.length-1]] != undefined){
+                                        var xhttp_discovery = new XMLHttpRequest();
+
+                            
+                                        var passages_count_string = '3';
+                                        var query_string = 'abs plastic';
+                                        query_string = query_string.split(' ').join('%20');
+
+                                        var dataString = 'deduplicate=false&highlight=true&passages=true&passages.count=' + passages_count_string + '&passages.fields=text&natural_language_query=' + query_string;
+
+                                        xhttp_discovery.open('GET', discoveryUrlValue+'/v1/environments/'+environment_id_value+'/collections/'+collection_id_value+'/query?version=2018-12-03&'+dataString, true);
+                                        xhttp_discovery.setRequestHeader("Authorization", "Basic " + btoa("apikey" + ":" + discoveryApiValue));
+
+                                        xhttp_discovery.onreadystatechange = function() {
+                                        if (this.readyState == 4 && this.status == 200) {
+                                            var json = JSON.parse(this.responseText);
+                                            var i;
+                                            for (i = 0; i < json.passages.length; i++) {
+                                                //console.log(json.passages[i].passage_text);
+                                                document.getElementById("convo").innerHTML += '<div class="container"><p>' + json.passages[i].passage_text + '</p></div>';
+                                                myDiv.scrollTop = myDiv.scrollHeight;
+                                            }
+
+                                        } else if (this.readyState == 4 && this.status != 200) {
+                                            alert(this.status);
+                                        }
+                                    };
+
+                            xhttp_discovery.send(null);
+                            }else{
+                                document.getElementById("convo").innerHTML += '<div class="container"><p>' + json.output.text + '</p></div>';
+                                myDiv.scrollTop = myDiv.scrollHeight;
+                            }
+                                }
+                            }
+                        }
+
+
+
                         myDiv.scrollTop = myDiv.scrollHeight;
                     } else if (this.readyState == 4 && this.status != 200) {
                         alert("login failed. API-key might be wrong or ibm cloud could be down.")

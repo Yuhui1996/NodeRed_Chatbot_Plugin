@@ -68,7 +68,7 @@ module.exports = function(RED) {
         node.on("input", function(msg){
 
             let dialog_node_ID = msg.payload.nodeID;
-            
+
             const discovery = new DiscoveryV1({
                 version: '2020-02-10',
                 authenticator: new IamAuthenticator({
@@ -134,11 +134,12 @@ module.exports = function(RED) {
                                                     msg.payload = {
                                                         enviroment_id: enviroment_id,
                                                         configuration_id: configuration_id,
-                                                        collection_id: collection_id,
+                                                        collection_id: collection_id,//here it is
                                                         discovery_api_key: msg.payload.discovery_api_key,
                                                         discoveryUrl:msg.payload.discoveryUrl,
                                                         success: true
                                                     }
+                                                    updateData('envAndCol', enviroment_id+'split'+collection_id);
                                                     node.send(msg)
                                                     console.log(collectionobject)
 
@@ -199,11 +200,12 @@ module.exports = function(RED) {
                                             msg.payload = {
                                                 enviroment_id: enviroment_id,
                                                 configuration_id: configuration_id,
-                                                collection_id: collection_id,
+                                                collection_id: collection_id,//here it is again
                                                 discovery_api_key: msg.payload.discovery_api_key,
                                                 discoveryUrl:msg.payload.discoveryUrl,
                                                 success: true
                                             }
+                                            updateData('envAndCol', enviroment_id+'split'+collection_id);
                                             node.send(msg)
                                             console.log(collectionobject)
 
