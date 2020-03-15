@@ -1,6 +1,8 @@
 const AssistantV1 = require('ibm-watson/assistant/v1');
 
 const fs  = require("fs");
+let path = require('path');
+let dialog_discovery_map_json_file_path = path.join(__dirname, '/../hostbot/dialog_discovery_map.json');
 const {
     IamAuthenticator
 } = require('ibm-watson/auth');
@@ -8,9 +10,7 @@ const {
 let workspaceid;
 let json;
 
-
-
-
+const fd = fs.openSync(dialog_discovery_map_json_file_path, 'w')
 
 module.exports = function (RED) {
     let global_top = this;

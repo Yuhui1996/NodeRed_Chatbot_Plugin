@@ -4,6 +4,7 @@
     "dependencies": {
         "fs": "",
         "ibm-watson": "^5.3.0",
+        "jquery": "^3.4.1",
         "mocha": "^7.1.0"
     },
     "description": "hiya",
@@ -29,6 +30,7 @@
             "meta": "nodes/metadata/metadata.js",
             "dialog": "nodes/dialog/dialog.js",
             "createWatson": "nodes/create_watson/createWatson.js",
+            "hostbot": "nodes/hostbot/hostbot.js",
             "deleteWatson": "nodes/delete_watson/deleteWatson.js",
             "createDiscovery": "nodes/createDiscovery/createDiscovery.js",
             "discoveryDocument": "nodes/discoveryDocuments/discoveryDocument.js",
@@ -37,6 +39,7 @@
     },
     "devDependencies": {
         "node-red": "^1.0.3",
-        "node-red-node-test-helper": "^0.2.3"
+        "node-red-node-test-helper": "^0.2.3",
+        "open": ""
     }
 }
