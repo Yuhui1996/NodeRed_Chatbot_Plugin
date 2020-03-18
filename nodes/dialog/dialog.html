@@ -388,9 +388,9 @@
 		
 		console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>JW Log START<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 		for (let entity_element in entity_list) {
-			console.log(entity_element.value);
-			for (let synonym_element in entity_element.synonym) {
-				console.log(synonym_element);
+			console.log(entity_list[entity_element].value);
+			for (let synonym_element in entity_list[entity_element].synonym) {
+				console.log(entity_list[entity_element].synonym[synonym_element]);
 			}
 		}
 		console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>JW Log End<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
