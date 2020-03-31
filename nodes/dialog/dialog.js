@@ -5,10 +5,26 @@ const {
 
 let workspaceid;
 const promise_queue = require('../scripts/queue.js');
-
+/**
+ * @class Dialog
+ * @classdesc This class is for the dialog node in the system. It allows users to create a
+ * dialog node in the chatbot such as in the backend system
+ * @param RED Node Red Object
+ */
 module.exports = function (RED) {
 
 
+    /**
+     * @function Reference Value
+     * @memberOf Dialog
+     * @description Function to format the reference for the api call. This relates to how dialog nodes check entities.
+     * Converting from plain text to specific formats
+     * @param {string} sendType Entity or Intent symbol
+     * @param {string} sendValue Name of entity or intent
+     * @param {string} relationType  relationship to entity value in dialog
+     * @param {string} relationValue Value of entity
+     * @return {string} formatted version of params for api call
+     */
     function getReferenceValue(sendType, sendValue, relationType, relationValue) {
         let result;
         if (sendType == "#") {
@@ -42,6 +58,13 @@ module.exports = function (RED) {
 
     }
 
+    /**
+     * @function Create Dialog Node
+     * @memberOf Dialog
+     * @description Main function for creating the dialog. Collects data from front end and constructs the API call.
+     * Also handles the passing of data in and out of the node.
+     * @param  {*} n Node Object
+     */
     function createDialog(n) {
         RED.nodes.createNode(this, n);
         var node = this;
@@ -53,6 +76,10 @@ module.exports = function (RED) {
 
             let self = this;
 
+
+            /**
+             * @inner Create Instance of API manager, collect from flow object if available
+             */
             try {
                 this.assistant = this.context().flow.get("assistant");
             } catch (e) {
@@ -70,6 +97,10 @@ module.exports = function (RED) {
             }
 
 
+            /**
+             * @inner Manage the IDs of the system, ids are kept unique by incrementation and the addition of random
+             * characters
+             */
             try {
 
                 if (this.context().flow.get("ids") != undefined) {
@@ -93,7 +124,14 @@ module.exports = function (RED) {
             }
 
 
-            function addID(newID) {
+            /**
+             * @function check Siblings
+             * @memberOf Dialog
+             * @description check if this dialog node has a previous sibling. If so, add it as sibling for this node. Alternativly, add own id as simply dictionary.
+             * @param {string} newID New id of current node
+             * @return {string} sibling : the sibling node of this node
+             */
+            function checkSiblings(newID) {
 
                 console.log(n.name);
 
@@ -119,9 +157,18 @@ module.exports = function (RED) {
                 return previous_siblings;
             }
 
+
+            /**
+             *
+             * @inner Generate new id
+             */
             this.id = this.id + Math.random().toString(36).substr(2, 10);
 
-            //for creating dialog node
+            /**
+             * @function get Responses
+             * @memberOf Dialog
+             * @return {generic} Responses captured from the frontend
+             */
             function getResponses() {
                 var output = {
                     generic: []
@@ -163,7 +210,7 @@ module.exports = function (RED) {
             let params = {
                 workspaceId: msg.payload.workspaceId,
                 parent: msg.payload.nodeID,
-                previous_sibling: addID(this.id),
+                previous_sibling: checkSiblings(this.id),
                 dialogNode: this.id, //needs to be unique
                 conditions: getReferenceValue(n.dialog_type, n.dialog_value, n.condition, n.conditionChoices),
                 title: n.name,
