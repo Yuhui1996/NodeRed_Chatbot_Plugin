@@ -3,8 +3,14 @@
 <script type="text/javascript">
     /**
      *
-     * @
+     * @namespace Dialog_Frontend
+     * @description This is the front end class of the main dialog node. Manages all component that are seen on the Node-Red system.
+     *
+     *
      */
+
+
+
     const recognition_options = ["any", "is", "is_not", "greater", "less"];
     const options = [{
         v: "text",
@@ -25,7 +31,14 @@
     ];
 
 
-    //Function to update the system with the current data.
+    /**
+     * @function Update Data
+     * @description Function to update the node with the currently selected data and alternative data.
+     * @param {string} type_given Intent or entity (via symbol)
+     * @param {string} selected_value name of selected entity/intent if one exists to match on the front end
+     * @param {string} condition Matching condition to entity value
+     * @param {string} conditionChoice value of entity if one is selected
+     */
     function updateData(type_given, selected_value, condition, conditionChoice) {
         $.getJSON('global_data', function (global_data) {
 
