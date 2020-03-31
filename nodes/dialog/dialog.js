@@ -89,7 +89,11 @@ module.exports = function (RED) {
             this.id = this.id + Math.random().toString(36).substr(2, 10);
             //for creating dialog node
 
-
+            /**
+             * returns an output object that includes
+             * the responses the user has created
+             * in a format that matches the Watson API call requirements 
+             */
             function getResponses(){
                 var output = {
                     generic: []
