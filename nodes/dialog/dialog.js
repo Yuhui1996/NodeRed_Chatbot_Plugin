@@ -92,7 +92,7 @@ module.exports = function (RED) {
             /**
              * returns an output object that includes
              * the responses the user has created
-             * in a format that matches the Watson API call requirements 
+             * in a format that matches the Watson API call 
              */
             function getResponses(){
                 var output = {
