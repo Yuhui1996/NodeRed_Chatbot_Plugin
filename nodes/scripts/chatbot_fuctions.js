@@ -5,7 +5,11 @@ const {
 } = require('ibm-watson/auth');
 
 
-
+/**
+ * @class Watson_API
+ * @description Class representing a function to create the Chatbot key and retain it
+ * @Deprecated Now implementing into the main class
+ */
 class Watson_API {
     assistant = new AssistantV1({
         version: '2019-02-08',
@@ -18,6 +22,12 @@ class Watson_API {
     });
 
 
+    /**
+     * @memberOf Watson_API
+     * @deprecated
+     * @function Fetch old assistant
+     * @returns {AssistantV1 | AssistantV1}
+     */
     get assistant() {
         return this.assistant;
     }
