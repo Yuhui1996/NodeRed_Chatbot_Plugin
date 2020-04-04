@@ -5,7 +5,13 @@ below.
 ## Overview
 
 ## Components
-
+# If assistant regognizes
+In this component the user can choose, create or edit the intent/entity that the dialog node responds to.
+# Response
+In this component the user can create the response that the chatbot gives to the recognized intent/entity.
+The response can be a text response, a selectable option, a selectable image or a combination of all three.
+# Next action
+In this component the user choses whether the chatbot should wait for the users reply or just continue to the next node and skip the users input.
 ## Limitations
 
 ## Functions
