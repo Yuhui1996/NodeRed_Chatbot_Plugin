@@ -41,7 +41,9 @@ module.exports = function (RED) {
     }
 
     function startData() {
+
         if (global_top.global_data.data == undefined ){
+
             let old_data = readData();
 
 
@@ -138,7 +140,7 @@ module.exports = function (RED) {
         for (let next_intent in this.global_data.data.intents) {
             let intent = {
                 intent: next_intent,
-                description: this.global_data.data.intents[next_intent].desc,
+                description: this.global_data.data.intents[next_intent].description,
                 examples: this.global_data.data.intents[next_intent].examples
             };
 
@@ -232,7 +234,8 @@ module.exports = function (RED) {
                 description: 'this is the first chatbot created using node.js',
                 intents: createIntents(),
                 entities: createEntities()
-            }
+            };
+            console.log(createIntents());
 
 
 
@@ -246,6 +249,7 @@ module.exports = function (RED) {
                         msg.payload.discovery_api_key=msg.payload.discovery_api_key;
                         msg.payload.discoveryUrl= msg.payload.discoveryUrl;
                         node.send(msg); //send workspace id to next
+                        console.log("config");
                         console.log(config);
                         config.nodeData = global_top.global_data.data;
                         writeData();

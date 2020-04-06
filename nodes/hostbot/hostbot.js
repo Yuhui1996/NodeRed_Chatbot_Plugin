@@ -11,8 +11,11 @@ module.exports = function(RED) {
             var varsInHtml = 'passApi = "' + msg.payload['wa_api_key'] + '";\npassUrl = "' + msg.payload['instance_url'] + '";\n' + 'discoveryUrlValue = "' + msg.payload['discoveryUrl'] + '";\n' + 'discoveryApiValue = "' + msg.payload['discovery_api_key'] + '";\n';
             if (typeof msg.payload.workspaceId !== "undefined") { //TODO: need to confirm this ===> [workspaceId]
                 varsInHtml += 'passWorkspace = "' + msg.payload.workspaceId + '";\n';
+
             }
+
             var serveStatic = require('serve-static');
+
             var detect = require('detect-port');
 
 
@@ -75,8 +78,7 @@ module.exports = function(RED) {
                                 if (err) return console.log(err);
                                 console.log('url saved');
                             });
-                            open(public_url);
-                        })();
+                        });
                     });
                 } else {
                     var readurl = require('fs');
@@ -85,6 +87,7 @@ module.exports = function(RED) {
                     var filePath = path.join(__dirname, "publicurl.txt");
                     readurl.readFile(filePath, function(err, buf) {
                         public_url = buf.toString();
+
 
                     });
                     console.log(`port: ${portfix} was occupied, try port: ${_port}`);
@@ -122,10 +125,13 @@ module.exports = function(RED) {
                     console.log("The link to your chatbot is, " + url + "     (please make sure to select the correct instance before chatting)")
                     console.log('widget insert:  passed as payload');
 
+                }
+              
+              
                     open(public_url);
 
 
-                }
+
             });
 
 
