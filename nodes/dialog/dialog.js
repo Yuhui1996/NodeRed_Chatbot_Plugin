@@ -133,7 +133,7 @@ module.exports = function (RED) {
                                 value: {
                                     input: {
                                       text: option.list[i].value  
-                                    },
+                                    }
                                 }
                             });
                         }
