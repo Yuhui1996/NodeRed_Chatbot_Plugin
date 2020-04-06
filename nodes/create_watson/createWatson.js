@@ -1,6 +1,8 @@
 const AssistantV1 = require('ibm-watson/assistant/v1');
 
 const fs  = require("fs");
+let path = require('path');
+let dialog_discovery_map_json_file_path = path.join(__dirname, '/../hostbot/dialog_discovery_map.json');
 const {
     IamAuthenticator
 } = require('ibm-watson/auth');
@@ -8,20 +10,18 @@ const {
 let workspaceid;
 let json;
 
-
-
-
+const fd = fs.openSync(dialog_discovery_map_json_file_path, 'w')
 
 module.exports = function (RED) {
-
+    let global_top = this;
 
 
     function writeData(){
 
         try {
-            let data = JSON.stringify(this.global_data.data, null, 2);
+            let data = JSON.stringify(global_top.global_data.data, null, 2);
 
-                fs.writeFile('global_data.json', data, (err) => {
+            fs.writeFile('global_data.json', data, (err) => {
                 console.log('Data written to file');
             });
         }catch (e) {
@@ -41,22 +41,28 @@ module.exports = function (RED) {
     }
 
     function startData() {
-        if (this.global_data.data == undefined ){
+
+        if (global_top.global_data.data == undefined ){
+
             let old_data = readData();
+
+
             if (old_data != undefined){
-                this.global_data.data = old_data;
+                global_top.global_data.data = old_data;
             }else{
-                this.global_data.data = {
+                global_top.global_data.data = {
                     entities: {},
                     intents: {}
                 }
             }
+
+            console.log("Making the red");
         }
     }
 
 
     this.global_data = require('../scripts/global_data.js');
-    let global_top = this;
+
 
 
 
@@ -138,7 +144,7 @@ module.exports = function (RED) {
                 examples: this.global_data.data.intents[next_intent].examples
             };
 
-           intents.push(intent);
+            intents.push(intent);
         }
         console.log("Intents_______________\n" + intents);
         return intents;
@@ -169,7 +175,7 @@ module.exports = function (RED) {
 
 
     function createWatson(config) {
-
+        startData();
 
         // test_data();
 
@@ -181,7 +187,17 @@ module.exports = function (RED) {
 
         node.on('input', function (msg) {
 
+
             startData();
+
+
+            let startIDs = {};
+
+            try{
+                node.context().flow.set("siblings",startIDs);
+            }catch (errors) {
+                console.log("failed to set flows");
+            }
 
 
             let self = this;
@@ -218,7 +234,8 @@ module.exports = function (RED) {
                 description: 'this is the first chatbot created using node.js',
                 intents: createIntents(),
                 entities: createEntities()
-            }
+            };
+            console.log(createIntents());
 
 
 
@@ -229,7 +246,10 @@ module.exports = function (RED) {
                         let object = JSON.parse(json);
                         workspaceid = object.result.workspace_id;
                         msg.payload.workspaceId = workspaceid;
+                        msg.payload.discovery_api_key=msg.payload.discovery_api_key;
+                        msg.payload.discoveryUrl= msg.payload.discoveryUrl;
                         node.send(msg); //send workspace id to next
+                        console.log("config");
                         console.log(config);
                         config.nodeData = global_top.global_data.data;
                         writeData();
@@ -290,7 +310,7 @@ module.exports = function (RED) {
     });
 
 
-       RED.httpAdmin.post('/global_data', RED.auth.needsPermission("global_data.write"), function (req, res) {
+    RED.httpAdmin.post('/global_data', RED.auth.needsPermission("global_data.write"), function (req, res) {
 
         let new_data = req.body;
         ///Handle creation on new intent or entity from node

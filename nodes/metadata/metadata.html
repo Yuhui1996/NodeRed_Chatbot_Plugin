@@ -34,8 +34,12 @@
         <button type="button" style="float:right; margin-right:8%; margin-bottom:12px" class=" ui-button ui-corner-all ui-widget" name="TA_Key">Generate Key</button>
     </div>
     <div class="form-row">
-        <label for="node-input-discovery"><i class="icon-tag"></i>Discovery </label>
+        <label for="node-input-discovery"><i class="icon-tag"></i>Discovery apiKey</label>
         <input type="text" id="node-input-discovery" placeholder="API-key">
+    </div>
+    <div class="form-row">
+        <label for="node-input-discoveryUrl"><i class="icon-tag"></i>Discovery URL </label>
+        <input type="text" id="node-input-discoveryUrl" placeholder="discovery url">
     </div>
     <div class="form-row">
         <button type="button" style="float:right; margin-right:8%; margin-bottom:12px" class="ui-button ui-corner-all ui-widget" name="Discovery_Key">Generate Key</button>
@@ -66,6 +70,9 @@
                 value: ""
             },
             discovery: {
+                value: ""
+            },
+            discoveryUrl:{
                 value: ""
             },
             chatbotName: {
