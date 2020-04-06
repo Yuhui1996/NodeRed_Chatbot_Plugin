@@ -1,102 +1,32 @@
-# NodeRed_Chatbot_Plugin
+# node-red-watson-designer
 
-Node-red is based on Node.js, so to run this you need:
+# Description
 
-1. Node.js,https://www.google.com/search?client=safari&rls=en&q=node.js&ie=UTF-8&oe=UTF-8
-2. Node-Red, https://nodered.org
+This project was creating in partnership with IBM and the UCL IXN. The aim of this project is to create a plugin for 
+Node-RED for the purpose of building a watson Assistant chatbot. This is a Proof of Concept initially but is released 
+to open-source for further development! 
 
-To run the plugin, follow https://nodered.org/docs/creating-nodes/first-node. You should be able to see the new node,'lowercase' on the function subsection of Node-Red.
+### abstract 
+Chatbots are AI agents that are rapidly becoming popular in the modern age. 
+The Watson Assistant is a lets you build, train and deploy conversational interactions and create a chatbot. 
+Node-RED removes lower-level abstractions in web application development. It allows users to drag and drop nodes, connect
+them together to rapidly and easily build and deploy software. Sponsored by IBM, this project aims to integrate these two 
+systems as a proof of concept (PoC) with a further attempt at integrating Watson Discovery (a powerful AI Search technology).
+This would allow users (particularly with less technical literacy) to easily design, deploy and host a chatbot. All on Node-REDs user-friendly environment.
+Example use cases include a small non-technical business owner wanting a basic chatbot on their companies’ site. 
 
-...................
+# Visuals
 
-# Development Branching strategy: Case-Branch
+# Installation
 
-## Branching
+# Usage
 
-- When you start a new story/task
-- Create a Branch with the following format:
+# Descriptions of Nodes
 
-  <developer_initials>_<Story_name>_<Sprint_Number>
+# Support
 
-Pull Request into development when the story is done. This pull request must be reviewed by
-at least 1 other developer before being merged.
+# Road-map
 
-After each Sprint, merge into release branch / Master branch.
+# Contributing
 
-
-
-....................
-
-
-# Using the nodes with the global intent and entity system
-The project has been designed so that the nodes in the system can communicate with each other via http. This allows users to select intents they wish to use or create new ones.
-When creating a new node the node will make an http call to the *CreateWatson* Node. Hence this must be on the dashboard for the other nodes to work correctly.
-
-The format that the data must be sent to the node is as follows:
-
-### Entities:
-
-```json
-{
-  "control": "add / remove / update",
-  "type": "entity",
-  "name": "Str"
-  "description":  "Str",
-  "fuzzy_match": "boolean",
-  "values": [{"value": "Str", "synonyms": ["str","str"]}]  
-}
-``` 
-
-### Intents:
-
-```json
-
-{
-  "control": "add / remove / update",
-  "type": "intent",
-  "name": "Str",
-  "description":  "Str",
-  "examples": "[{'text':'Str'}]"
-}
-``` 
-
-## To retrieve the data call the following:
-
-```javascript
- $.getJSON('global_data', function (global_data) {
-     let intents = global_data.intents;
-     let entities = global_data.entities;
- }
-```
-### Node that the data retrieved will be in the following format:
-
-```json
-{
-      "entities": {
-            "Test_Entity": {
-                "values": [{
-                    "value": "Menu",
-                    "synonyms": ["Veg", "Normal", "Special"]
-                }],
-                "description": "Hello",
-                "fuzzy_match": true
-            }
-        },
-        "intents": {
-            "Test_Intent": {
-                "description": "",
-                "examples": [{"text": "Hello"}, {"text": "Hi"}]
-            }
-        }
-}
-
-```
-
-## To send new data complete the following is an example: 
-
-```javascript
-  $.post("/global_data","<intent or entity object>")
-                        .done(function (data) {
-                            alert("Data Loaded: " + data);
-                        });
-```
+# Authors and acknowledgment
