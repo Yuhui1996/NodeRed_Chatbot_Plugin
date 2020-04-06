@@ -617,9 +617,49 @@
 
         let exampleList = $('#node-input-example-container').editableList('items');
         new_intent.examples = [];
+		
+		// add by Jiahao 2020-03-05 START
+		$.getJSON('global_data', function (global_data) {
+			// console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>JW Log Start<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+			// list all the global examples
+			let globalExamples = new Array();
+			let duplicateExamples = new Array();
+			for (let next_intent in global_data.intents) {
+				examples = global_data.intents[next_intent].examples;
+				globalExamples.push.apply(globalExamples,examples);
+			}
+			console.log(globalExamples);
+			let errorFlag = false;
+			// list the unsaved examples
+			exampleList.each(function (i) {
+				let exampleElement = $(this);
+				let example = exampleElement.find(".node-input-example").val();
+				for (let globalExample in globalExamples){
+					if (example == globalExamples[globalExample].text && example!="" && globalExamples[globalExample].text!="") {
+						errorFlag = true;
+						duplicateExamples.push(example);
+					}
+				}
+			});
+			// pop up warning message when found duplicate examples
+			if (errorFlag){
+				RED.notify('Please avoid duplicate examples "'+duplicateExamples+'" among all the intents','warning');
+			}
+			
+			// console.log(globalExamples);
+			// for (let globalExample in globalExamples){
+			// 	console.log(globalExamples[globalExample].text);
+			// }
+			// console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>JW Log End<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+		});
+		
+		// add by Jiahao 2020-03-05 END
+		
         exampleList.each(function (i) {
             let exampleElement = $(this);
+
             let example = exampleElement.find(".node-input-example").val().toLowerCase();
+
             new_intent.examples.push({text: example});
         });
 
@@ -689,21 +729,63 @@
             // //Save values to node default
             entity_list.push(value);
         });
+		
+		
+		// console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>JW Log START<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+		let entity_value_errorFlag = false;
+		let entity_synonym_errorFlag = false;
+		let entity_value_set = new Set();
+		for (let entity_element in entity_list) {
+			if (entity_value_set.has(entity_list[entity_element].value)) {
+				entity_value_errorFlag = true;
+			} else {
+				entity_value_set.add(entity_list[entity_element].value);
+			}
+			let entity_synonym_set = new Set();
+			for (let synonym_element in entity_list[entity_element].synonym) {
+				if (entity_synonym_set.has(entity_list[entity_element].synonym[synonym_element])) {
+					entity_synonym_errorFlag = true;
+				} else {
+					entity_synonym_set.add(entity_list[entity_element].synonym[synonym_element]);
+				}
+			}
+		}
+		if (entity_value_errorFlag){
+			RED.notify('You can not have duplicate values in one entity.','error');
+		} else if (entity_synonym_errorFlag) {
+			RED.notify('You can not have duplicate synonyms in one value.','error');
+		} else {
+			new_entity.values = entity_list;
+			// console.log("New Entity:\n\n"+new_entity);
+			$.post("/global_data", new_entity)
+				.done(function (data) {
+					alert("Data Loaded: " + data);
+				});
 
 
-        new_entity.values = entity_list;
-        console.log("New Entity:\n\n" + new_entity);
-        $.post("/global_data", new_entity)
-            .done(function (data) {
-                alert("Data Loaded: " + data);
-            });
+			//Cal function to refresh the lists and set to new intent
+			updateData("@", new_entity.name, "", "");
 
-        //Cal function to refresh the lists and set to new intent
-        updateData("@", new_entity.name, "", "");
-        $("#node-button-create-entity").show();
-        $("#node-button-edit-entity").show();
+			document.getElementById("node-button-create-entity").style.display = "block";
+			document.getElementById("create-entity").style.display = "none";
+		
+		}
+		
+		// console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>JW Log End<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 
-        $("#create-entity").hide();
+//         new_entity.values = entity_list;
+//         console.log("New Entity:\n\n" + new_entity);
+//         $.post("/global_data", new_entity)
+//             .done(function (data) {
+//                 alert("Data Loaded: " + data);
+//             });
+
+//         //Cal function to refresh the lists and set to new intent
+//         updateData("@", new_entity.name, "", "");
+//         $("#node-button-create-entity").show();
+//         $("#node-button-edit-entity").show();
+
+//         $("#create-entity").hide();
     }
 
     function cancelIntent() {
@@ -1344,6 +1426,27 @@
 
 
             ///INTENT SAVING
+
+//             this.intentName = $("#node-input-intentName").val();
+//             this.intentDescription = $("#node-input-intentDescription").val();
+
+
+//             var exampleList = $('#node-input-example-container').editableList('items');
+//             var node = this;
+//             node.examples = [];
+			
+// 			exampleList.each(function (i) {
+//                 var exampleElement = $(this);
+//                 var example = exampleElement.find(".node-input-example").val();
+//                 var listElement = {
+//                     exampleContent: example
+//                 };
+//                 node.examples.push(listElement);
+//             });
+
+//             node.dialog_type = $("#node-input-description").val();
+//             node.dialog_value = $("#node-input-choices").val();
+
             // this.intentName = $("#node-input-intentName").val();
             // this.intentDescription = $("#node-input-intentDescription").val();
             //
@@ -1360,6 +1463,7 @@
             //     };
             //     node.examples.push(listElement);
             // });
+
 
 
             //ENTITY SAVING
