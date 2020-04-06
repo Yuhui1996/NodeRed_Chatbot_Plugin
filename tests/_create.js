@@ -8,6 +8,7 @@ const {
     IamAuthenticator
 } = require('ibm-watson/auth');
 
+
 const apikey = "mHBe7hP3EvS--SAOe8fBSDRhTp78W__ZOL7iqfjMzUvf";
 const urlHost = "https://api.eu-gb.assistant.watson.cloud.ibm.com/instances/4cc1d037-5230-4352-b3e4-dd74ede3951c";
 

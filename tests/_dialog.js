@@ -10,8 +10,9 @@ const {
     IamAuthenticator
 } = require('ibm-watson/auth');
 
-const apikey = "iaPZHdbsoWlThg8IWVFXM1m3IWuIbJ-vyPa9DstoRT5G";
-const urlHost = "https://api.eu-gb.assistant.watson.cloud.ibm.com/instances/0ccb889d-9dc1-4098-93e7-2be9f027d0d6";
+
+const apikey = "mHBe7hP3EvS--SAOe8fBSDRhTp78W__ZOL7iqfjMzUvf";
+const urlHost = "https://api.eu-gb.assistant.watson.cloud.ibm.com/instances/4cc1d037-5230-4352-b3e4-dd74ede3951c";
 
 const watson_assistant = new AssistantV1({
     version: '2019-02-08',
