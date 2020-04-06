@@ -719,30 +719,13 @@
                 },
 
 
-                removeItem: function (opt_syn) {
-                    //Remove item from the list
-                    var currentOutputs = JSON.parse(outputCount.val() || "{}");
-                    if (opt_syn.hasOwnProperty('i')) {
-                        currentOutputs[opt_syn.i] = -1;
-                    } else {
-                        delete currentOutputs[opt_syn._i];
-                    }
-                    var response_values = $("#node-input-value-container").editableList(
-                        'items');
-                    response_values.each(function (i) {
-                        $(this).find(".node-input-entity-value-index").html(i + 1);
-                        var data = $(this).data('data');
-                        currentOutputs[data.hasOwnProperty('i') ? data.i : data._i] = i;
-                    });
-                    outputCount.val(JSON.stringify(currentOutputs));
-                },
-                sortItems: function (entity_values) {
+                sortItems: function (dialog_response) {
                     //Change indexes on sorting
                     var currentOutputs = JSON.parse(outputCount.val() || "{}");
                     var response_values = $("#node-input-value-container").editableList(
                         'items');
                     response_values.each(function (i) {
-                        $(this).find(".node-input-entity-value-index").html(index_res +
+                        $(this).find(".node-input-option-list-").html(i +
                             1);
                         var data = $(this).data('data');
                         currentOutputs[data.hasOwnProperty('i') ? data.i : data._i] = i;
