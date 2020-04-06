@@ -4,9 +4,9 @@ var createIntent = require("../nodes/create_intent/createIntent.js");
 
 const AssistantV1 = require('ibm-watson/assistant/v1');
 
-const apikey = "NYLBfhff5TKngBCwOxjfRp7dIipvFPm_v1yo_XlR_K7W";
-const urlHost = "https://api.eu-gb.assistant.watson.cloud.ibm.com/instances/a20b257b-83f7-44a4-8093-2553e67aa381";
 
+const apikey = "mHBe7hP3EvS--SAOe8fBSDRhTp78W__ZOL7iqfjMzUvf";
+const urlHost = "https://api.eu-gb.assistant.watson.cloud.ibm.com/instances/4cc1d037-5230-4352-b3e4-dd74ede3951c";
 
 const {
     IamAuthenticator

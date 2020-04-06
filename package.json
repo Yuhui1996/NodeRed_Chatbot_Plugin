@@ -2,14 +2,23 @@
     "name": "chatbot",
     "version": "1.0.0",
     "dependencies": {
-        "ibm-watson": "^5.3.0",
+        "detect-port": "^1.3.0",
+        "fs": "0.0.2",
+        "ibm-watson": "^5.4.0",
+        "jquery": "^3.4.1",
+      
+        "kill-port": "^1.6.0",
+        "jsdoc": "^3.6.0",
+        "jsdoc-babel": "^0.5.0",
+        "jsdoc-ignore-code": "^1.0.1",
         "mocha": "^7.1.0",
-        "fs": ""
+        "open": ""
     },
     "description": "hiya",
     "main": "hiya",
     "scripts": {
-        "test": "mocha \"tests/_spec.js\" && mocha \"tests/_create.js\" && mocha \"tests/_createIntent.js\" && mocha \"tests/_delete.js\" "
+        "test": "mocha \"tests/_spec.js\" && mocha \"tests/_create.js\" && mocha \"tests/_createIntent.js\" && mocha \"tests/_delete.js\" ",
+        "docs": "./node_modules/.bin/jsdoc -c jsdoc.json"
     },
     "repository": {
         "type": "git",
@@ -29,11 +38,20 @@
             "meta": "nodes/metadata/metadata.js",
             "dialog": "nodes/dialog/dialog.js",
             "createWatson": "nodes/create_watson/createWatson.js",
-            "deleteWatson": "nodes/delete_watson/deleteWatson.js"
+            "hostbot": "nodes/hostbot/hostbot.js",
+            "deleteWatson": "nodes/delete_watson/deleteWatson.js",
+            "createDiscovery": "nodes/createDiscovery/createDiscovery.js",
+            "discoveryDocument": "nodes/discoveryDocuments/discoveryDocument.js",
+            "deleteDiscovery": "nodes/deleteDiscovery/deleteDiscovery.js"
         }
     },
     "devDependencies": {
-        "node-red": "^1.0.3",
-        "node-red-node-test-helper": "^0.2.3"
+        "connect": "",
+        "ngrok": "",
+        "node-red": "^1.0.4",
+        "node-red-node-test-helper": "^0.2.3",
+        "open": "",
+        "serve-static": "",
+        "detect-port": ""
     }
 }
