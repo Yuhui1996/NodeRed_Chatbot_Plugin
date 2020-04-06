@@ -2,7 +2,6 @@
     "name": "chatbot",
     "version": "1.0.0",
     "dependencies": {
-        "detect-port": "",
         "fs": "^0.0.2",
         "ibm-watson": "^5.4.0",
         "jquery": "^3.4.1",
@@ -13,8 +12,7 @@
         "klaw": "",
         "mocha": "^7.1.0",
         "ngrok": "^3.2.7",
-        "open": "",
-        "serve-static": ""
+        "open": ""
     },
     "description": "hiya",
     "main": "hiya",
