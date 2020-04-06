@@ -749,10 +749,10 @@
 			for (let synonym_element in entity_list[entity_element].synonyms) {
 				console.log(entity_list[entity_element].synonyms[synonym_element]);
 				// check if the synonym already exist
-				if (entity_synonym_set.has(entity_list[entity_element].synonym[synonym_element])) {
+				if (entity_synonym_set.has(entity_list[entity_element].synonyms[synonym_element])) {
 					entity_synonym_errorFlag = true;
 				} else {
-					entity_synonym_set.add(entity_list[entity_element].synonym[synonym_element]);
+					entity_synonym_set.add(entity_list[entity_element].synonyms[synonym_element]);
 				}
 			}
 		}
