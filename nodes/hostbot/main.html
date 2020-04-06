@@ -13,7 +13,7 @@
             font-family: Arial, Helvetica, sans-serif;
             //font-family: "Arial Black", Gadget, sans-serif;
         }
-        
+
         input[type=text] {
             width: 100%;
             padding: 12px 20px;
@@ -24,34 +24,38 @@
             font-family: Arial, Helvetica, sans-serif;
             font-size: 16px
         }
-        
+
         input[type=text]:focus {
             border-bottom: 6px solid MediumTurquoise;
         }
+
         /* width */
-        
+
         ::-webkit-scrollbar {
             width: 7px;
         }
+
         /* Track */
-        
+
         ::-webkit-scrollbar-track {
             background: white;
             box-shadow: inset 0 0 5px grey;
             border-radius: 10px;
         }
+
         /* Handle */
-        
+
         ::-webkit-scrollbar-thumb {
             background: grey;
             border-radius: 10px;
         }
+
         /* Handle on hover */
-        
+
         ::-webkit-scrollbar-thumb:hover {
             background: LightSlateGray;
         }
-        
+
         .sendButton {
             border-radius: 20px;
             height: 40px;
@@ -60,7 +64,7 @@
             border: 0px;
             font-size: 17px
         }
-        
+
         .container {
             background-color: LightCyan;
             padding: 3px;
@@ -71,19 +75,19 @@
             float: left;
             width: 82%;
         }
-        
+
         .darker {
             float: right;
             background-color: #34a1eb;
             color: white;
         }
-        
+
         .start {
             background-color: #2c62bf;
             color: white;
             text-align: center;
         }
-        
+
         .convoWindow {
             background-image: linear-gradient(Azure, white);
             height: 360px;
@@ -91,24 +95,24 @@
             margin-bottom: 4px;
             border-radius: 6px;
         }
-        
+
         .time-right {
             float: right;
             color: #aaa;
         }
-        
+
         .time-left {
             float: left;
             color: #999;
         }
-        
+
         .chatInput {
             position: relative;
             float: left;
             height: 280px;
             width: 150px;
         }
-        
+
         .imgDetails p {
             position: absolute;
             bottom: 0;
@@ -125,7 +129,8 @@
             <tbody>
                 <tr>
                     <th align="left">
-                        <font size="3" color="grey" id="botConnectionStatus">Status: </font><font size="3" id="botStatus" color="red" style="color: red;">Not connected</font>
+                        <font size="3" color="grey" id="botConnectionStatus">Status: </font>
+                        <font size="3" id="botStatus" color="red" style="color: red;">Not connected</font>
                     </th>
                     <th align="right">
                         <label id="workspacesLabel">Instance: </label>
@@ -153,7 +158,7 @@
 
         <script>
             //var fs = require("fs");
-            var contextid;//global
+            var contextid; //global
 
             //press enter to send msg
             var input = document.getElementById("inputtext");
@@ -163,9 +168,9 @@
                     document.getElementById("sendBtn").click();
                 }
             });
-            
 
-            function removeElement(elementId) {//remove HTML element from doc
+
+            function removeElement(elementId) { //remove HTML element from doc
                 var element = document.getElementById(elementId);
                 element.parentNode.removeChild(element);
             }
@@ -205,7 +210,7 @@
             }
 
 
-            function getWorkspaces() {//get list of workspaces for the api key
+            function getWorkspaces() { //get list of workspaces for the api key
                 //get api key and url for WA
                 var apiValue;
                 var urlValue;
@@ -218,7 +223,7 @@
                 }
 
 
-                //construct HTTP request to WA  ************************************ 
+                //construct HTTP request to WA  ************************************
                 var url = urlValue + "/v1/workspaces?version=2019-02-28";
                 var xhttp = new XMLHttpRequest();
                 xhttp.open("GET", url, true);
@@ -255,7 +260,7 @@
             }
 
 
-            function getReply() {//get reply for the user input msg
+            function getReply() { //get reply for the user input msg
                 //get api key and url for WA
                 var apiValue;
                 var urlValue;
@@ -283,13 +288,13 @@
                 if (inputtextValue === "") {
                     return;
                 }
-                document.getElementById("inputtext").value = "";//clear textbox when done
+                document.getElementById("inputtext").value = ""; //clear textbox when done
 
 
                 //add user's msg entry to conversation window
                 var myDiv = document.getElementById("convo");
                 myDiv.innerHTML += '<div class="container darker"><p>' + inputtextValue + '</p></div>';
-                myDiv.scrollTop = myDiv.scrollHeight;//scroll down to bottom
+                myDiv.scrollTop = myDiv.scrollHeight; //scroll down to bottom
 
 
                 //construct HTTP request to WA  ************************************
@@ -299,7 +304,7 @@
                 xhttp.setRequestHeader("Content-Type", "application/json");
                 xhttp.setRequestHeader("Authorization", "Basic " + btoa("apikey" + ":" + apiValue))
                 var dataString;
-                if (typeof contextid !== 'undefined') {//context for on-going converstion (reaching sub dialog node if exist)
+                if (typeof contextid !== 'undefined') { //context for on-going converstion (reaching sub dialog node if exist)
                     dataString = '{"input": {"text": "' + inputtextValue + '"}, "context":  ' + contextid + '}';
                 } else {
                     dataString = '{"input": {"text": "' + inputtextValue + '"}}';
@@ -321,57 +326,57 @@
                         var request = new XMLHttpRequest();
                         request.open('GET', "http://localhost:8080/dialog_discovery_map.json", true);
                         request.send(null);
-                        request.onreadystatechange = function () {
+                        request.onreadystatechange = function() {
                             if (request.readyState === 4 && request.status === 200) {
                                 var type = request.getResponseHeader('Content-Type');
                                 if (type.indexOf("text") !== 1) {
                                     let fileString = request.responseText;
                                     let jsonData;
 
-                                    if (fileString.length != 0){
+                                    if (fileString.length != 0) {
                                         jsonData = JSON.parse(fileString);
                                         environment_id_value = jsonData.envAndCol.split('split')[0];
                                         collection_id_value = jsonData.envAndCol.split('split')[1];
-                                    }else{
+                                    } else {
                                         jsonData = {};
                                     }
 
 
                                     //if dialog node is in the dialog_discovery_map then redirect to discovery
                                     //console.log(json.output.nodes_visited);
-                                    if (jsonData[json.output.nodes_visited[json.output.nodes_visited.length-1]] != undefined){
+                                    if (jsonData[json.output.nodes_visited[json.output.nodes_visited.length - 1]] != undefined) {
                                         var xhttp_discovery = new XMLHttpRequest();
 
-                            
+
                                         var passages_count_string = '3';
                                         var query_string = inputtextValue;
                                         query_string = query_string.split(' ').join('%20');
 
                                         var dataString = 'deduplicate=false&highlight=true&passages=true&passages.count=' + passages_count_string + '&passages.fields=text&natural_language_query=' + query_string;
 
-                                        xhttp_discovery.open('GET', discoveryUrlValue+'/v1/environments/'+environment_id_value+'/collections/'+collection_id_value+'/query?version=2018-12-03&'+dataString, true);
+                                        xhttp_discovery.open('GET', discoveryUrlValue + '/v1/environments/' + environment_id_value + '/collections/' + collection_id_value + '/query?version=2018-12-03&' + dataString, true);
                                         xhttp_discovery.setRequestHeader("Authorization", "Basic " + btoa("apikey" + ":" + discoveryApiValue));
 
                                         xhttp_discovery.onreadystatechange = function() {
-                                        if (this.readyState == 4 && this.status == 200) {
-                                            var json = JSON.parse(this.responseText);
-                                            var i;
-                                            for (i = 0; i < json.passages.length; i++) {
-                                                //console.log(json.passages[i].passage_text);
-                                                document.getElementById("convo").innerHTML += '<div class="container"><p>' + json.passages[i].passage_text + '</p></div>';
-                                                myDiv.scrollTop = myDiv.scrollHeight;
+                                            if (this.readyState == 4 && this.status == 200) {
+                                                var json = JSON.parse(this.responseText);
+                                                var i;
+                                                for (i = 0; i < json.passages.length; i++) {
+                                                    //console.log(json.passages[i].passage_text);
+                                                    document.getElementById("convo").innerHTML += '<div class="container"><p>' + json.passages[i].passage_text + '</p></div>';
+                                                    myDiv.scrollTop = myDiv.scrollHeight;
+                                                }
+
+                                            } else if (this.readyState == 4 && this.status != 200) {
+                                                alert(this.status);
                                             }
+                                        };
 
-                                        } else if (this.readyState == 4 && this.status != 200) {
-                                            alert(this.status);
-                                        }
-                                    };
-
-                            xhttp_discovery.send(null);
-                            }else{
-                                document.getElementById("convo").innerHTML += '<div class="container"><p>' + json.output.text + '</p></div>';
-                                myDiv.scrollTop = myDiv.scrollHeight;
-                            }
+                                        xhttp_discovery.send(null);
+                                    } else {
+                                        document.getElementById("convo").innerHTML += '<div class="container"><p>' + json.output.text + '</p></div>';
+                                        myDiv.scrollTop = myDiv.scrollHeight;
+                                    }
                                 }
                             }
                         }
@@ -380,7 +385,9 @@
 
                         myDiv.scrollTop = myDiv.scrollHeight;
                     } else if (this.readyState == 4 && this.status != 200) {
-                        alert("login failed. API-key might be wrong or ibm cloud could be down.")
+                        alert("login failed. The Chatbot may not have finished training, API-key might be wrong or ibm cloud could be down.\n Please wait a few second then
+                            refresh the page!\n Thank You!\n Note: training may take a couple minutes ");
+                        }
                     }
                 };
 
