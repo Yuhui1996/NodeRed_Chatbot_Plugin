@@ -134,8 +134,6 @@ module.exports = function (RED) {
                                     input: {
                                       text: option.list[i].value  
                                     },
-                                    intents: option.list[i].intents,
-                                    entities: []
                                 }
                             });
                         }

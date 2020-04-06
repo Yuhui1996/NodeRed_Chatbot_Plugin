@@ -18,10 +18,6 @@
         },
     ];
 
-    var intents = [];
-    var entities = [];
-
-
 
     //Function to update the system with the current data.
     function updateData(type_given, selected_value, condition, conditionChoice) {
@@ -248,8 +244,6 @@
 
                 }
             });
-            intents = global_data.intents;
-            entities = global_data.entities;
         });
     }
 
@@ -454,9 +448,7 @@
                         description: "",
                         list: [{
                             label: "",
-                            value: "",
-                            intents: [],
-                            entities: []
+                            value: ""
                         }]
                     },
                     image: {
@@ -1104,20 +1096,10 @@
                             "-" + j).val();
                         var value = optionListElement.find("#node-input-optionValue-" + i +
                             "-" + j).val();
-                        var intentArray = [];
-                        for(var k = 0; k < Object.getOwnPropertyNames(intents).length; k++){
-                            intentArray.push({
-                                intent: Object.getOwnPropertyNames(intents)[k],
-                                confidence: 1
-                            })
-                        }
 
-                        console.log(intentArray);
                         var listElement = {
                             label: label,
-                            value: value,
-                            intents: intentArray,
-                            entities: entities
+                            value: value
                         };
                         listTemp.push(listElement);
                     });
