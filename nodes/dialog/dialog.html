@@ -731,7 +731,7 @@
         });
 		
 		
-		console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>JW Log START<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+		// console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>JW Log START<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 		// indicate if there are duplicates in values and synonym
 		let entity_value_errorFlag = false;
 		let entity_synonym_errorFlag = false;
@@ -747,7 +747,7 @@
 			// use set to check duplicate
 			let entity_synonym_set = new Set();
 			for (let synonym_element in entity_list[entity_element].synonyms) {
-				console.log(entity_list[entity_element].synonyms[synonym_element]);
+				// console.log(entity_list[entity_element].synonyms[synonym_element]);
 				// check if the synonym already exist
 				if (entity_synonym_set.has(entity_list[entity_element].synonyms[synonym_element])) {
 					entity_synonym_errorFlag = true;
@@ -781,7 +781,7 @@
 		
 		}
 		
-		console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>JW Log End<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+		// console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>JW Log End<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 
 //         new_entity.values = entity_list;
 //         console.log("New Entity:\n\n" + new_entity);
