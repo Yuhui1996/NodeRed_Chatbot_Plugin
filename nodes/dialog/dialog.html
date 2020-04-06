@@ -295,6 +295,7 @@
             sortable: true,
             removable: true
 
+
         });
         $("#node-input-example-container").editableList('empty');
 
@@ -853,7 +854,8 @@
         color: '#a6bbcf',
         defaults: {
             name: {
-                value: ""
+                value: "",
+                required: true
             },
             value: {
                 value: ""
@@ -873,10 +875,12 @@
                 value: "#"
             },
             intentName: {
-                value: "UnamedIntent"
+                value: "UnamedIntent",
+                validate: RED.validators.regex(/^(?!sys-)(?!sys\.)(?!sys_)([\w-\.]{1,128})$/)
             },
             intentDescription: {
-                value: "EmptyDescription"
+                value: "EmptyDescription",
+                validate: RED.validators.regex(/^(?!\s*$).{1,128}$/)
             },
             examples: {
                 value: [{
@@ -897,7 +901,9 @@
                     {
                         responseType: "",
                         responseContent: ""
-                    }]
+                    }],
+                required:true,
+                validate: RED.validators.regex(/^(?!\s*$).{1,1024}$/)
             },
             condition: {
                 value: ""
