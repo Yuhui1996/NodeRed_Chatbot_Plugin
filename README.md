@@ -1,12 +1,12 @@
 # node-red-watson-designer
 
-# Description
+## Description
 
 This project was creating in partnership with IBM and the UCL IXN. The aim of this project is to create a plugin for 
 Node-RED for the purpose of building a watson Assistant chatbot. This is a Proof of Concept initially but is released 
 to open-source for further development! 
 
-### abstract 
+#### abstract 
 Chatbots are AI agents that are rapidly becoming popular in the modern age. 
 The Watson Assistant is a lets you build, train and deploy conversational interactions and create a chatbot. 
 Node-RED removes lower-level abstractions in web application development. It allows users to drag and drop nodes, connect
@@ -15,12 +15,12 @@ systems as a proof of concept (PoC) with a further attempt at integrating Watson
 This would allow users (particularly with less technical literacy) to easily design, deploy and host a chatbot. All on Node-REDs user-friendly environment.
 Example use cases include a small non-technical business owner wanting a basic chatbot on their companies’ site. 
 
-# Visuals
+## Visuals
 
-# Installation
+## Installation
 Follow these instructions to install the chatbot locally:
 
-## Requirements
+#### Requirements
 
 * NodeJS Version 12.16.1 or higher
 * Node-RED v1.0.3 
@@ -80,11 +80,11 @@ the following the links below:
 
 ## Video
 
-# Support
+## Support
  
-# Road-map
+## Road-map
 
-# Contributing
+## Contributing
 Original contributions were made by a team of UCL Students. However after completion of the project and 
 publication to open source. This project will be taken over by the IBM Node-RED development team for 
 open source management.  Hence, contributions should follow Node-RED guidelines.
@@ -93,7 +93,7 @@ These can be found [here](https://nodered.org/about/contribute/)
 
 Other information for contributing can be found [here](/Development.md)
 
-# Authors and acknowledgment
+## Authors and acknowledgment
 We would like to thank IBM and UCL IXN for making this project possible. 
 
 Specifically we would like to thank: 
