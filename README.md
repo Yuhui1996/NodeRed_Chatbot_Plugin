@@ -28,7 +28,7 @@ Follow these instructions to install the chatbot locally:
 
 ## Installation
 #### Local installation
-* After installing Node-RED [Here](https://nodered.org/docs/getting-started/local)
+* After installing Node-RED [(Instruction on install here).](https://nodered.org/docs/getting-started/local)
 * Download this repo into a local repository and navigate into it.
 * run the command: 
 
