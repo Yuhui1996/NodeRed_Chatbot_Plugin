@@ -212,6 +212,7 @@ module.exports = function(RED) {
 
                                         }).catch(err=>{
                                             msg.payload = err
+
                                             node.send(msg)
                                         })
 

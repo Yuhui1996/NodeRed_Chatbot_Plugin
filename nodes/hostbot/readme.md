@@ -1,8 +1,8 @@
 # Hostbot
-The purpose of this custom node is to generate a url link and open a new tab which navigates to a webpage that 'host' the created chatbot. 
+The purpose of this custom node is to generate a url link and open a new tab which navigates to a webpage that 'host' the created chatbot.
 
 ## Usage
-It needs be connected to the metanode (with api key and url included), or create_watson so that it will automatically choose the created workspace. 
+It needs be connected to the metanode (with api key and url included), or create_watson so that it will automatically choose the created workspace.
 
 The msg.payload of this node contains the snip of the chatbot widget which can be inserted into webpages. It can be viewd by connectting a node just as debug to output the code.
 
