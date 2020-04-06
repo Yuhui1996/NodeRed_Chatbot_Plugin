@@ -18,8 +18,29 @@ Example use cases include a small non-technical business owner wanting a basic c
 # Visuals
 
 # Installation
+Follow these instructions to install the chatbot locally:
+
+## Requirements
+
+* NodeJS Version 12.16.1 or higher
+* Node-RED v1.0.3 
+* All other requirements should install with package installation
+
+## Installation
+
+* After installing Node-RED
+* Navigate  
+
+
+## Running
 
 # Usage
+
+## Basic Overview 
+
+## Instruction for each node
+
+## Video
 
 # Descriptions of Nodes
 

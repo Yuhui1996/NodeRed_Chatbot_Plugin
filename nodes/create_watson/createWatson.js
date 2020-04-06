@@ -140,7 +140,7 @@ module.exports = function (RED) {
         for (let next_intent in this.global_data.data.intents) {
             let intent = {
                 intent: next_intent,
-                description: this.global_data.data.intents[next_intent].desc,
+                description: this.global_data.data.intents[next_intent].description,
                 examples: this.global_data.data.intents[next_intent].examples
             };
 

@@ -7,14 +7,19 @@ module.exports = function(RED) {
         node.on('input', function(msg) {
 
             var connect = require('connect');
+
+
             var varsInHtml = 'passApi = "' + msg.payload['wa_api_key'] +'";\npassUrl = "' + msg.payload['instance_url'] + '";\n'+'discoveryUrlValue = "' + msg.payload['discoveryUrl'] + '";\n'+'discoveryApiValue = "' + msg.payload['discovery_api_key'] + '";\n';
             if (typeof msg.payload.workspaceId !== "undefined"){//TODO: need to confirm this ===> [workspaceId]
                 varsInHtml += 'passWorkspace = "' + msg.payload.workspaceId +'";\n';
             }
+
             var serveStatic = require('serve-static');
+
             connect().use(serveStatic(__dirname)).listen(8080, function(){
                 console.log('Server running on 8080...');
             });
+
             //url = "http://watsonchatbot.epizy.com/main/main.html?api=" + msg.payload['wa_api_key'] +"&&url=" + msg.payload['instance_url'];
             var fs = require("fs");
             var path = require('path');
@@ -40,6 +45,7 @@ module.exports = function(RED) {
             
 
             var iframe_snip = '';
+
             fs.readFile(filePath, function(err, buf) {
                 var htmlString = buf.toString();
                 iframe_snip = htmlString.replace("<!--the_url_of_the_chatbot-->", url);
