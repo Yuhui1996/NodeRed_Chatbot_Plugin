@@ -3,11 +3,15 @@ The purpose of this custom node is to generate a url link and open a new tab whi
 
 ## Visuals
 <p align="center">
-  <img width="100%" height="100%" src="./readme_data/chatbot.gif"  border="4" >
+  <img width="40%" height="40%" src="./readme_data/chatbot.gif"  border="4" >
+  <br>
+  Chatbot window
 </p>
+<br>
 
 <p align="center">
   <img width="100%" height="100%" src="./readme_data/chatbot_widget.gif"  border="4" >
+  Chatbot as widget on website
 </p>
 
 ## Usage
