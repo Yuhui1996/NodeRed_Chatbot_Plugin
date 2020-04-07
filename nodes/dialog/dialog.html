@@ -326,7 +326,7 @@
 
         $('#node-input-example-container').editableList({
             addItem: function (row, index, data) {
-                console.log("Data:" + data.exampleContent)
+                console.log("Data:" + data);
                 row.css({
                     overflow: 'hidden',
                     whiteSpace: 'nowrap'
@@ -334,7 +334,7 @@
                 var element = $('<input/>', {
                     class: "node-input-example",
                     type: "text",
-                    value: (data != undefined) ? data : "Example"
+                    value: (typeof data === 'string') ? data : "Example"
                 }).appendTo(row);
             },
             sortable: true,
@@ -583,6 +583,7 @@
 
 
         $("#create-intent").show();
+        $("#delete_intent_button").hide();
 
         $("#node-button-create-intent").hide();
         $("#node-button-edit-intent").hide();
@@ -626,6 +627,7 @@
             showIntent(choice, chosenIntent);
         });
         $("#create-intent").show();
+        $("#delete_intent_button").show();
         $("#node-button-create-intent").hide();
         $("#node-button-edit-intent").hide();
 
@@ -1425,7 +1427,7 @@
             </div>
             <div class="form-row" style="margin-bottom: 10px;">
                 <button onclick="createIntent()">Save intent</button>
-                <button onclick="deleteIntent()">Delete intent</button>
+                <button id="delete_intent_button" onclick="deleteIntent()">Delete intent</button>
                 <button onclick="cancelIntent()">Cancel</button>
             </div>
             <legend></legend>

@@ -275,7 +275,6 @@ module.exports = function (RED) {
                             self.assistant.deleteWorkspace(workspace_to_delete)
                                 .then(res => {
                                     console.log("delete success");
-                                    node.error("delete success");
 
                                 })
                                 .catch(err => {
