@@ -55,10 +55,10 @@ This is a overview of how to use this node for the user to follow. This tutorial
     * ![alt text](./readme_data/step_1.png)
 * Select the specific entity or intent
     * if one doesnt exist, view step 3
-    *![alt text](./readme_data/step_2_1.png)
+    * ![alt text](./readme_data/step_2_1.png)
 * If using an entity select the matching value. Note that "greater" and "less" matching parameters require numeric values. 
-    *![alt text](./readme_data/step_2_2.png)
-    *![alt text](./readme_data/step_2_3.png)
+    * ![alt text](./readme_data/step_2_2.png)
+    * ![alt text](./readme_data/step_2_3.png)
 * You now have you selection criteria.
 
 ##### Step 3) Creating, editing and deleting nodes
