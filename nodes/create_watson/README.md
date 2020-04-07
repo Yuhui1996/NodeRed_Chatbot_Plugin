@@ -3,7 +3,7 @@
 ## Visual 
 
 <p align="center">
-            <img width="100%" height="70%" src="create.gif"  border="4" >
+            <img width="100%" height="100%" src="create.gif"  border="4" >
 </p>
 
 ## Components
