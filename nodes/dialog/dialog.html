@@ -53,9 +53,11 @@
             $("#node-input-choices").empty();
 
 
+            //if intent
             if (type_given == "#") {
                 $("#node-input-description").val("#");
 
+                //fill intents
                 for (var next_intent in global_data.intents) {
                     if (next_intent == selected_value) {
 
@@ -77,6 +79,7 @@
                 $("#node-input-condition").append('<option value="! is" selected="selected">' + "! is" + '</option>');
 
 
+                //when changing intent change intent matching value
                 $("#node-input-choices").change(function () {
 
 
@@ -93,12 +96,13 @@
                 $("#node-input-choices").trigger("change");
 
 
+                //load correct buttons
                 $("#node-button-create-intent").show();
-
                 $("#node-button-edit-intent").show();
                 $("#node-button-edit-entity").hide();
                 $("#node-button-create-entity").hide();
 
+                //if entity
             } else if (type_given == "@") {
                 $("#node-input-description").val("@");
 
@@ -106,6 +110,7 @@
                 $("#node-input-condition").empty();
 
 
+                //fill match options
                 for (let i = 0; i < recognition_options.length; i++) {
 
                     if (condition == recognition_options[i]) {
@@ -118,6 +123,7 @@
                 }
 
 
+                //fill list of entities
                 for (var next_entity in global_data.entities) {
                     if (next_entity == selected_value) {
                         $("#node-input-choices").append('<option value=' + next_entity
@@ -130,6 +136,7 @@
                 }
 
 
+                // when changing entities fill in all entity values for matching
                 $("#node-input-choices").change(function () {
 
 
@@ -164,6 +171,7 @@
 
                 $("#node-input-choices").trigger("change");
 
+                //fill correct buttons
 
                 $("#node-button-create-entity").show();
                 $("#node-button-edit-entity").show();
@@ -172,8 +180,10 @@
                 $("#node-button-edit-intent").hide();
             }
 
+            // True Value here
             else{
 
+                //Set match to true
                 $("#node-input-choices").append('<option value="true" selected="selected"> True </option>');
                 $("#node-input-choices").change(function () {
                     console.log("refresh list")
@@ -182,6 +192,7 @@
                 $("#node-input-choices").trigger("change");
 
                 $("#node-input-description").val("T");
+                //hide unnecessary menus
 
                 $("#node-button-create-entity").hide();
                 $("#node-button-edit-entity").hide();
@@ -197,6 +208,7 @@
 
 
 
+            //when changing between intents, entities or true
             $("#node-input-description").change(function () {
 
                 $("#node-input-choices").unbind("change");
@@ -204,9 +216,12 @@
                 $("#node-input-choices").empty();
                 $("#node-input-conditionChoices").show();
                 $("#node-input-condition").show();
+                //clear forms
                 clearCreation();
 
                 var desc = $(this);
+
+                //fill in as before
                 if (desc.val() == "#") {
                     for (var next_intent in global_data.intents) {
                         $("#node-input-choices").append('<option value=' + next_intent + '>' + next_intent + '</option>')
@@ -315,6 +330,13 @@
     }
 
 
+    /**
+     * @function show Intent
+     * @description This function fills out the Create forms for intents. Filling with either data from
+     * an intent or with blank data.
+     * @param {String} choice The intent name
+     * @param {JSON} chosenIntent The intent data including description and examples
+     */
     function showIntent(choice, chosenIntent) {
 
 
@@ -352,6 +374,14 @@
 
     }
 
+    /**
+     * @function show Entity
+     * @memberOf Dialog_Frontend
+     * @description This function fills out the Create forms for entities. Filling with either data from
+     * an intent or with blank data.
+     * @param {String} choice The entity name
+     * @param {JSON} chosenIntent The entity data including description and values
+     */
     function showEntity(chosenIntent, choice) {
 
         $("#node-input-entityName").val(choice);
@@ -558,6 +588,11 @@
         }
     }
 
+    /**
+     * @function clear
+     * @memberOf Dialog_Frontend
+     * @description Clears all editing forms and buttons
+     */
     function clearCreation() {
 
 
@@ -570,6 +605,11 @@
         $("#create-entity").hide();
     }
 
+    /**
+     * @function newIntent
+     * @memberOf Dialog_Frontend
+     * @description Create form and fill for new intent
+     */
     function newIntent() {
 
 
@@ -591,7 +631,11 @@
 
     }
 
-
+    /**
+     * @function new Entity
+     * @memberOf Dialog_Frontend
+     * @description Create form and fill for new entity
+     */
     function newEntity() {
 
 
@@ -617,6 +661,11 @@
     }
 
 
+    /**
+     * @function edit intent
+     * @memberOf Dialog_Frontend
+     * @description Create form and fill with selected intent data for editing or deletion
+     */
     function editIntent() {
         console.log("Time to start editing");
 
@@ -633,6 +682,11 @@
 
     }
 
+    /**
+     * @function edit Entity
+     * @memberOf Dialog_Frontend
+     * @description Create form and fill with selected entity data for editing or deletion
+     */
     function editEntity() {
 
         let choice = $("#node-input-choices").val();
@@ -650,6 +704,13 @@
 
     }
 
+
+    /**
+     * @function create intent
+     * @memberOf Dialog_Frontend
+     * @description This method is activated to save the new or edited intent. First the main data is save such as the
+     * name. Following the examples are checked for duplicates and then saves. If duplicates exits the user is warned.
+     */
     function createIntent() {
 
 
@@ -731,6 +792,13 @@
         // Handle intent creation
     }
 
+    /**
+     * @function create Entity
+     * @memberOf Dialog_Frontend
+     * @description This method is activated to save the new or edited entity. First the main data is save such as the
+     * name. Following the values are checked for duplicates and then saves. If duplicates exits the entity is not created or edited as
+     * watson as strict rules on this.
+     */
     function createEntity() {
 
 
@@ -836,13 +904,22 @@
 //         $("#create-entity").hide();
     }
 
+    /**
+     * @function cancel intent
+     * @memberOf Dialog_Frontend
+     * @description undo the form and cancel an new intent or edits on a current intent
+     */
     function cancelIntent() {
         $("#node-button-create-intent").show();
 
         $("#node-button-edit-intent").show();
         $("#create-intent").hide();
     }
-
+    /**
+     * @function cancel entity
+     * @memberOf Dialog_Frontend
+     * @description undo the form and cancel an new entity or edits on a current entity
+     */
     function cancelEntity() {
         $("#node-button-create-entity").show();
         $("#node-button-edit-entity").show();
@@ -850,6 +927,12 @@
         $("#create-entity").hide();
     }
 
+
+    /**
+     * @function delete intent
+     * @memberOf Dialog_Frontend
+     * @description update the global variable to remove the intent selected. Update the node after.
+     */
     function deleteIntent() {
 
         let choice = $("#node-input-choices").val();
@@ -873,6 +956,12 @@
 
     }
 
+
+    /**
+     * @function delete entity
+     * @memberOf Dialog_Frontend
+     * @description update the global variable to remove the entity selected. Update the node after.
+     */
     function deleteEntitiy() {
         let choice = $("#node-input-choices").val();
 
@@ -895,8 +984,14 @@
 
     }
 
+    /**
+     * @function Create Node Module
+     * @memberOf Dialog_Frontend
+     * @description Create the node-red frontend module for the dialog node.
+     */
     RED.nodes.registerType('dialog', {
 
+        //create default values
         category: 'Watson Designer',
         color: '#a6bbcf',
         defaults: {
@@ -993,9 +1088,9 @@
             return this.name || "create dialog";
         },
         oneditprepare: function () {
+            //When opening the editing function
             var node = this;
             //response MODIFICATIONS
-
             $("#node-input-value-container").editableList({
                 addButton: "Add assistant response",
                 addItem: function (container, index_res, data) {
