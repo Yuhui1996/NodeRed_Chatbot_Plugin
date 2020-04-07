@@ -9,10 +9,8 @@ more information for developers to understand the code-base.
 
 ## Visuals
 
-
-![](./readme_data/overview.png)
 <p align="center">
-  <img width="460" height="300" src="./readme_data/overview.png">
+  <img  border="3px solid #1c87c9"  border-radius="15px 50px 800px 5px" width="460" height="300" src="./readme_data/overview.png">
 </p>
 
 
