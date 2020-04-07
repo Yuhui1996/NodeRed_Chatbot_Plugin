@@ -1,4 +1,4 @@
-<link rel="stylesheet" type="text/css" href="./readme_data/custom.css" >
+
 
 
 # Dialog node documentation
@@ -13,7 +13,7 @@ more information for developers to understand the code-base.
 ## Visuals
 
 <p align="center">
-  <img width="460" height="300" src="./readme_data/overview.png"  border="4" >
+  <img width="100%" height="70%" src="./readme_data/overview.png"  border="4" >
 </p>
 
 
@@ -57,13 +57,21 @@ This is a overview of how to use this node for the user to follow. This tutorial
     * Intents are actions or requests that the chabot can respond too.
     * Entities are the nouns or options that can be chosen. Entities have a list of values within them.
     * True is a default value. This node is activated when the user input is not recognised. 
-    * ![alt text](./readme_data/step_1.png)
+    <p align="center">
+      <img width="100%" height="70%" src="./readme_data/step_1.png"  border="4" >
+    </p>
 * Select the specific entity or intent
     * if one doesnt exist, view step 3
-    * ![alt text](./readme_data/step_2_1.png)
+    * <p align="center">
+            <img width="100%" height="70%" src="./readme_data/step_2_1.png"  border="4" >
+          </p>
 * If using an entity select the matching value. Note that "greater" and "less" matching parameters require numeric values. 
-    * ![alt text](./readme_data/step_2_2.png)
-    * ![alt text](./readme_data/step_2_3.png)
+    * <p align="center">
+                  <img width="100%" height="70%" src="./readme_data/step_2_2.png"  border="4" >
+                </p>
+    * <p align="center">
+                  <img width="100%" height="70%" src="./readme_data/step_2_3.png"  border="4" >
+                </p>
 * You now have you selection criteria.
 
 ##### Step 3) Creating, editing and deleting nodes
@@ -71,12 +79,16 @@ Firstly, before talking about these. Please not that entities and intents are gl
 node they will change in the others.
 ###### Intent
 1) If you would like to create a new intent, select the intent option (#) and click "create intent".
-     * ![alt text](./readme_data/step_3_1.png)
+     *<p align="center">
+                  <img width="100%" height="70%" src="./readme_data/step_3_1.png"  border="4" >
+                </p>
 2) Fill in the name (which must have no spaces) and the description.
 3) Fill in the examples. These are examples of what the user might say to activate this intent.
     * There is an add button on the bottom right of the section to add more examples
     * Note these examples should never be the same as it will lead to less accurate responses from the chatbot.
-    * ![alt text](./readme_data/step_3_2.png)
+    * <p align="center">
+                  <img width="100%" height="70%" src="./readme_data/step_3_2.png"  border="4" >
+                </p>
 4) Click save
 
 
@@ -91,7 +103,9 @@ node they will change in the others.
     * Entities have a set of values. Think of them as options.
     * Each value has a set of synonyms. This is similar to the examples of intents.
     * Fill in the values and synonyms you desire. 
-    * ![alt text](./readme_data/step_3_3.png)
+    * <p align="center">
+                  <img width="100%" height="70%" src="./readme_data/step_3_3.png"  border="4" >
+                </p>
 4) Click save
 
 
@@ -116,7 +130,9 @@ below. To have multiple responses simply click the add button at the bottom of t
     will see and the second is the corresponding matching value that will be used in the child nodes.
     
     
-![alt text](./readme_data/step_4.png)
+<p align="center">
+            <img width="100%" height="70%" src="./readme_data/step_4.png"  border="4" >
+          </p>
 ##### Step 5) Next Action
 Here the user can select if the chatbot must wait for user input before going to child nodes in the tree. 
 If the designer decided to skip user input, then the chatbot will search the entered text for the parent node again.
@@ -124,7 +140,9 @@ If the designer decided to skip user input, then the chatbot will search the ent
 This would work for example if the user asks "I would like the standard menu please". This would activate the menu intent
 and the standard menu entity value child node. 
 
-![alt text](./readme_data/step_5.png)
+<p align="center">
+            <img width="100%" height="70%" src="./readme_data/step_5.png"  border="4" >
+          </p>
 
 ##### Step 6) Linking
 The node is now ready to be linked to other nodes. Note this node must be linked to either a "CreateWatson" node or 
