@@ -1,4 +1,4 @@
-<link rel="stylesheet" type="text/css" media="all" href="./readme_data/custom.css" >
+<link rel="stylesheet" type="text/css" href="./readme_data/custom.css" >
 
 
 # Dialog node documentation
