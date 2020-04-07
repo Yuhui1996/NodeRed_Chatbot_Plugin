@@ -8,7 +8,9 @@ structure of the interactions of the chatbot. This readme is both a tutorial for
 more information for developers to understand the code-base. 
 
 ## Visuals
-![alt text](./readme_data/overview.png)
+
+
+![](./readme_data/overview.png){: width=150 height=100 style="float:right; padding:16px"}
 
 
 
@@ -146,3 +148,4 @@ These should all be fairly easy to implement based on the structure of the curre
 * ibm-watson
 * queue script
 * jQuery
+
