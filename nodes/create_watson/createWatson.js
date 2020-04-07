@@ -12,10 +12,21 @@ let json;
 
 const fd = fs.openSync(dialog_discovery_map_json_file_path, 'w')
 
+/**
+ * @class Create_Watson
+ * @classdesc This class is to create the watson assistant. It also uses the global variable to send the entity and intent
+ * create api calls.
+ * @param RED
+ */
 module.exports = function (RED) {
     let global_top = this;
 
 
+    /**
+     * @function Write Data
+     * @memberOf Create_Watson
+     * @description Function to write global data to file for persistence.
+     */
     function writeData(){
 
         try {
@@ -29,6 +40,12 @@ module.exports = function (RED) {
         }
     }
 
+    /**
+     * @function Read Data
+     * @description Read the global data file to get previously saved data
+     * @memberOf Create_Watson
+     * @returns {undefined|any} Data data from file
+     */
     function readData(){
         try{
             let  jsonData = JSON.parse(fs.readFileSync('global_data.json', 'utf8'));
@@ -40,6 +57,11 @@ module.exports = function (RED) {
 
     }
 
+    /**
+     * @function Start Data
+     * @memberOf Create_Watson
+     * @description Attempt to read global data from file, otherwise create new global data that is empty.
+     */
     function startData() {
 
         if (global_top.global_data.data == undefined ){
@@ -66,75 +88,15 @@ module.exports = function (RED) {
 
 
 
-    //Unused slow function that has been replaced by used on creation
-    function send_pre_data(current_assistant, msg) {
 
-
-
-        for (let next_intent in this.global_data.data.intents) {
-
-            console.log(next_intent);
-            console.log(this.global_data.data.intents[next_intent].examples);
-            let params = {
-                workspaceId: msg.payload.workspaceId,
-                intent: next_intent,
-                description: this.global_data.data.intents[next_intent].desc,
-                examples: this.global_data.data.intents[next_intent].examples
-            };
-
-            current_assistant.createIntent(params)
-                .then(res => {
-                    console.log("Created Intent");
-                })
-                .catch(err => {
-                    console.log(err);
-                });
-        }
-
-
-        for (let next_entity in this.global_data.data.entities) {
-
-            console.log(this.global_data.data.entities[next_entity]);
-
-            let params = {
-                workspaceId: msg.payload.workspaceId,
-                entity: next_entity,
-                values:  this.global_data.data.entities[next_entity]
-            };
-
-            current_assistant.createEntity(params)
-                .then(res => {
-                    console.log("Created Entity");
-                })
-                .catch(err => {
-                    console.log(err);
-                });
-        }
-    }
-
-
-    function test_data() {
-        this.global_data.data = {
-            entities: {
-                "Test_Entity": {
-                    values: [{
-                        value: "Menu",
-                        synonyms: ["Veg", "Normal", "Special_Menu"]
-                    }],
-                    description: "Hello",
-                    fuzzy_match: true
-                }
-            },
-            intents: {
-                "Test_Intent": {
-                    description: "",
-                    examples: [{text: "Hello"}, {text: "Hi"}]
-                }
-            }
-        }
-    }
 
     //Format intents for sending to Watson
+    /**
+     * @function create Intents
+     * @memberOf Create_Watson
+     * @description function to format global data into correct API call format
+     * @returns {[]} data: API call data
+     */
     function createIntents() {
         let intents = [];
         for (let next_intent in this.global_data.data.intents) {
@@ -151,6 +113,12 @@ module.exports = function (RED) {
     }
 
     //Format entities for sending to Watson
+    /**
+     * @function create Entities
+     * @memberOf Create_Watson
+     * @description function to format global data into correct API call format
+     * @returns {[]} data: API call data
+     */
     function createEntities() {
         let entities = [];
         for (let next_entity in this.global_data.data.entities) {
@@ -172,8 +140,12 @@ module.exports = function (RED) {
     }
 
 
-
-
+    /**
+     * @function create watson
+     * @memberOf Create_Watson
+     * @description Main function to create watson environment. Creation of intent, entities and workspace.
+     * @param config
+     */
     function createWatson(config) {
         startData();
 
@@ -185,6 +157,10 @@ module.exports = function (RED) {
         // }
         var node = this;
 
+        /**
+         * @memberOf Create_Watson
+         * @inline When activated from metadata.
+         */
         node.on('input', function (msg) {
 
 
@@ -193,6 +169,7 @@ module.exports = function (RED) {
 
             let startIDs = {};
 
+            //begin sibling variable for dialog nodes
             try{
                 node.context().flow.set("siblings",startIDs);
             }catch (errors) {
@@ -202,13 +179,18 @@ module.exports = function (RED) {
 
             let self = this;
 
+            //final catch for global data empty
             if (global_top.global_data.data == undefined){
                 global_top.global_data.data = {
                     entities:{},
                     intents:{}
                 }
             }
-            // this.context().flow.set("saved_data", this.global_data.data);
+
+            /**
+             * @memberOf Create_Watson
+             * @inline initialise id counter for dialog node IDS
+             */
             try {
                 this.context().flow.set("ids",1);
                 this.assistant = this.context().flow.get("assistant");
@@ -229,6 +211,11 @@ module.exports = function (RED) {
             }
 
 
+            /**
+             * @memberOf Create_Watson
+             * @inline Create workspace paramaters for API call including intents and entiteis
+             * @type {{intents: *[], entities: *[], name: (string), description: string}}
+             */
             const workspace = {
                 name: msg.payload.chatbot_name,
                 description: 'this is the first chatbot created using node.js',
@@ -238,7 +225,11 @@ module.exports = function (RED) {
             console.log(createIntents());
 
 
-
+            /**
+             * @function method Call
+             * @memberOf Create_Watson
+             * @description make the api call to create the workspace.
+             */
             function createWatson() {
                 self.assistant.createWorkspace(workspace)
                     .then(res => {
@@ -260,8 +251,10 @@ module.exports = function (RED) {
             }
 
 
-
-
+            /**
+             * @memberOf Create_Watson
+             * @inline Check if workspace with the same name exitst. Delete it!
+             */
             self.assistant.listWorkspaces()
                 .then(res => {
                     json = JSON.stringify(res, null, 2);
@@ -284,6 +277,10 @@ module.exports = function (RED) {
 
                     }
 
+                    /**
+                     * @memberOf Create_Watson
+                     * @inline Create Watson
+                     */
                     createWatson();
 
 
@@ -299,8 +296,11 @@ module.exports = function (RED) {
 
     RED.nodes.registerType("createWatson", createWatson);
 
-
-
+    /**
+     * @memberOf Create_Watson
+     * @inline Communication between front end nodes and the global variable. Sending data to front-end
+     *
+     */
     RED.httpAdmin.get("/global_data", RED.auth.needsPermission('global_data.read'), function (req, res) {
         //send all data to node
 
@@ -308,6 +308,12 @@ module.exports = function (RED) {
         res.json(this.global_data.data);
     });
 
+
+    /**
+     * @memberOf Create_Watson
+     * @inline Communication between front end nodes and the global variable. Adding data from frontend to global variable.
+     *
+     */
 
     RED.httpAdmin.post('/global_data', RED.auth.needsPermission("global_data.write"), function (req, res) {
 
