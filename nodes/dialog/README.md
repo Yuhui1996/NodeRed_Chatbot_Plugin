@@ -10,8 +10,10 @@ more information for developers to understand the code-base.
 ## Visuals
 
 
-![](./readme_data/overview.png){: width=150 height=100 style="float:right; padding:16px"}
-
+![](./readme_data/overview.png)
+<p align="center">
+  <img width="460" height="300" src="./readme_data/overview.png">
+</p>
 
 
 ## Components
