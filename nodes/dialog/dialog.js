@@ -29,7 +29,7 @@ module.exports = function (RED) {
         let result;
         if (sendType == "#") {
             result = sendType + sendValue;
-        } else {
+        } else if (sendType == "@") {
             switch (relationType) {
                 case "any": {
                     result = sendType + sendValue;
@@ -52,6 +52,8 @@ module.exports = function (RED) {
                     break;
                 }
             }
+        } else{
+            result = "true";
         }
 
         return result;

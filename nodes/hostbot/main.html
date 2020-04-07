@@ -260,6 +260,10 @@
             }
 
 
+            function runClick(value) {
+                document.getElementById("inputtext").value = value; //item_options.value.input.text;
+            };
+
             function getReply() { //get reply for the user input msg
                 //get api key and url for WA
                 var apiValue;
@@ -374,8 +378,37 @@
 
                                         xhttp_discovery.send(null);
                                     } else {
+                                        console.log(json);
+                                        (json.output.generic).forEach((item, i) => {
+                                            let type = item.response_type;
+                                            if (type == "text") {
+                                                document.getElementById("convo").innerHTML += '<div class="container"><p>' + item.text + '</p></div>';
+                                            } else if (type == "option") {
+                                                document.getElementById("convo").innerHTML += '<div class="container"><ul>';
+                                                item.options.forEach((item_options, j) => {
+                                                    let id = "option" + item.title + j;
+                                                    document.getElementById("convo").innerHTML += '<li onclick="runClick(\'' + item_options.value.input.text + '\')" value="' + item_options.value.input.text + ' " id="' + id +
+                                                        '" >' + item_options.label + '</ul>';
 
-                                        document.getElementById("convo").innerHTML += '<div class="container"><p>' + json.output.text + '</p></div>';
+                                                });
+                                                document.getElementById("convo").innerHTML += '</ul></div>';
+
+                                            } else if (type == "image") {
+                                                document.getElementById("convo").innerHTML += '<div class="container"><p>' + item.description + '</p> <img src="' + item.source +'"  height="50%" width="50%"></div>';
+
+                                            }
+                                        });
+
+
+                                        //
+                                        // if ((json.output.text).length > 1) {
+                                        //     (json.output.text).forEach(function(item) {
+                                        //         document.getElementById("convo").innerHTML += '<div class="container"><p>' + item + '</p></div>';
+                                        //     });
+                                        // } else {
+                                        //     document.getElementById("convo").innerHTML += '<div class="container"><p>' + json.output.text + '</p></div>';
+                                        // }
+
                                         myDiv.scrollTop = myDiv.scrollHeight;
                                     }
                                 }

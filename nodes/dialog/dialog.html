@@ -42,6 +42,11 @@
     function updateData(type_given, selected_value, condition, conditionChoice) {
         $.getJSON('global_data', function (global_data) {
 
+            console.log(type_given);
+            console.log(selected_value);
+            console.log(condition);
+            console.log(conditionChoice);
+
             $("#node-input-choices").unbind("change");
             $("#node-input-description").unbind("change");
 
@@ -94,7 +99,7 @@
                 $("#node-button-edit-entity").hide();
                 $("#node-button-create-entity").hide();
 
-            } else {
+            } else if (type_given == "@") {
                 $("#node-input-description").val("@");
 
 
@@ -156,6 +161,7 @@
 
                 });
 
+
                 $("#node-input-choices").trigger("change");
 
 
@@ -166,12 +172,38 @@
                 $("#node-button-edit-intent").hide();
             }
 
+            else{
+
+                $("#node-input-choices").append('<option value="true" selected="selected"> True </option>');
+                $("#node-input-choices").change(function () {
+                    console.log("refresh list")
+                });
+
+                $("#node-input-choices").trigger("change");
+
+                $("#node-input-description").val("T");
+
+                $("#node-button-create-entity").hide();
+                $("#node-button-edit-entity").hide();
+
+                $("#node-button-create-intent").hide();
+                $("#node-button-edit-intent").hide();
+
+                $("#node-input-conditionChoices").hide();
+                $("#node-input-condition").hide();
+
+            }
+
+
+
 
             $("#node-input-description").change(function () {
 
                 $("#node-input-choices").unbind("change");
 
                 $("#node-input-choices").empty();
+                $("#node-input-conditionChoices").show();
+                $("#node-input-condition").show();
                 clearCreation();
 
                 var desc = $(this);
@@ -209,7 +241,7 @@
 
                     $("#node-button-create-entity").hide();
                     $("#node-button-edit-entity").hide();
-                } else {
+                } else  if (desc.val() == "@") {
 
 
                     $("#node-input-condition").empty();
@@ -263,6 +295,19 @@
                     $("#node-input-choices").trigger("change");
 
 
+                }else{
+                    $("#node-input-choices").append('<option value="true" selected="selected"> True </option>');
+                    $("#node-input-choices").change(function () {
+                        console.log("refresh list")
+                    });
+
+                    $("#node-input-choices").trigger("change");
+                    $("#node-input-conditionChoices").hide();
+                    $("#node-input-condition").hide();
+                    $("#node-button-create-entity").hide();
+                    $("#node-button-edit-entity").hide();
+                    $("#node-button-create-intent").hide();
+                    $("#node-button-edit-intent").hide();
                 }
             });
 
@@ -289,7 +334,7 @@
                 var element = $('<input/>', {
                     class: "node-input-example",
                     type: "text",
-                    value: data
+                    value: (data != undefined) ? data : "Example"
                 }).appendTo(row);
             },
             sortable: true,
@@ -946,7 +991,7 @@
             return this.name || "create dialog";
         },
         oneditprepare: function () {
-
+            var node = this;
             //response MODIFICATIONS
 
             $("#node-input-value-container").editableList({
@@ -1224,7 +1269,7 @@
 
 
 
-            updateData(this.dialog_type, this.dialog_value, this.condition, this.conditionChoices);
+            updateData(node.dialog_type, node.dialog_value, node.condition, node.conditionChoices);
 
             $("#node-input-name").val(this.name);
 
@@ -1318,35 +1363,9 @@
             });
 
 
-            ///INTENT SAVING
-            this.intentName = $("#node-input-intentName").val();
-            this.intentDescription = $("#node-input-intentDescription").val();
-
-
-            var exampleList = $('#node-input-example-container').editableList('items');
-            var node = this;
-            node.examples = [];
-
-            exampleList.each(function (i) {
-                var exampleElement = $(this);
-                var example = exampleElement.find(".node-input-examle").val();
-                var listElement = {
-                    exampleContent: example
-                };
-                node.examples.push(listElement);
-            });
-
             node.dialog_type = $("#node-input-description").val();
             node.dialog_value = $("#node-input-choices").val();
 
-
-            //ENTITY SAVING
-
-            this.entity_name = $("#node-input-entityName").val();
-            var enitity_values = $("#node-input-entity-value-container").editableList('items');
-
-            var node = this;
-            node.entity_values = [];
 
 
             node.condition = $("#node-input-condition").val();
@@ -1354,33 +1373,7 @@
 
             console.log(node.conditionChoices);
 
-            //Loop through Items to save the data
-            enitity_values.each(function (i) {
 
-                //crete data variable
-                var entityData = $(this).data('data');
-                var entity = $(this);
-                var value = {};
-                //get list of synonyms from within this list item
-
-                var list = entity.find(".node-input-entity-value-synonyms").editableList('items');
-                value.s = [];
-
-                //loop through synonymn item
-                list.each(function (j) {
-                    var syn_value = $(this);
-                    var next_value = syn_value.find(".node-input-entity-value-syn-value")
-                        .val();
-                    value.s.push(next_value);
-                });
-
-                //get value
-                value.v = entity.find(".node-input-entity-value-value").val();
-                // console.log("RULE");
-                // console.log(r);
-                // //Save values to node default
-                node.entity_values.push(value);
-            });
         }
     });
 
@@ -1397,6 +1390,7 @@
         <select style="width: 50px" name="" id="node-input-description">
             <option value="#" selected>#</option>
             <option value="@">@</option>
+            <option value="T" >T</option>
         </select>
 
         <select name="" id="node-input-choices">
