@@ -3,10 +3,10 @@
 ## Visual 
 
 <p align="center">
-            <img width="100%" height="70%" src="/create.gif"  border="4" >
+            <img width="100%" height="70%" src="create.gif"  border="4" >
 </p>
 
-## components
+## Components
 This is a relatively simple module. The HTML is the frontend and js is backend. 
 
 ##### HTML 
