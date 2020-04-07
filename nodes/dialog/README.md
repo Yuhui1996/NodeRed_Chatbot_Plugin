@@ -8,7 +8,7 @@ structure of the interactions of the chatbot. This readme is both a tutorial for
 more information for developers to understand the code-base. 
 
 ## Visuals
-![alt text](readme_data/overview.png)
+![alt text](nodes/dialog/readme_data/overview.png)
 
 
 
