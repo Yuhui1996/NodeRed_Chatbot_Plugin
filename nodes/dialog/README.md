@@ -10,7 +10,7 @@ more information for developers to understand the code-base.
 ## Visuals
 
 <p align="center">
-  <img  border="3px solid #1c87c9"  border-radius="15px 50px 800px 5px" width="460" height="300" src="./readme_data/overview.png">
+  <img  style="border:3px solid #1c87c9;border-radius: 15px 50px 800px 5px" width="460" height="300" src="./readme_data/overview.png">
 </p>
 
 
