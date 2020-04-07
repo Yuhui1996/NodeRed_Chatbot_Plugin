@@ -10,7 +10,7 @@ more information for developers to understand the code-base.
 ## Visuals
 
 <p align="center">
-  <img  border="4" width="460" height="300" src="./readme_data/overview.png">
+  <img width="460" height="300" src="./readme_data/overview.png"  border="4" >
 </p>
 
 
