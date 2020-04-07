@@ -169,14 +169,13 @@ module.exports = function (RED) {
              * @memberOf Dialog
              * @return {generic} Responses captured from the frontend
              */
-            function getResponses() {
+            function getResponses(){
                 var output = {
                     generic: []
                 }
-
                 var responses = n.dialog_response;
-                for (var i = 0; i < responses.length; i++) {
-                    if (responses[i].response_type === "image") {
+                for(var i =0; i < responses.length; i++){
+                    if(responses[i].response_type === "image"){
                         var image = responses[i].image;
                         var response = {};
                         response.response_type = "image";
@@ -185,14 +184,38 @@ module.exports = function (RED) {
                         response.source = image.source;
                         //console.log("source:" + image.source);
                         //}
-                        if (image.title != undefined) {
+                        if(image.title != undefined){
                             response.title = image.title;
                         }
-                        if (image.description != undefined) {
+                        if(image.description != undefined){
                             response.description = image.description;
                         }
                         output.generic.push(response);
-                    } else if (responses[i].response_type === "text") {
+                    } else if(responses[i].response_type === "option"){
+                        var option = responses[i].option;
+                        var response = {};
+
+                        response.response_type = "option";
+                        response.title = option.title;
+                        if(option.description != undefined){
+                            response.description = option.description;
+                        }
+
+                        response.options = [];
+                        for(var i = 0; i < option.list.length; i++){
+                            response.options.push({
+                                label: option.list[i].label,
+                                value: {
+                                    input: {
+                                      text: option.list[i].value  
+                                    },
+                                }
+                            });
+                        }
+
+                        console.log(response);
+                        output.generic.push(response);
+                    } else if (responses[i].response_type === "text"){
                         output.generic.push({
                             values: [
                                 {
