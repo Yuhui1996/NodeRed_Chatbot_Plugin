@@ -11,7 +11,7 @@ function maximiseWA() {
 <div id= "watson-assistant-chatbot-iframe-widget" style="position:fixed;
   bottom: 0; right: 10%; width: 380px; height: 500px; overflow: hidden; border-radius: 15px; box-shadow: 0 0 18px #888888; border-style: solid; border-color: white; visibility: hidden;" >
   <button type="button" onclick="minimiseWA()" style="position: absolute; top: -5%; left: 86%; border-radius: 30px; height: 40px; background-color: PapayaWhip; color: Coral; border: 0px; font-size: 20px; padding: 40px 15px 30px 15px; cursor: pointer;">x</button>
-  <iframe style="width: 100%; height: 100%; border-style: none;" scrolling="no" src="<!--the_url_of_the_chatbot-->"><!--url of the chatbot WA goes here-->
+  <iframe style="width: 100%; height: 100%; border-style: none;" scrolling="no" src="<!--the_url_of_the_chatbot-->"
     <p>Your browser does not support iframes.</p>
   </iframe>
 </div>
