@@ -6,14 +6,22 @@ let json;
 let workspaceid;
 
 
-
-
+/**
+ * @class Delete_Watson
+ * @classdesc Module to delete watson assistant workspace
+ * @param RED
+ */
 module.exports = function(RED) {
     function deleteWatson(config) {
         RED.nodes.createNode(this, config);
         var node = this;
 
 
+        /**
+         * @function delete
+         * @memberOf Delete_Watson
+         * @description on activation from metadata node
+         */
         node.on('input', function(msg) {
 
             try {
@@ -33,7 +41,10 @@ module.exports = function(RED) {
             }
 
 
-
+            /**
+             * @memberOf Delete_Watson
+             * @inline API call to delete workspaces.
+             */
             this.assistant.listWorkspaces()
                 .then(res => {
                     json = JSON.stringify(res, null, 2);

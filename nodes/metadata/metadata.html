@@ -25,23 +25,47 @@
     <div class="form-row" style="margin-bottom:12px">
         <button type="button" style="float:right; margin-right:8%; margin-bottom:12px" class="ui-button ui-corner-all ui-widget" name="Watson_Key">Generate Key</button>
     </div>
-    <div class="form-row">
-        <label for="node-input-ta"><i class="icon-tag"></i>Tone Analyser</label>
-        <input type="text" id="node-input-ta" placeholder="API-key">
+<!--    <div class="form-row">-->
+<!--        <label for="node-input-ta"><i class="icon-tag"></i>Tone Analyser</label>-->
+<!--        <input type="text" id="node-input-ta" placeholder="API-key">-->
 
-    </div>
-    <div class="form-row" style="margin-bottom:12px">
-        <button type="button" style="float:right; margin-right:8%; margin-bottom:12px" class=" ui-button ui-corner-all ui-widget" name="TA_Key">Generate Key</button>
+<!--    </div>-->
+<!--    <div class="form-row" style="margin-bottom:12px">-->
+<!--        <button type="button" style="float:right; margin-right:8%; margin-bottom:12px" class=" ui-button ui-corner-all ui-widget" name="TA_Key">Generate Key</button>-->
+<!--    </div>-->
+    <div class="form-row">
+        <label for="node-input-discovery"><i class="icon-tag"></i>Discovery apiKey</label>
+        <input type="text" id="node-input-discovery" placeholder="API-key">
     </div>
     <div class="form-row">
-        <label for="node-input-discovery"><i class="icon-tag"></i>Discovery </label>
-        <input type="text" id="node-input-discovery" placeholder="API-key">
+        <label for="node-input-discoveryUrl"><i class="icon-tag"></i>Discovery URL </label>
+        <input type="text" id="node-input-discoveryUrl" placeholder="discovery url">
     </div>
     <div class="form-row">
         <button type="button" style="float:right; margin-right:8%; margin-bottom:12px" class="ui-button ui-corner-all ui-widget" name="Discovery_Key">Generate Key</button>
     </div>
 </script>
+<script type="text/html" data-help-name="metadata">
 
+<h2 id="tutorial">Tutorial</h2>
+<p>1) Copy the node onto the flow.</p>
+<p>2) Double click the node to edit it</p>
+<p>3) Copy paste API data into the relative nodes.</p>
+<p>4) click done to save data</p>
+<h3 id="getting-api-url-and-keys">Getting API URL and KEYs</h3>
+<p>1) Open IBM cloud and login</p>
+<p>2) Click the menu on the top left and scroll down to Watson. Click on it. </p>
+<p>3) Under &quot;Watson Services&quot; click &quot;Browse Services&quot;</p>
+<p>4) Select Assistant or Discovery </p>
+<p>5) Create your instance with a valid plan</p>
+<ul>
+<li>note free plans for discovery and assistant can limit the system</li>
+<li>For example, if you use the basic assistant plan. You can only have 5 different instances of a chatbot and if you make another without deleting the old one it will throw and error.</li>
+<li>Another example is the basic Discovery only allows on instance so the old one will always need to be deleted. </li>
+</ul>
+<p>6) Copy Paste the API Key and URL into Node-RED </p>
+
+</script>
 <script type="text/javascript">
     RED.nodes.registerType('metadata', {
         category: 'Watson Designer',
@@ -54,11 +78,11 @@
                 value: ""
             },
             wa: {
-                value: "NYLBfhff5TKngBCwOxjfRp7dIipvFPm_v1yo_XlR_K7W",
+                value: "api key",
                 required: true
             },
             instance: {
-                value: "https://api.eu-gb.assistant.watson.cloud.ibm.com/instances/a20b257b-83f7-44a4-8093-2553e67aa381",
+                value: "api url",
                 required: true
 
             },
@@ -66,7 +90,10 @@
                 value: ""
             },
             discovery: {
-                value: ""
+                value: "api key"
+            },
+            discoveryUrl:{
+                value: "api url"
             },
             chatbotName: {
                 value: "Default Name",

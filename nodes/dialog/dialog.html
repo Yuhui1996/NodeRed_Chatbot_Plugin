@@ -1,4 +1,15 @@
+
+
 <script type="text/javascript">
+    /**
+     *
+     * @namespace Dialog_Frontend
+     * @description This is the front end class of the main dialog node. Manages all component that are seen on the Node-Red system.
+     *
+     *
+     */
+
+
 
     const recognition_options = ["any", "is", "is_not", "greater", "less"];
     const options = [{
@@ -20,9 +31,21 @@
     ];
 
 
-    //Function to update the system with the current data.
+    /**
+     * @function Update Data
+     * @description Function to update the node with the currently selected data and alternative data.
+     * @param {string} type_given Intent or entity (via symbol)
+     * @param {string} selected_value name of selected entity/intent if one exists to match on the front end
+     * @param {string} condition Matching condition to entity value
+     * @param {string} conditionChoice value of entity if one is selected
+     */
     function updateData(type_given, selected_value, condition, conditionChoice) {
         $.getJSON('global_data', function (global_data) {
+
+            console.log(type_given);
+            console.log(selected_value);
+            console.log(condition);
+            console.log(conditionChoice);
 
             $("#node-input-choices").unbind("change");
             $("#node-input-description").unbind("change");
@@ -30,9 +53,11 @@
             $("#node-input-choices").empty();
 
 
+            //if intent
             if (type_given == "#") {
                 $("#node-input-description").val("#");
 
+                //fill intents
                 for (var next_intent in global_data.intents) {
                     if (next_intent == selected_value) {
 
@@ -54,6 +79,7 @@
                 $("#node-input-condition").append('<option value="! is" selected="selected">' + "! is" + '</option>');
 
 
+                //when changing intent change intent matching value
                 $("#node-input-choices").change(function () {
 
 
@@ -69,18 +95,22 @@
 
                 $("#node-input-choices").trigger("change");
 
-                document.getElementById("node-button-create-intent").style.display =
-                    "block";
-                document.getElementById("node-button-create-entity").style.display =
-                    "none";
 
-            } else {
+                //load correct buttons
+                $("#node-button-create-intent").show();
+                $("#node-button-edit-intent").show();
+                $("#node-button-edit-entity").hide();
+                $("#node-button-create-entity").hide();
+
+                //if entity
+            } else if (type_given == "@") {
                 $("#node-input-description").val("@");
 
 
                 $("#node-input-condition").empty();
 
 
+                //fill match options
                 for (let i = 0; i < recognition_options.length; i++) {
 
                     if (condition == recognition_options[i]) {
@@ -93,6 +123,7 @@
                 }
 
 
+                //fill list of entities
                 for (var next_entity in global_data.entities) {
                     if (next_entity == selected_value) {
                         $("#node-input-choices").append('<option value=' + next_entity
@@ -105,6 +136,7 @@
                 }
 
 
+                // when changing entities fill in all entity values for matching
                 $("#node-input-choices").change(function () {
 
 
@@ -136,23 +168,60 @@
 
                 });
 
+
                 $("#node-input-choices").trigger("change");
 
-                document.getElementById("node-button-create-entity").style.display =
-                    "block";
-                document.getElementById("node-button-create-intent").style.display =
-                    "none";
+                //fill correct buttons
+
+                $("#node-button-create-entity").show();
+                $("#node-button-edit-entity").show();
+
+                $("#node-button-create-intent").hide();
+                $("#node-button-edit-intent").hide();
+            }
+
+            // True Value here
+            else{
+
+                //Set match to true
+                $("#node-input-choices").append('<option value="true" selected="selected"> True </option>');
+                $("#node-input-choices").change(function () {
+                    console.log("refresh list")
+                });
+
+                $("#node-input-choices").trigger("change");
+
+                $("#node-input-description").val("T");
+                //hide unnecessary menus
+
+                $("#node-button-create-entity").hide();
+                $("#node-button-edit-entity").hide();
+
+                $("#node-button-create-intent").hide();
+                $("#node-button-edit-intent").hide();
+
+                $("#node-input-conditionChoices").hide();
+                $("#node-input-condition").hide();
+
             }
 
 
+
+
+            //when changing between intents, entities or true
             $("#node-input-description").change(function () {
 
                 $("#node-input-choices").unbind("change");
 
                 $("#node-input-choices").empty();
+                $("#node-input-conditionChoices").show();
+                $("#node-input-condition").show();
+                //clear forms
                 clearCreation();
 
                 var desc = $(this);
+
+                //fill in as before
                 if (desc.val() == "#") {
                     for (var next_intent in global_data.intents) {
                         $("#node-input-choices").append('<option value=' + next_intent + '>' + next_intent + '</option>')
@@ -180,11 +249,14 @@
 
 
                     $("#node-input-choices").trigger("change");
-                    document.getElementById("node-button-create-intent").style.display =
-                        "block";
-                    document.getElementById("node-button-create-entity").style.display =
-                        "none";
-                } else {
+
+                    $("#node-button-create-intent").show();
+
+                    $("#node-button-edit-intent").show();
+
+                    $("#node-button-create-entity").hide();
+                    $("#node-button-edit-entity").hide();
+                } else  if (desc.val() == "@") {
 
 
                     $("#node-input-condition").empty();
@@ -229,13 +301,28 @@
 
                     });
 
-                    document.getElementById("node-button-create-entity").style.display =
-                        "block";
-                    document.getElementById("node-button-create-intent").style.display =
-                        "none";
+
+                    $("#node-button-create-entity").show();
+                    $("#node-button-edit-entity").show();
+
+                    $("#node-button-create-intent").hide();
+                    $("#node-button-edit-intent").hide();
                     $("#node-input-choices").trigger("change");
 
 
+                }else{
+                    $("#node-input-choices").append('<option value="true" selected="selected"> True </option>');
+                    $("#node-input-choices").change(function () {
+                        console.log("refresh list")
+                    });
+
+                    $("#node-input-choices").trigger("change");
+                    $("#node-input-conditionChoices").hide();
+                    $("#node-input-condition").hide();
+                    $("#node-button-create-entity").hide();
+                    $("#node-button-edit-entity").hide();
+                    $("#node-button-create-intent").hide();
+                    $("#node-button-edit-intent").hide();
                 }
             });
 
@@ -243,28 +330,389 @@
     }
 
 
+    /**
+     * @function show Intent
+     * @description This function fills out the Create forms for intents. Filling with either data from
+     * an intent or with blank data.
+     * @param {String} choice The intent name
+     * @param {JSON} chosenIntent The intent data including description and examples
+     */
+    function showIntent(choice, chosenIntent) {
+
+
+        if (this.payloadType === 'string' || this.payloadType === 'none') {
+            this.payloadType = "str";
+        }
+        $("#node-input-intentName").val(choice);
+        $("#node-input-intentDescription").val(chosenIntent.description);
+
+        $('#node-input-example-container').editableList({
+            addItem: function (row, index, data) {
+                console.log("Data:" + data);
+                row.css({
+                    overflow: 'hidden',
+                    whiteSpace: 'nowrap'
+                });
+                var element = $('<input/>', {
+                    class: "node-input-example",
+                    type: "text",
+                    value: (typeof data === 'string') ? data : "Example"
+                }).appendTo(row);
+            },
+            sortable: true,
+            removable: true
+
+
+        });
+        $("#node-input-example-container").editableList('empty');
+
+        for (var i = 0; i < chosenIntent.examples.length; i++) {
+            var example = chosenIntent.examples[i].text;
+            console.log(example);
+            $("#node-input-example-container").editableList('addItem', example);
+        }
+
+    }
+
+    /**
+     * @function show Entity
+     * @memberOf Dialog_Frontend
+     * @description This function fills out the Create forms for entities. Filling with either data from
+     * an intent or with blank data.
+     * @param {String} choice The entity name
+     * @param {JSON} chosenIntent The entity data including description and values
+     */
+    function showEntity(chosenIntent, choice) {
+
+        $("#node-input-entityName").val(choice);
+        // $("").val(chosenIntent.description);
+
+        $("#node-input-entity-value-container").css('min-height', '300px').css('min-width', '450px').editableList({
+
+            header: $("<div>").append($.parseHTML("<div style='display: inline-grid'>Values</div>")),
+            addItem: function (container, i, opt) {
+
+                // If a new value is being created create the data structures to hold them.
+                // Otherwise these variable will exists when the function is called.
+
+                // console.log(opt);
+                if (!opt.hasOwnProperty('entity_value')) {
+                    opt.entity_value = {};
+                }
+                var value = opt.entity_value;
+
+                if (!value.hasOwnProperty('value')) {
+                    value.value = null;
+                }
+                if (!value.hasOwnProperty('synonyms')) {
+                    value.synonyms = [];
+                }
+
+                if (!opt.hasOwnProperty('i')) {
+                    opt._i = Math.floor((0x99999 - 0x10000) * Math.random()).toString();
+                }
+
+
+                //Create HTML row in the list item.
+                //Row 1 = value line
+                // Row 2 = synonyms line
+
+                var row = $('<div/>', {class: 'form-row'}).appendTo(container);
+                var row2 = $('<div/>', {
+                    class: 'form-row',
+                    style: "padding-top: 5px;"
+                }).appendTo(container);
+
+                // Vars for each row
+                var entityValue = null;
+                var entitySyns = null;
+
+
+                //Value Entry
+                function createValueField() {
+                    return $('<input/>', {
+                        class: "node-input-entity-value-value",
+                        type: "text",
+                        style: "margin-left: 5px; ",
+                        placeholder: "Example Value"
+                    }).appendTo(row);
+                }
+
+                // function createValueFieldFull() {
+                //     return $('<input/>', {
+                //         class: "node-input-entity-value-value",
+                //         type: "text",
+                //         style: "margin-left: 5px; ",
+                //         value: value.value
+                //     }).appendTo(row);
+                // }
+
+                //Function to create sub list for synonyms
+                function createSynonymField() {
+
+                    //Create list.
+                    var syn = $('<div/>', {class: "node-input-entity-value-synonyms synonym_row"}).appendTo(row2);
+                    syn.css('height', '140px').editableList({
+
+                        header: $("<div>").append($.parseHTML("<div style='display: inline-grid'>Synonyms</div>")),
+                        addItem: function (syn, index_sym, opt_syn) {
+
+                            // console.log("OPt" + opt_syn)
+
+                            if (!opt_syn.hasOwnProperty('i')) {
+                                opt_syn._i = Math.floor((0x99999 - 0x10000) * Math.random()).toString();
+                            }
+
+                            var syn_value = null;
+                            var row_syn = $('<div/>', {class: 'form-row'}).appendTo(syn);
+
+
+                            //Create list item input.
+                            function createSynonymField() {
+                                return $('<input/>', {
+                                    class: "node-input-entity-value-syn-value",
+                                    type: "text",
+                                    style: "margin-left: 5px; "
+                                }).appendTo(row_syn);
+                            }
+
+
+                            if (syn_value == null) {
+                                syn_value = createSynonymField();
+                            }
+
+                            // Link value to attribute passed in if exists
+                            syn_value.val(opt_syn.s);
+
+
+                            //Add index counters
+                            var syn_count = $('<span/>', {style: "float: right;margin-top: 6px;"}).appendTo(row_syn);
+                            syn_count.append(' &#8594; <span class="node-input-entity-value-index">' + (index_sym + 1) + '</span> ');
+                        },
+                        removeItem: function (opt_syn) {
+                            //Remove item from the list
+                            var currentOutputs = JSON.parse(outputCount.val() || "{}");
+                            if (opt_syn.hasOwnProperty('i')) {
+                                currentOutputs[opt_syn.i] = -1;
+                            } else {
+                                delete currentOutputs[opt_syn._i];
+                            }
+                            var entity_values = $("#node-input-entity-value-synonyms").editableList('items');
+                            entity_values.each(function (i) {
+                                $(this).find(".node-input-entity-value-index").html(i + 1);
+                                var data = $(this).data('data');
+                                currentOutputs[data.hasOwnProperty('i') ? data.i : data._i] = i;
+                            });
+                            outputCount.val(JSON.stringify(currentOutputs));
+                        },
+                        sortItems: function (entity_values) {
+                            //Change indexes on sorting
+                            var currentOutputs = JSON.parse(outputCount.val() || "{}");
+                            var entity_values = $("#node-input-entity-value-container").editableList('items');
+                            entity_values.each(function (i) {
+                                $(this).find(".node-input-entity-value-index").html(index_sym + 1);
+                                var data = $(this).data('data');
+                                currentOutputs[data.hasOwnProperty('i') ? data.i : data._i] = i;
+                            });
+                            outputCount.val(JSON.stringify(currentOutputs));
+                        },
+                        sortable: true,
+                        removable: true
+                    });
+
+                    return syn;
+                }
+
+
+                //Add index counter to main list
+                var finalspan = $('<span/>', {style: "float: right;margin-top: 6px;"}).appendTo(row);
+
+                finalspan.append(' &#8594; <span class="node-input-entity-value-index">' + (i + 1) + '</span> ');
+
+                // Create items in the list item
+                if (entityValue == null) {
+                    entityValue = createValueField();
+                }
+
+                if (value.value != null) {
+                    entityValue.val(value.value);
+                }
+
+                if (entitySyns == null) {
+                    entitySyns = createSynonymField();
+                }
+
+
+                //If the items is built from saved values then loop through value to create
+                // the synonym lists
+                for (var i = 0; i < value.synonyms.length; i++) {
+                    var rule_S = value.synonyms[i];
+                    entitySyns.editableList('addItem', {s: rule_S, i: i});
+                }
+            },
+            removeItem: function (opt) {
+                var currentOutputs = JSON.parse(outputCount.val() || "{}");
+                if (opt.hasOwnProperty('i')) {
+                    currentOutputs[opt.i] = -1;
+                } else {
+                    delete currentOutputs[opt._i];
+                }
+                var values = $("#node-input-entity-value-container").editableList('items');
+                values.each(function (i) {
+                    $(this).find(".node-input-entity-value-index").html(i + 1);
+                    var data = $(this).data('data');
+                    currentOutputs[data.hasOwnProperty('i') ? data.i : data._i] = i;
+                });
+                outputCount.val(JSON.stringify(currentOutputs));
+            },
+            sortItems: function (rules) {
+                var currentOutputs = JSON.parse(outputCount.val() || "{}");
+                var values = $("#node-input-entity-value-container").editableList('items');
+                values.each(function (i) {
+                    $(this).find(".node-input-entity-value-index").html(i + 1);
+                    var data = $(this).data('data');
+                    currentOutputs[data.hasOwnProperty('i') ? data.i : data._i] = i;
+                });
+                outputCount.val(JSON.stringify(currentOutputs));
+            },
+            sortable: true,
+            removable: true
+        });
+
+
+        $("#node-input-entity-value-container").editableList('empty');
+        //Read values from node default and build lists.
+        for (var i = 0; i < chosenIntent.values.length; i++) {
+            var value = chosenIntent.values[i];
+            $("#node-input-entity-value-container").editableList('addItem', {entity_value: value, i: i});
+        }
+    }
+
+    /**
+     * @function clear
+     * @memberOf Dialog_Frontend
+     * @description Clears all editing forms and buttons
+     */
     function clearCreation() {
 
-        document.getElementById("create-intent").style.display = "none";
-        document.getElementById("node-button-create-intent").style.display = "none";
-        document.getElementById("node-button-create-entity").style.display = "none";
-        document.getElementById("create-entity").style.display = "none";
+
+        $("#create-intent").hide();
+        $("#node-button-create-intent").hide();
+        $("#node-button-create-entity").hide();
+        $("#node-button-edit-intent").hide();
+        $("#node-button-edit-entity").hide();
+
+        $("#create-entity").hide();
     }
 
+    /**
+     * @function newIntent
+     * @memberOf Dialog_Frontend
+     * @description Create form and fill for new intent
+     */
     function newIntent() {
-        document.getElementById("create-intent").style.display = "block";
-        document.getElementById("node-button-create-intent").style.display = "none";
+
+
+        let choice = "Intent Name";
+        let data = {
+            description: "This is an example description",
+            examples: [{text: "example example"}]
+        }
+
+        showIntent(choice, data);
+
+
+        $("#create-intent").show();
+        $("#delete_intent_button").hide();
+
+        $("#node-button-create-intent").hide();
+        $("#node-button-edit-intent").hide();
 
 
     }
 
-
+    /**
+     * @function new Entity
+     * @memberOf Dialog_Frontend
+     * @description Create form and fill for new entity
+     */
     function newEntity() {
 
-        document.getElementById("create-entity").style.display = "block";
-        document.getElementById("node-button-create-entity").style.display = "none";
+
+        let choice = "Entity_name";
+        let data = {
+            description: "This is an example description",
+            fuzzy_match: "true",
+            values: [
+                {
+                    synonyms: [
+                        "example_syn"
+                    ],
+                    value: "example_value"
+                }
+            ]
+        };
+
+        showEntity(data, choice);
+
+        $("#create-entity").show();
+        $("#delete_entity_button").hide();
+        $("#node-button-create-entity").hide();
+        $("#node-button-edit-entity").hide();
     }
 
+
+    /**
+     * @function edit intent
+     * @memberOf Dialog_Frontend
+     * @description Create form and fill with selected intent data for editing or deletion
+     */
+    function editIntent() {
+        console.log("Time to start editing");
+
+        let choice = $("#node-input-choices").val();
+
+        $.getJSON('global_data', function (global_data) {
+            let chosenIntent = global_data.intents[choice];
+            showIntent(choice, chosenIntent);
+        });
+        $("#create-intent").show();
+        $("#delete_intent_button").show();
+        $("#node-button-create-intent").hide();
+        $("#node-button-edit-intent").hide();
+
+    }
+
+    /**
+     * @function edit Entity
+     * @memberOf Dialog_Frontend
+     * @description Create form and fill with selected entity data for editing or deletion
+     */
+    function editEntity() {
+
+        let choice = $("#node-input-choices").val();
+
+
+        $.getJSON('global_data', function (global_data) {
+            let chosenIntent = global_data.entities[choice];
+            showEntity(chosenIntent, choice);
+        });
+
+        $("#create-entity").show();
+        $("#delete_entity_button").show();
+        $("#node-button-create-entity").hide();
+        $("#node-button-edit-entity").hide();
+
+
+    }
+
+
+    /**
+     * @function create intent
+     * @memberOf Dialog_Frontend
+     * @description This method is activated to save the new or edited intent. First the main data is save such as the
+     * name. Following the examples are checked for duplicates and then saves. If duplicates exits the user is warned.
+     */
     function createIntent() {
 
 
@@ -274,16 +722,59 @@
         let new_intent = {};
         new_intent.control = "add";
         new_intent.type = "intent";
-        new_intent.name = $("#node-input-intentName").val();
+        new_intent.name = $("#node-input-intentName").val().toLowerCase();
+
+        new_intent.description = $("#node-input-intentDescription").val();
+
         let exampleList = $('#node-input-example-container').editableList('items');
         new_intent.examples = [];
+		
+		// add by Jiahao 2020-03-05 START
+		$.getJSON('global_data', function (global_data) {
+			// console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>JW Log Start<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+			// list all the global examples
+			let globalExamples = new Array();
+			let duplicateExamples = new Array();
+			for (let next_intent in global_data.intents) {
+				examples = global_data.intents[next_intent].examples;
+				globalExamples.push.apply(globalExamples,examples);
+			}
+			console.log(globalExamples);
+			let errorFlag = false;
+			// list the unsaved examples
+			exampleList.each(function (i) {
+				let exampleElement = $(this);
+				let example = exampleElement.find(".node-input-example").val();
+				for (let globalExample in globalExamples){
+					if (example == globalExamples[globalExample].text && example!="" && globalExamples[globalExample].text!="") {
+						errorFlag = true;
+						duplicateExamples.push(example);
+					}
+				}
+			});
+			// pop up warning message when found duplicate examples
+			if (errorFlag){
+				RED.notify('Please avoid duplicate examples "'+duplicateExamples+'" among all the intents','warning');
+			}
+			
+			// console.log(globalExamples);
+			// for (let globalExample in globalExamples){
+			// 	console.log(globalExamples[globalExample].text);
+			// }
+			// console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>JW Log End<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+		});
+		
+		// add by Jiahao 2020-03-05 END
+		
         exampleList.each(function (i) {
             let exampleElement = $(this);
-            let example = exampleElement.find(".node-input-example").val();
+
+            let example = exampleElement.find(".node-input-example").val().toLowerCase();
+
             new_intent.examples.push({text: example});
         });
 
-        console.log("NEW INTENT \n " + new_intent);
+        console.log("NEW INTENT \n " + new_intent.description);
 
 
         $.post("/global_data", new_intent)
@@ -295,11 +786,21 @@
         //Cal function to refresh the lists and set to new intent
         updateData("#", new_intent.name, "", "");
 
-        document.getElementById("node-button-create-intent").style.display = "block";
-        document.getElementById("create-intent").style.display = "none";
+
+        $("#node-button-create-intent").show();
+
+        $("#node-button-edit-intent").show();
+        $("#create-intent").hide();
         // Handle intent creation
     }
 
+    /**
+     * @function create Entity
+     * @memberOf Dialog_Frontend
+     * @description This method is activated to save the new or edited entity. First the main data is save such as the
+     * name. Following the values are checked for duplicates and then saves. If duplicates exits the entity is not created or edited as
+     * watson as strict rules on this.
+     */
     function createEntity() {
 
 
@@ -310,7 +811,7 @@
         let new_entity = {};
 
 
-        new_entity.name = $("#node-input-entityName").val();
+        new_entity.name = $("#node-input-entityName").val().toLowerCase();
         new_entity.description = "";
         new_entity.fuzzy_match = true;
 
@@ -330,56 +831,175 @@
             //get list of synonyms from within this list item
 
             var list = entity.find(".node-input-entity-value-synonyms").editableList('items');
-            value.synonym = [];
+            value.synonyms = [];
 
             //loop through synonymn item
             list.each(function (j) {
                 var syn_value = $(this);
-                var next_value = syn_value.find(".node-input-entity-value-syn-value").val();
-                value.synonym.push(next_value);
+                var next_value = syn_value.find(".node-input-entity-value-syn-value").val().toLowerCase();
+                value.synonyms.push(next_value);
             });
 
             //get value
-            value.value = entity.find(".node-input-entity-value-value").val();
+            value.value = entity.find(".node-input-entity-value-value").val().toLowerCase();
             // console.log("RULE");
             // console.log(r);
             // //Save values to node default
             entity_list.push(value);
         });
+		
+		
+		// console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>JW Log START<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+		let entity_value_errorFlag = false;
+		let entity_synonym_errorFlag = false;
+		let entity_value_set = new Set();
+		for (let entity_element in entity_list) {
+			if (entity_value_set.has(entity_list[entity_element].value)) {
+				entity_value_errorFlag = true;
+			} else {
+				entity_value_set.add(entity_list[entity_element].value);
+			}
+			let entity_synonym_set = new Set();
+			for (let synonym_element in entity_list[entity_element].synonym) {
+				if (entity_synonym_set.has(entity_list[entity_element].synonym[synonym_element])) {
+					entity_synonym_errorFlag = true;
+				} else {
+					entity_synonym_set.add(entity_list[entity_element].synonym[synonym_element]);
+				}
+			}
+		}
+		if (entity_value_errorFlag){
+			RED.notify('You can not have duplicate values in one entity.','error');
+		} else if (entity_synonym_errorFlag) {
+			RED.notify('You can not have duplicate synonyms in one value.','error');
+		} else {
+			new_entity.values = entity_list;
+			// console.log("New Entity:\n\n"+new_entity);
+			$.post("/global_data", new_entity)
+				.done(function (data) {
+					alert("Data Loaded: " + data);
+				});
 
 
-        new_entity.values = entity_list;
-        // console.log("New Entity:\n\n"+new_entity);
-        $.post("/global_data", new_entity)
+			//Cal function to refresh the lists and set to new intent
+			updateData("@", new_entity.name, "", "");
+
+			document.getElementById("node-button-create-entity").style.display = "block";
+			document.getElementById("create-entity").style.display = "none";
+		
+		}
+		
+		// console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>JW Log End<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+
+//         new_entity.values = entity_list;
+//         console.log("New Entity:\n\n" + new_entity);
+//         $.post("/global_data", new_entity)
+//             .done(function (data) {
+//                 alert("Data Loaded: " + data);
+//             });
+
+//         //Cal function to refresh the lists and set to new intent
+//         updateData("@", new_entity.name, "", "");
+//         $("#node-button-create-entity").show();
+//         $("#node-button-edit-entity").show();
+
+//         $("#create-entity").hide();
+    }
+
+    /**
+     * @function cancel intent
+     * @memberOf Dialog_Frontend
+     * @description undo the form and cancel an new intent or edits on a current intent
+     */
+    function cancelIntent() {
+        $("#node-button-create-intent").show();
+
+        $("#node-button-edit-intent").show();
+        $("#create-intent").hide();
+    }
+    /**
+     * @function cancel entity
+     * @memberOf Dialog_Frontend
+     * @description undo the form and cancel an new entity or edits on a current entity
+     */
+    function cancelEntity() {
+        $("#node-button-create-entity").show();
+        $("#node-button-edit-entity").show();
+
+        $("#create-entity").hide();
+    }
+
+
+    /**
+     * @function delete intent
+     * @memberOf Dialog_Frontend
+     * @description update the global variable to remove the intent selected. Update the node after.
+     */
+    function deleteIntent() {
+
+        let choice = $("#node-input-choices").val();
+
+        let delete_intent = {};
+        delete_intent.name = choice;
+        delete_intent.control = "remove";
+        delete_intent.type = "intent";
+
+        $.post("/global_data", delete_intent)
             .done(function (data) {
                 alert("Data Loaded: " + data);
             });
 
+        updateData("#", "", "", "");
 
-        //Cal function to refresh the lists and set to new intent
-        updateData("@", new_entity.name, "", "");
+        $("#node-button-create-intent").show();
 
-        document.getElementById("node-button-create-entity").style.display = "block";
-        document.getElementById("create-entity").style.display = "none";
+        $("#node-button-edit-intent").show();
+        $("#create-intent").hide();
+
     }
 
-    function cancelIntent() {
-        document.getElementById("node-button-create-intent").style.display = "block";
-        document.getElementById("create-intent").style.display = "none";
+
+    /**
+     * @function delete entity
+     * @memberOf Dialog_Frontend
+     * @description update the global variable to remove the entity selected. Update the node after.
+     */
+    function deleteEntitiy() {
+        let choice = $("#node-input-choices").val();
+
+        let delete_entity = {};
+        delete_entity.name = choice;
+        delete_entity.control = "remove";
+        delete_entity.type = "entity";
+
+        $.post("/global_data", delete_entity)
+            .done(function (data) {
+                alert("Data Loaded: " + data);
+            });
+
+        updateData("@", "", "", "");
+        $("#node-button-create-entity").show();
+        $("#node-button-edit-entity").show();
+
+        $("#create-entity").hide();
+
+
     }
 
-    function cancelEntity() {
-        document.getElementById("node-button-create-entity").style.display = "block";
-        document.getElementById("create-entity").style.display = "none";
-    }
-
+    /**
+     * @function Create Node Module
+     * @memberOf Dialog_Frontend
+     * @description Create the node-red frontend module for the dialog node.
+     */
     RED.nodes.registerType('dialog', {
 
+        //create default values
         category: 'Watson Designer',
         color: '#a6bbcf',
         defaults: {
             name: {
-                value: ""
+                value: "",
+                required: true
             },
             value: {
                 value: ""
@@ -399,10 +1019,12 @@
                 value: "#"
             },
             intentName: {
-                value: "UnamedIntent"
+                value: "UnamedIntent",
+                validate: RED.validators.regex(/^(?!sys-)(?!sys\.)(?!sys_)([\w-\.]{1,128})$/)
             },
             intentDescription: {
-                value: "EmptyDescription"
+                value: "EmptyDescription",
+                validate: RED.validators.regex(/^(?!\s*$).{1,128}$/)
             },
             examples: {
                 value: [{
@@ -421,15 +1043,42 @@
             response_values: {
                 value: [
                     {
-                    responseType: "",
-                    responseContent: ""
-                }]
+                        responseType: "",
+                        responseContent: ""
+                    }]
             },
             condition: {
                 value: ""
             },
             conditionChoices: {
                 value: ""
+            },
+            userAction:{
+                value: "get_user_input"
+
+            },
+            //dialog_response
+            dialog_response: {
+                value: [{
+                    response_type: "",
+                    responseContent: "",
+                    option: {
+                        response_type: "",
+                        title: "",
+                        description: "",
+                        list: [{
+                            label: "",
+                            value: ""
+                        }]
+                    },
+                    image: {
+                        response_type: "",
+                        title: "",
+                        description: "",
+                        source: ""
+                    }
+                }]
+
             }
         },
         inputs: 1,
@@ -439,86 +1088,268 @@
             return this.name || "create dialog";
         },
         oneditprepare: function () {
-
-            //INTENT MODIFICATIONS
+            //When opening the editing function
+            var node = this;
+            //response MODIFICATIONS
             $("#node-input-value-container").editableList({
                 addButton: "Add assistant response",
                 addItem: function (container, index_res, data) {
                     container.css({
                         overflow: 'hidden',
                         whiteSpace: 'nowrap',
-                        display: 'flex'
+                        display: 'flex',
+                        'flex-direction': 'column'
                     });
                     var row = $('<div/>').appendTo(container);
                     var row2 = $('<div/>', {
-                        style: "padding-left: 10px; display: flex; flex-direction: column;",
+                        style: "display: flex; flex-direction: column;",
+                        id: "node-input-responseInput",
                         class: "node-input-text-responses"
                     }).appendTo(container);
                     var row3 = $('<div/>', {
-                        style: "padding-left: 10px; display: flex; margin-bottom: 2px;"
+                        style: "display: flex; margin-bottom: 5px;"
                     }).appendTo(container);
+
                     var selectField = $('<select/>', {
-                        style: "width:120px; margin-left: 5px; text-align: center;"
+                        style: "width:30%; text-align: center; margin-bottom: 10px;",
+                        id: "node-input-response_type-" + index_res
                     }).appendTo(row);
+
                     var group0 = $('<optgroup/>', {
                         label: "Response type"
                     }).appendTo(selectField);
                     for (var d in options) {
-                        group0.append($("<option></option>").val(options[d].v).text(/^switch/
-                            .test(options[d].t) ? node._(options[d].t) : options[d].t));
+                        group0.append($("<option><strong><strong/></option>").val(options[d].v)
+                            .text(/^switch/
+                                .test(options[d].t) ? node._(options[d].t) : options[d].t));
                     }
-                    var textInput = $('<input/>', {
-                        id: "node-input-case-" + i,
-                        class: "node-input-response",
-                        type: "text",
-                        placeholder: "Enter response text",
-                        value: data.responseContent,
-                    }).appendTo(row2);
-                    /*
-                    var addVariationButton = $('<button/>', {
-                        id: "node-button-add-variation" + i,
-                        type: "button",
-                        style: "margin-top: auto; height: 30px"
-                    }).appendTo(row3);
-                    addVariationButton.text('+');
-                    addVariationButton.on("click", function () {
-                        $('<input/>', {
-                            id: "node-input-case-" + i,
-                            class: "node-input-response",
-                            type: "text",
-                            placeholder: "Enter response text"
-                        }).appendTo(row2)
-                    });
-                    */
                     selectField.on("change", function () {
                         var type = selectField.val();
                         if (type === "text") {
-                            textInput.show();
+                            row2.empty();
+                            var textInput = $('<input/>', {
+                                id: "node-input-case-" + index_res,
+                                class: "node-input-case",
+                                type: "text",
+                                style: "margin-bottom: 5px",
+                                placeholder: "Enter response text"
+                            }).appendTo(row2);
+                        }
+                        //option
+                        else if (type === "option") {
+                            row2.empty();
+                            var optionElement = data.option;
+                            selectField.val("option");
+                            $('<input/>', {
+                                id: "node-input-optionTitle-" + index_res,
+                                type: "text",
+                                style: "margin-bottom: 5px",
+                                placeholder: "Title"
+                            }).appendTo(row2);
+
+                            $('<input/>', {
+                                id: "node-input-optionDescription-" + index_res,
+                                type: "text",
+                                style: "margin-bottom: 5px",
+                                placeholder: "Description (optional)"
+                            }).appendTo(row2);
+                            $('<ol/>', {
+                                id: "node-input-option-list-" + index_res
+                            }).appendTo(row2);
+                            $("#node-input-option-list-" + index_res).editableList({
+                                addItem: function (optionRow, optionIndex,
+                                    data) {
+                                    optionRow.css({
+                                        overflow: 'hidden',
+                                        whiteSpace: 'nowrap',
+                                    });
+                                    $('<input/>', {
+                                        id: "node-input-optionLabel-" +
+                                            index_res + "-" +
+                                            optionIndex,
+                                        type: "text",
+                                        style: "width: 50%",
+                                        placeholder: "Enter label"
+                                    }).appendTo(optionRow);
+                                    $('<input/>', {
+                                        id: "node-input-optionValue-" +
+                                            index_res + "-" +
+                                            optionIndex,
+                                        type: "text",
+                                        style: "width: 50%",
+                                        placeholder: "Enter value"
+                                    }).appendTo(optionRow);
+                                },
+                                removeItem: function (data) {},
+                                removable: true,
+                                sortItems: function (items) {},
+                                sortable: true
+                            });
+                        }
+                        //image
+                        else if (type === "image") {
+                            row2.empty();
+
+                            var textInput = $('<input/>', {
+                                id: "node-input-imageTitle-" + index_res,
+                                type: "text",
+                                placeholder: "Title"
+                            }).appendTo(row2);
+
+                            var textInput = $('<input/>', {
+                                style: "margin-top: 5px;",
+                                id: "node-input-optionDescription-" + index_res,
+                                type: "text",
+                                placeholder: "Description (optional)"
+                            }).appendTo(row2);
+
+                            var textInput = $('<input/>', {
+                                style: "margin-top: 5px;",
+                                id: "node-input-imageUrl-" + index_res,
+                                type: "text",
+                                placeholder: "Add image Source"
+                            }).appendTo(row2);
                         }
                     });
-                },
-                removeItem: function (opt_syn) {
-                    //Remove item from the list
-                    var currentOutputs = JSON.parse(outputCount.val() || "{}");
-                    if (opt_syn.hasOwnProperty('i')) {
-                        currentOutputs[opt_syn.i] = -1;
+                    $('<input/>', {
+                        id: "node-input-case-" + index_res,
+                        class: "node-input-response",
+                        type: "text",
+                        placeholder: "Enter response text"
+                    }).appendTo(row2);
+
+                    if (!data.hasOwnProperty('response_type')) {
+                        row2.empty();
+                        //selectField.val("text");
+                        var textInput = $('<input/>', {
+                            id: "node-input-case-" + index_res,
+                            class: "node-input-case",
+                            type: "text",
+                            placeholder: "Enter response text"
+                        }).appendTo(row2);
+
+                        var typeid = "node-input-response_type-" + index_res;
+                        var type = $('#' + typeid).val();
+                        console.log("add:" + index_res + "- " + type);
                     } else {
-                        delete currentOutputs[opt_syn._i];
+                        //text
+                        if (data.response_type === "text") {
+                            row2.empty();
+                            selectField.val("text");
+                            var textInput = $('<input/>', {
+                                id: "node-input-case-" + index_res,
+                                class: "node-input-case",
+                                type: "text",
+                                value: data.responseContent
+                            }).appendTo(row2);
+                        }
+                        //option
+                        else if (data.response_type === "option") {
+                            row2.empty();
+                            var optionElement = data.option;
+                            selectField.val("option");
+                            $('<input/>', {
+                                id: "node-input-optionTitle-" + index_res,
+                                type: "text",
+                                style: "margin-bottom: 5px",
+                                placeholder: "Title",
+                                value: optionElement.title
+                            }).appendTo(row2);
+
+                            $('<input/>', {
+                                id: "node-input-optionDescription-" + index_res,
+                                type: "text",
+                                style: "margin-bottom: 5px",
+                                placeholder: "Description (optional)",
+                                value: optionElement.description
+                            }).appendTo(row2);
+                            $('<ol/>', {
+                                id: "node-input-option-list-" + index_res
+                            }).appendTo(row2);
+                            $("#node-input-option-list-" + index_res).editableList({
+                                addItem: function (optionRow, optionIndex,
+                                    listData) {
+                                    optionRow.css({
+                                        overflow: 'hidden',
+                                        whiteSpace: 'nowrap',
+                                    });
+                                    $('<input/>', {
+                                        id: "node-input-optionLabel-" +
+                                            index_res + "-" +
+                                            optionIndex,
+                                        type: "text",
+                                        style: "width: 50%",
+                                        placeholder: "Enter label",
+                                        value: listData.label
+                                    }).appendTo(optionRow);
+                                    $('<input/>', {
+                                        id: "node-input-optionValue-" +
+                                            index_res + "-" +
+                                            optionIndex,
+                                        type: "text",
+                                        style: "width: 50%",
+                                        placeholder: "Enter value",
+                                        value: listData.value
+                                    }).appendTo(optionRow);
+                                },
+                                removeItem: function (data) {
+                                    console.log("An item has been removed")
+                                },
+                                removable: true,
+                                sortItems: function (items) {
+                                    console.log(
+                                        "The items have changed order")
+                                },
+                                sortable: true
+                            });
+
+
+                            for (var i = 0; i < data.option.list.length; i++) {
+                                var listItem = data.option.list[i];
+                                $("#node-input-option-list-" + index_res).editableList(
+                                    'addItem',
+                                    listItem);
+                            }
+
+
+                        }
+                        //image
+                        else if (data.response_type === "image") {
+                            row2.empty();
+                            var imageElement = data.image;
+                            selectField.val("image");
+                            var textInput = $('<input/>', {
+                                id: "node-input-imageTitle-" + index_res,
+                                type: "text",
+                                value: imageElement.title
+                            }).appendTo(row2);
+
+                            var textInput = $('<input/>', {
+                                style: "margin-top: 5px;",
+                                id: "node-input-imageDescription-" + index_res,
+                                type: "text",
+                                value: imageElement.description
+                            }).appendTo(row2);
+
+                            var textInput = $('<input/>', {
+                                style: "margin-top: 5px;",
+                                id: "node-input-imageUrl-" + index_res,
+                                type: "text",
+                                value: imageElement.source
+                            }).appendTo(row2);
+                        }
                     }
-                    var response_values = $("#node-input-value-container").editableList('items');
-                    response_values.each(function (i) {
-                        $(this).find(".node-input-entity-value-index").html(i + 1);
-                        var data = $(this).data('data');
-                        currentOutputs[data.hasOwnProperty('i') ? data.i : data._i] = i;
-                    });
-                    outputCount.val(JSON.stringify(currentOutputs));
                 },
-                sortItems: function (entity_values) {
+
+
+                sortItems: function (dialog_response) {
                     //Change indexes on sorting
                     var currentOutputs = JSON.parse(outputCount.val() || "{}");
-                    var response_values = $("#node-input-value-container").editableList('items');
+                    var response_values = $("#node-input-value-container").editableList(
+                        'items');
                     response_values.each(function (i) {
-                        $(this).find(".node-input-entity-value-index").html(index_res + 1);
+                        $(this).find(".node-input-option-list-").html(i +
+                            1);
                         var data = $(this).data('data');
                         currentOutputs[data.hasOwnProperty('i') ? data.i : data._i] = i;
                     });
@@ -528,304 +1359,110 @@
                 removable: true
             });
 
-            if (this.response_values) {
-                for (var i = 0; i < this.response_values.length; i++) {
-                    var response = this.response_values[i];
-                    $("#node-input-value-container").editableList('addItem', response);
-                }
+            for (var i = 0; i < this.dialog_response.length; i++) {
+                var response = this.dialog_response[i];
+                $("#node-input-value-container").editableList('addItem',response);
             }
 
-            /*
-            console.log(this.response_values);
-            this.response_values.push({
-                resonseContent: test
-            });
-            $("#node-input-value-container").editableList('addItem', this.response_values[0]);
-
-            */
 
 
-            // if (this.dialog_type == undefined){
-            //     this.dialog_type = node.dialog_type;
-            // }
-
-            updateData(this.dialog_type, this.dialog_value, this.condition, this.conditionChoices);
+            updateData(node.dialog_type, node.dialog_value, node.condition, node.conditionChoices);
 
             $("#node-input-name").val(this.name);
 
-            // intent creation code
-            if (this.payloadType === 'string' || this.payloadType === 'none') {
-                this.payloadType = "str";
-            }
-            $("#node-input-intentName").val(this.intentName);
-            $("#node-input-intentDescription").val(this.intentDescription);
-
-            $('#node-input-example-container').editableList({
-                addItem: function (row, index, data) {
-                    row.css({
-                        overflow: 'hidden',
-                        whiteSpace: 'nowrap'
-                    });
-                    if (!data.hasOwnProperty('exampleContent')) {
-                        var element = $('<input/>', {
-                            class: "node-input-example",
-                            type: "text"
-                        }).appendTo(row);
-                    } else {
-                        var element = $('<input/>', {
-                            class: "node-input-example",
-                            type: "text",
-                            value: data.exampleContent
-                        }).appendTo(row);
-                    }
-                },
-                sortable: true,
-                removable: true
-
-            });
-
-            for (var i = 0; i < this.examples.length; i++) {
-                var example = this.examples[i];
-                $("#node-input-example-container").editableList('addItem', example);
-            }
-
-            //Entity component
-
-            var outputCount = $("#node-input-outputs").val("{}");
-
-
-            //Create a dynamic list that contains values and sub dynamic lists that contains synonyms
-            $("#node-input-entity-value-container").css('min-height', '300px').css('min-width', '450px').editableList({
-
-                header: $("<div>").append($.parseHTML("<div style='display: inline-grid'>Values</div>")),
-                addItem: function (container, i, opt) {
-
-                    // If a new value is being created create the data structures to hold them.
-                    // Otherwise these variable will exists when the function is called.
-
-                    // console.log(opt);
-                    if (!opt.hasOwnProperty('entity_value')) {
-                        opt.entity_value = {};
-                    }
-                    var value = opt.entity_value;
-
-                    if (!value.hasOwnProperty('v')) {
-                        value.v = null;
-                    }
-                    if (!value.hasOwnProperty('s')) {
-                        value.s = [];
-                    }
-
-                    if (!opt.hasOwnProperty('i')) {
-                        opt._i = Math.floor((0x99999 - 0x10000) * Math.random()).toString();
-                    }
-
-
-                    //Create HTML row in the list item.
-                    //Row 1 = value line
-                    // Row 2 = synonyms line
-
-                    var row = $('<div/>', {class: 'form-row'}).appendTo(container);
-                    var row2 = $('<div/>', {
-                        class: 'form-row',
-                        style: "padding-top: 5px;"
-                    }).appendTo(container);
-
-                    // Vars for each row
-                    var entityValue = null;
-                    var entitySyns = null;
-
-
-                    //Value Entry
-                    function createValueField() {
-                        return $('<input/>', {
-                            class: "node-input-entity-value-value",
-                            type: "text",
-                            style: "margin-left: 5px; ",
-                            placeholder: "Example Value"
-                        }).appendTo(row);
-                    }
-
-                    //Function to create sub list for synonyms
-                    function createSynonymField() {
-
-                        //Create list.
-                        var syn = $('<div/>', {class: "node-input-entity-value-synonyms synonym_row"}).appendTo(row2);
-                        syn.css('height', '140px').editableList({
-
-                            header: $("<div>").append($.parseHTML("<div style='display: inline-grid'>Synonyms</div>")),
-                            addItem: function (syn, index_sym, opt_syn) {
-
-                                // console.log("OPt" + opt_syn)
-
-                                if (!opt_syn.hasOwnProperty('i')) {
-                                    opt_syn._i = Math.floor((0x99999 - 0x10000) * Math.random()).toString();
-                                }
-
-                                var syn_value = null;
-                                var row_syn = $('<div/>', {class: 'form-row'}).appendTo(syn);
-
-
-                                //Create list item input.
-                                function createSynonymField() {
-                                    return $('<input/>', {
-                                        class: "node-input-entity-value-syn-value",
-                                        type: "text",
-                                        style: "margin-left: 5px; "
-                                    }).appendTo(row_syn);
-                                }
-
-
-                                if (syn_value == null) {
-                                    syn_value = createSynonymField();
-                                }
-
-                                // Link value to attribute passed in if exists
-                                syn_value.val(opt_syn.s);
-
-
-                                //Add index counters
-                                var syn_count = $('<span/>', {style: "float: right;margin-top: 6px;"}).appendTo(row_syn);
-                                syn_count.append(' &#8594; <span class="node-input-entity-value-index">' + (index_sym + 1) + '</span> ');
-                            },
-                            removeItem: function (opt_syn) {
-                                //Remove item from the list
-                                var currentOutputs = JSON.parse(outputCount.val() || "{}");
-                                if (opt_syn.hasOwnProperty('i')) {
-                                    currentOutputs[opt_syn.i] = -1;
-                                } else {
-                                    delete currentOutputs[opt_syn._i];
-                                }
-                                var entity_values = $("#node-input-entity-value-synonyms").editableList('items');
-                                entity_values.each(function (i) {
-                                    $(this).find(".node-input-entity-value-index").html(i + 1);
-                                    var data = $(this).data('data');
-                                    currentOutputs[data.hasOwnProperty('i') ? data.i : data._i] = i;
-                                });
-                                outputCount.val(JSON.stringify(currentOutputs));
-                            },
-                            sortItems: function (entity_values) {
-                                //Change indexes on sorting
-                                var currentOutputs = JSON.parse(outputCount.val() || "{}");
-                                var entity_values = $("#node-input-entity-value-container").editableList('items');
-                                entity_values.each(function (i) {
-                                    $(this).find(".node-input-entity-value-index").html(index_sym + 1);
-                                    var data = $(this).data('data');
-                                    currentOutputs[data.hasOwnProperty('i') ? data.i : data._i] = i;
-                                });
-                                outputCount.val(JSON.stringify(currentOutputs));
-                            },
-                            sortable: true,
-                            removable: true
-                        });
-
-                        return syn;
-                    }
-
-
-                    //Add index counter to main list
-                    var finalspan = $('<span/>', {style: "float: right;margin-top: 6px;"}).appendTo(row);
-                    finalspan.append(' &#8594; <span class="node-input-entity-value-index">' + (i + 1) + '</span> ');
-
-                    // Create items in the list item
-                    if (entityValue == null) {
-                        entityValue = createValueField();
-                    }
-
-                    if (value.v != null) {
-                        entityValue.val(value.v);
-                    }
-
-                    if (entitySyns == null) {
-                        entitySyns = createSynonymField();
-                    }
-
-
-                    //If the items is built from saved values then loop through value to create
-                    // the synonym lists
-                    for (var i = 0; i < value.s.length; i++) {
-                        console.log(value.s[i]);
-                        var rule_S = value.s[i];
-                        entitySyns.editableList('addItem', {s: rule_S, i: i});
-                    }
-                },
-                removeItem: function (opt) {
-                    var currentOutputs = JSON.parse(outputCount.val() || "{}");
-                    if (opt.hasOwnProperty('i')) {
-                        currentOutputs[opt.i] = -1;
-                    } else {
-                        delete currentOutputs[opt._i];
-                    }
-                    var values = $("#node-input-entity-value-container").editableList('items');
-                    values.each(function (i) {
-                        $(this).find(".node-input-entity-value-index").html(i + 1);
-                        var data = $(this).data('data');
-                        currentOutputs[data.hasOwnProperty('i') ? data.i : data._i] = i;
-                    });
-                    outputCount.val(JSON.stringify(currentOutputs));
-                },
-                sortItems: function (rules) {
-                    var currentOutputs = JSON.parse(outputCount.val() || "{}");
-                    var values = $("#node-input-entity-value-container").editableList('items');
-                    values.each(function (i) {
-                        $(this).find(".node-input-entity-value-index").html(i + 1);
-                        var data = $(this).data('data');
-                        currentOutputs[data.hasOwnProperty('i') ? data.i : data._i] = i;
-                    });
-                    outputCount.val(JSON.stringify(currentOutputs));
-                },
-                sortable: true,
-                removable: true
-            });
-
-            //Read values from node default and build lists.
-            for (var i = 0; i < this.entity_values.length; i++) {
-                var value = this.entity_values[i];
-                $("#node-input-entity-value-container").editableList('addItem', {entity_value: value, i: i});
-            }
-
-            //Read values from node default and build lists.
-            for (var i = 0; i < this.rules.length; i++) {
-                var rule = this.rules[i];
-                $("#node-input-rule-container").editableList('addItem', {r: rule, i: i});
-            }
-
-            var currentOutputs = JSON.parse(outputCount.val() || "{}");
-            currentOutputs[opt.hasOwnProperty('i') ? opt.i : opt._i] = i;
-            outputCount.val(JSON.stringify(currentOutputs));
-
         },
         oneditsave: function () {
-
-            ///INTENT SAVING
-            this.intentName = $("#node-input-intentName").val();
-            this.intentDescription = $("#node-input-intentDescription").val();
-
-
-            var exampleList = $('#node-input-example-container').editableList('items');
+            //RESPONSE
+            var responselist = $('#node-input-value-container').editableList('items');
             var node = this;
-            node.examples = [];
+            node.dialog_response = [];
+            responselist.each(function (i) {
+                var typeid = "node-input-response_type-" + i;
+                var type = $('#' + typeid).val();
+                console.log(i + ": " + type);
+                if (type === "text") {
+                    //text
+                    var textid = "node-input-case-" + i;
+                    var content = $('#' + textid).val();
+                    var responseElement = {
+                        response_type: type,
+                        responseContent: content,
+                        image: {}
+                    }
+                    node.dialog_response.push(responseElement);
+                } else if (type === "option") {
+                    //option
+                    var titleid = "node-input-optionTitle-" + i;
+                    var title = $('#' + titleid).val();
+                    var descriptionid = "node-input-optionDescription-" + i;
+                    var description = $('#' + descriptionid).val();
 
-            exampleList.each(function (i) {
-                var exampleElement = $(this);
-                var example = exampleElement.find(".node-input-examle").val();
-                var listElement = {
-                    exampleContent: example
-                };
-                node.examples.push(listElement);
+                    var optionList = $('#node-input-option-list-' + i).editableList('items');
+                    var listTemp = [];
+
+                    // Save the options list
+                    optionList.each(function (j) {
+                        var optionListElement = $(this);
+                        var label = optionListElement.find("#node-input-optionLabel-" + i +
+                            "-" + j).val();
+                        var value = optionListElement.find("#node-input-optionValue-" + i +
+                            "-" + j).val();
+
+                        var listElement = {
+                            label: label,
+                            value: value
+                        };
+                        listTemp.push(listElement);
+                    });
+
+
+                    var optionElement = {
+                        response_type: "option",
+                        title: title,
+                        description: description,
+                        list: listTemp
+                    }
+
+                    var responseElement = {
+                        response_type: type,
+                        responseContent: "",
+                        option: optionElement,
+                        image: {}
+                    }
+
+                    console.log(responseElement);
+
+                    node.dialog_response.push(responseElement);
+                } else if (type === "image") {
+                    //image
+                    var titleid = "node-input-imageTitle-" + i;
+                    var title = $('#' + titleid).val();
+                    var descriptionid = "node-input-imageDescription-" + i;
+                    var description = $('#' + descriptionid).val();
+                    var urlid = "node-input-imageUrl-" + i;
+                    var url = $('#' + urlid).val();
+                    var imageElement = {
+                        response_type: "image",
+                        title: title,
+                        description: description,
+                        source: url
+                    }
+
+                    var responseElement = {
+                        response_type: type,
+                        responseContent: "",
+                        image: imageElement
+
+                    }
+
+                    node.dialog_response.push(responseElement);
+                }
             });
+
 
             node.dialog_type = $("#node-input-description").val();
             node.dialog_value = $("#node-input-choices").val();
 
-
-            //ENTITY SAVING
-
-            this.entity_name = $("#node-input-entityName").val();
-            var enitity_values = $("#node-input-entity-value-container").editableList('items');
-
-            var node = this;
-            node.entity_values = [];
 
 
             node.condition = $("#node-input-condition").val();
@@ -833,56 +1470,9 @@
 
             console.log(node.conditionChoices);
 
-            //Loop through Items to save the data
-            enitity_values.each(function (i) {
-
-                //crete data variable
-                var entityData = $(this).data('data');
-                var entity = $(this);
-                var value = {};
-                //get list of synonyms from within this list item
-
-                var list = entity.find(".node-input-entity-value-synonyms").editableList('items');
-                value.s = [];
-
-                //loop through synonymn item
-                list.each(function (j) {
-                    var syn_value = $(this);
-                    var next_value = syn_value.find(".node-input-entity-value-syn-value").val();
-                    value.s.push(next_value);
-                });
-
-                //get value
-                value.v = entity.find(".node-input-entity-value-value").val();
-                // console.log("RULE");
-                // console.log(r);
-                // //Save values to node default
-                node.entity_values.push(value);
-            });
-
-            //RESPONSE SAVING
-
-            var responseList = $("#node-input-value-container").editableList('items');
-
-            //console.log(responseList);
-
-            var node = this;
-            node.response_values = [];
-
-            responseList.each(function (i) {
-                var responseElement = $(this);
-                var response = responseElement.find(".node-input-response").val();
-                var listElement = {
-                    responseContent: response
-                };
-                node.response_values.push(listElement);
-            });
-
-            console.log(node.response_values);
 
         }
-    })
-    ;
+    });
 
 
 </script>
@@ -897,15 +1487,21 @@
         <select style="width: 50px" name="" id="node-input-description">
             <option value="#" selected>#</option>
             <option value="@">@</option>
+            <option value="T" >T</option>
         </select>
 
         <select name="" id="node-input-choices">
 
         </select>
     </div>
-    <div class=form-row>
+    <div class="form-row" style="margin-bottom: 10px;">
         <button id="node-button-create-intent" onclick="newIntent()">New Intent</button>
+        <button id="node-button-edit-intent" onclick="editIntent()">Edit Intent</button>
+    </div>
+
+    <div class="form-row" style="margin-bottom: 10px;">
         <button id="node-button-create-entity" onclick="newEntity()" hidden="true">New Entity</button>
+        <button id="node-button-edit-entity" onclick="editEntity()" hidden="true">Edit Entity</button>
     </div>
     <div id="create-intent" style="display: none;">
         <fieldset>
@@ -925,7 +1521,8 @@
                 <ol id="node-input-example-container"></ol>
             </div>
             <div class="form-row" style="margin-bottom: 10px;">
-                <button onclick="createIntent()">Create intent</button>
+                <button onclick="createIntent()">Save intent</button>
+                <button id="delete_intent_button" onclick="deleteIntent()">Delete intent</button>
                 <button onclick="cancelIntent()">Cancel</button>
             </div>
             <legend></legend>
@@ -947,7 +1544,8 @@
 
 
             <div class="form-row" style="margin-bottom: 10px;">
-                <button onclick="createEntity()">Create entity</button>
+                <button onclick="createEntity()">Save entity</button>
+                <button  id="delete_entity_button" onclick="deleteEntitiy()">Delete entity</button>
                 <button onclick="cancelEntity()">Cancel</button>
             </div>
             <legend></legend>
@@ -972,7 +1570,17 @@
             </select>
         </div>
     </div>
+<!--    <div class="form-row">-->
     <ol id="node-input-value-container"></ol>
+<!--    </div>-->
+
+    <div  class="form-row" style="margin-top: 12px">
+        <label for="node-input-userAction"><i class="icon-tag"></i>Next action</label>
+        <select  name="" id="node-input-userAction">
+            <option value="get_user_input" selected="selected">Wait For Reply</option>
+            <option value="skip_user_input">Skip User Input</option>
+        </select>
+    </div>
 </script>
 
 <style>
@@ -1003,4 +1611,77 @@
 <script type="text/html" data-help-name="dialog">
     <p>Implementation with this node enable user to create default intent to the given workspace. Name can only contain
         alphabetic characters (A-Z,a-z), numeric characters (0-9), underscores (_), dashes (-) and periods (.).</p>
+
+
+    <h5 id="step-1-create-the-node">Step 1) Create the node</h5>
+    <ul>
+        <li>Drag the dialog node from the plugin and open the node editing box by double clicking on it.</li>
+        <li>Name the node.</li>
+    </ul>
+    <h5 id="step-2-set-up-the-recognition-system">Step 2) Set up the recognition system</h5>
+    <ul>
+        <li>Choose if you would like to use an intent (#), Entity (@) or True (T) value.</li>
+        <li>Intents are actions or requests that the chabot can respond too.</li>
+        <li>Entities are the nouns or options that can be chosen. Entities have a list of values within them.</li>
+        <li>True is a default value. This node is activated when the user input is not recognised.</li>
+        <li>Select the specific entity or intent</li>
+        <li>if one doesnt exist, view step 3</li>
+        <li>If using an entity select the matching value. Note that &quot;greater&quot; and &quot;less&quot; matching parameters require numeric values.</li>
+        <li>You now have you selection criteria.</li>
+    </ul>
+    <h4 id="step-3-creating-editing-and-deleting-nodes">Step 3) Creating, editing and deleting nodes</h4>
+    <p>Firstly, before talking about these. Please not that entities and intents are global. Hence, if they are changed in one
+        node they will change in the others.</p>
+    <h5 id="intent">Intent</h5>
+    <p>1) If you would like to create a new intent, select the intent option (#) and click &quot;create intent&quot;.</p>
+    <p>2) Fill in the name (which must have no spaces) and the description.</p>
+    <p>3) Fill in the examples. These are examples of what the user might say to activate this intent.</p>
+    <ul>
+        <li>There is an add button on the bottom right of the section to add more examples</li>
+        <li>Note these examples should never be the same as it will lead to less accurate responses from the chatbot.</li>
+    </ul>
+    <p>4) Click save</p>
+    <p>5) If you would like to edit the intent or delete intent first select the intent.</p>
+    <p>6) Then, as with creation edit the variables and click save.</p>
+    <p>7) To delete, simply open the editing page and click delete!</p>
+    <h5 id="entity">Entity</h5>
+    <p>1) If you would like to create a new entity, select the intent option (@) and click &quot;create entity&quot;.</p>
+    <p>2) Fill in the name (which must have no spaces) and the description.</p>
+    <p>3) As before once can then fill in the values. However, with entities this is somewhat different.</p>
+    <ul>
+        <li>Entities have a set of values. Think of them as options.</li>
+        <li>Each value has a set of synonyms. This is similar to the examples of intents.</li>
+        <li>Fill in the values and synonyms you desire.</li>
+    </ul>
+    <p>4) Click save</p>
+    <p>5) If you would like to edit the intent or delete entity first select the entity.</p>
+    <p>6) Then, as with creation edit the variables and click save.</p>
+    <p>7) To delete, simply open the editing page and click delete!</p>
+    <h4 id="step-4-responses">Step 4) Responses</h4>
+    <p>Filling in the responses is fairly straight forwards. There are three options: Text, options and images. They are described
+        below. To have multiple responses simply click the add button at the bottom of the section:</p>
+    <p>1) Text: Simple select the text option and type a response.</p>
+    <p>2) Image:</p>
+    <ul>
+        <li>Fill in the title</li>
+        <li>Fill in the description (Note this will be desplayed in the chat)</li>
+        <li>copy the link to the image into the URL box (Note this must be hosted online somewhere)
+            3) Option:</li>
+        <li>Fill in the title</li>
+        <li>Fill in the description</li>
+        <li>In the dynamic box, add options. Node for each option there are two entries. The first is the option that the user
+            will see and the second is the corresponding matching value that will be used in the child nodes.</li>
+    </ul>
+    <h4 id="step-5-next-action">Step 5) Next Action</h4>
+    <p>Here the user can select if the chatbot must wait for user input before going to child nodes in the tree.
+        If the designer decided to skip user input, then the chatbot will search the entered text for the parent node again.</p>
+    <p>This would work for example if the user asks &quot;I would like the standard menu please&quot;. This would activate the menu intent
+        and the standard menu entity value child node.</p>
+    <h4 id="step-6-linking">Step 6) Linking</h4>
+    <p>The node is now ready to be linked to other nodes. Note this node must be linked to either a &quot;CreateWatson&quot; node or
+        other dialog node.</p>
+    <p>Linking order is also important, especially if you have a default node (&quot;true&quot;). The nodes are searched in reverse order
+        to how they are connected. Hence, a default node should always be connected first to any parent node
+        , thereafter the order shouldn&#39;t matter too much.</p>
+
 </script>

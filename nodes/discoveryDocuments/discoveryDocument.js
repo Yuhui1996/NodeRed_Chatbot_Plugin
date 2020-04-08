@@ -7,13 +7,30 @@ let enviroment_id;
 let configuration_id;
 let collection_id;
 
+/*
+* @class discoveryDocument
+* @description this class allow the user to upload the document to the linked enviroment
+* in this class it takes the enviorment id and collection from the previous node, createDiscovery node, and based on
+* the enviroment id and collection id, make a addDocument api call to upload the documents
+* @param RED, nodered object
+* */
 module.exports = function(RED) {
+
+    /*
+    * @function discoveryDocument
+    * @memberOf discoveryDocument
+    * @description the key function for this node, where it takes filepath as input of the file and then
+    * upload the corresponding file to the environment.
+    * fs or filestream is the built-in file reader provided by chrome.
+    * node.send(msg) allows to send important msg or debug message to the next node.
+    * */
     function discoveryDocument(node_data) {
 
         RED.nodes.createNode(this,node_data);
         var node = this
         node.on("input", function(msg){
             console.log(node_data.filepath + "hello")
+            console.log(msg)
             function waitFor(time) {
                 // wait time and resolve
                 return new Promise(resolve => setTimeout(resolve, time))
@@ -23,8 +40,10 @@ module.exports = function(RED) {
                 authenticator: new IamAuthenticator({
                     apikey: msg.payload.discovery_api_key,
                 }),
-                url: 'https://api.eu-gb.discovery.watson.cloud.ibm.com/instances/74281b85-e9d8-4490-80aa-69a48ef50d37',
+                url: msg.payload.discoveryUrl
             });
+            /*
+            * @inner the following three lines of code is to get the imporant parameters needed for upload the file*/
             enviroment_id = msg.payload.enviroment_id
             configuration_id= msg.payload.configuration_id
             collection_id = msg.payload.collection_id

@@ -1,11 +1,16 @@
+
 <script type="text/javascript">
+
+    /**
+     * @ignore
+     * @module
+     */
     RED.nodes.registerType('createDiscovery', {
         category: 'Watson Designer',
         color: '#a6bbcf',
         defaults: {
             filepath:{
-                value:"",
-                required: true
+                value:""
             },
             discoveryname:{
                 value: "new environment",
@@ -32,7 +37,7 @@
 </script>
 
 <script type="text/html" data-help-name="createDiscovery">
-    <p>the node requries you to enter the exact path of the file you can either right the file and property,
+    <p>the node requires you to enter the exact path of the file you can either right the file and property,
         then the location is exact path of the file</p>
 </script>
 
