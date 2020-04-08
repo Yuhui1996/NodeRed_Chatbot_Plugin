@@ -3,7 +3,7 @@
 ## Visual 
 
 <p align="center">
-            <img width="100%" height="100%" src="./readme_data/creatediscovery.gif.gif"  border="4" >
+            <img width="100%" height="100%" src="./readme_data/creatediscovery.gif"  border="4" >
 </p>
 
 ## Tutorial
