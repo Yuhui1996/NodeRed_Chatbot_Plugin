@@ -1629,39 +1629,39 @@
         <li>If using an entity select the matching value. Note that &quot;greater&quot; and &quot;less&quot; matching parameters require numeric values.</li>
         <li>You now have you selection criteria.</li>
     </ul>
-    <h5 id="step-3-creating-editing-and-deleting-nodes">Step 3) Creating, editing and deleting nodes</h5>
+    <h4 id="step-3-creating-editing-and-deleting-nodes">Step 3) Creating, editing and deleting nodes</h4>
     <p>Firstly, before talking about these. Please not that entities and intents are global. Hence, if they are changed in one
         node they will change in the others.</p>
-    <h6 id="intent">Intent</h6>
-    <p>1) If you would like to create a new intent, select the intent option (#) and click &quot;create intent&quot;.
-        2) Fill in the name (which must have no spaces) and the description.
-        3) Fill in the examples. These are examples of what the user might say to activate this intent.</p>
+    <h5 id="intent">Intent</h5>
+    <p>1) If you would like to create a new intent, select the intent option (#) and click &quot;create intent&quot;.</p>
+    <p>2) Fill in the name (which must have no spaces) and the description.</p>
+    <p>3) Fill in the examples. These are examples of what the user might say to activate this intent.</p>
     <ul>
         <li>There is an add button on the bottom right of the section to add more examples</li>
-        <li>Note these examples should never be the same as it will lead to less accurate responses from the chatbot.
-            4) Click save</li>
+        <li>Note these examples should never be the same as it will lead to less accurate responses from the chatbot.</li>
     </ul>
-    <p>1) If you would like to edit the intent or delete intent first select the intent.
-        2) Then, as with creation edit the variables and click save.
-        3) To delete, simply open the editing page and click delete!</p>
-    <h6 id="entity">Entity</h6>
-    <p>1) If you would like to create a new entity, select the intent option (@) and click &quot;create entity&quot;.
-        2) Fill in the name (which must have no spaces) and the description.
-        3) As before once can then fill in the values. However, with entities this is somewhat different.</p>
+    <p>4) Click save</p>
+    <p>5) If you would like to edit the intent or delete intent first select the intent.</p>
+    <p>6) Then, as with creation edit the variables and click save.</p>
+    <p>7) To delete, simply open the editing page and click delete!</p>
+    <h5 id="entity">Entity</h5>
+    <p>1) If you would like to create a new entity, select the intent option (@) and click &quot;create entity&quot;.</p>
+    <p>2) Fill in the name (which must have no spaces) and the description.</p>
+    <p>3) As before once can then fill in the values. However, with entities this is somewhat different.</p>
     <ul>
         <li>Entities have a set of values. Think of them as options.</li>
         <li>Each value has a set of synonyms. This is similar to the examples of intents.</li>
-        <li>Fill in the values and synonyms you desire.
-            4) Click save</li>
+        <li>Fill in the values and synonyms you desire.</li>
     </ul>
-    <p>1) If you would like to edit the intent or delete entity first select the entity.
-        2) Then, as with creation edit the variables and click save.
-        3) To delete, simply open the editing page and click delete!</p>
-    <h5 id="step-4-responses">Step 4) Responses</h5>
+    <p>4) Click save</p>
+    <p>5) If you would like to edit the intent or delete entity first select the entity.</p>
+    <p>6) Then, as with creation edit the variables and click save.</p>
+    <p>7) To delete, simply open the editing page and click delete!</p>
+    <h4 id="step-4-responses">Step 4) Responses</h4>
     <p>Filling in the responses is fairly straight forwards. There are three options: Text, options and images. They are described
         below. To have multiple responses simply click the add button at the bottom of the section:</p>
-    <p>1) Text: Simple select the text option and type a response.
-        2) Image:</p>
+    <p>1) Text: Simple select the text option and type a response.</p>
+    <p>2) Image:</p>
     <ul>
         <li>Fill in the title</li>
         <li>Fill in the description (Note this will be desplayed in the chat)</li>
@@ -1672,12 +1672,12 @@
         <li>In the dynamic box, add options. Node for each option there are two entries. The first is the option that the user
             will see and the second is the corresponding matching value that will be used in the child nodes.</li>
     </ul>
-    <h5 id="step-5-next-action">Step 5) Next Action</h5>
+    <h4 id="step-5-next-action">Step 5) Next Action</h4>
     <p>Here the user can select if the chatbot must wait for user input before going to child nodes in the tree.
         If the designer decided to skip user input, then the chatbot will search the entered text for the parent node again.</p>
     <p>This would work for example if the user asks &quot;I would like the standard menu please&quot;. This would activate the menu intent
         and the standard menu entity value child node.</p>
-    <h5 id="step-6-linking">Step 6) Linking</h5>
+    <h4 id="step-6-linking">Step 6) Linking</h4>
     <p>The node is now ready to be linked to other nodes. Note this node must be linked to either a &quot;CreateWatson&quot; node or
         other dialog node.</p>
     <p>Linking order is also important, especially if you have a default node (&quot;true&quot;). The nodes are searched in reverse order
