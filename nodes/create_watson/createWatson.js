@@ -95,7 +95,7 @@ module.exports = function (RED) {
      * @function create Intents
      * @memberOf Create_Watson
      * @description function to format global data into correct API call format
-     * @returns {[]} data: API call data
+     * @returns {any} data: API call data
      */
     function createIntents() {
         let intents = [];
@@ -117,7 +117,7 @@ module.exports = function (RED) {
      * @function create Entities
      * @memberOf Create_Watson
      * @description function to format global data into correct API call format
-     * @returns {[]} data: API call data
+     * @returns {any} data: API call data
      */
     function createEntities() {
         let entities = [];
@@ -214,7 +214,7 @@ module.exports = function (RED) {
             /**
              * @memberOf Create_Watson
              * @inline Create workspace paramaters for API call including intents and entiteis
-             * @type {{intents: *[], entities: *[], name: (string), description: string}}
+             * @type {JSON}
              */
             const workspace = {
                 name: msg.payload.chatbot_name,
