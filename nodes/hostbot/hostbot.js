@@ -19,13 +19,6 @@ module.exports = function(RED) {
             var portfix = 8080; //Math.floor(1000 + Math.random() * 9000);
 
 
-            var path = require('path');
-            var filePath = path.join(__dirname, "chatbot_iframe_web_insert.txt");
-            var widget_snip = '';
-                        fs.readFile(filePath, function(err, buf) {
-                            var WidgetHtmlString = buf.toString();
-                            widget_snip = htmlString.replace("<!--the_url_of_the_chatbot-->", public_url);
-                        });
 
 
 

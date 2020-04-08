@@ -159,6 +159,17 @@
         </div>
 
         <script>
+            //var fs = require("fs");
+            var contextid; //global
+
+            //press enter to send msg
+            var input = document.getElementById("inputtext");
+            input.addEventListener("keyup", function(event) {
+                if (event.keyCode === 13) {
+                    event.preventDefault();
+                    document.getElementById("sendBtn").click();
+                }
+            });
 
             function copyToClipboard() {
                 var dummy = document.createElement("textarea");
@@ -169,7 +180,11 @@ function minimiseWA() {
   document.getElementById("watson-assistant-chatbot-iframe-widget").style.visibility = "hidden";
 }
 function maximiseWA() {
-  <//script> <button type="button" onclick="maximiseWA()" style="position: fixed; bottom: -5%; right: 10.5%; border-radius: 50%; background-color: RoyalBlue; color: GhostWhite; border: 0px; font-size: 20px; cursor: pointer; margin: 4px 2px; padding: 20px; padding-bottom: 40px">Chat</button>
+  document.getElementById("watson-assistant-chatbot-iframe-widget").style.visibility = "visible";
+}
+<//script>
+
+<button type="button" onclick="maximiseWA()" style="position: fixed; bottom: -5%; right: 10.5%; border-radius: 50%; background-color: RoyalBlue; color: GhostWhite; border: 0px; font-size: 20px; cursor: pointer; margin: 4px 2px; padding: 20px; padding-bottom: 40px">Chat</button>
 <div id= "watson-assistant-chatbot-iframe-widget" style="position:fixed;
   bottom: 0; right: 10%; width: 380px; height: 500px; overflow: hidden; border-radius: 15px; box-shadow: 0 0 18px #888888; border-style: solid; border-color: white; visibility: hidden;" >
   <button type="button" onclick="minimiseWA()" style="position: absolute; top: -5%; left: 86%; border-radius: 30px; height: 40px; background-color: PapayaWhip; color: Coral; border: 0px; font-size: 20px; padding: 40px 15px 30px 15px; cursor: pointer;">x</button>
@@ -182,9 +197,7 @@ function maximiseWA() {
                 dummy.select();
                 document.execCommand("copy");
                 document.body.removeChild(dummy);
-                alert("Code snip of the widget has been copied to clipboard.");
-
-                
+                alert("Code snip of the widget has been copied to clipboard. Paste the code to the botton of your website's body");
             }
             
 
@@ -342,7 +355,7 @@ function maximiseWA() {
 
 
                         var request = new XMLHttpRequest();
-                        request.open('GET', "https://0a4d22f5.ngrok.io/dialog_discovery_map.json", true);
+                        request.open('GET', "http://localhost:8080/dialog_discovery_map.json", true);
                         request.send(null);
                         request.onreadystatechange = function () {
                             if (request.readyState === 4 && request.status === 200) {
