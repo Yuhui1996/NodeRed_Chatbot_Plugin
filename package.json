@@ -18,7 +18,7 @@
     "description": "hiya",
     "main": "hiya",
     "scripts": {
-        "test": "mocha \"tests/_spec.js\" && mocha \"tests/_create.js\" && mocha \"tests/_createIntent.js\" && mocha \"tests/_delete.js\" ",
+        "test": "mocha \"tests/_spec.js\" && mocha \"tests/_create.js\" && mocha \"tests/_createIntent.js\" && mocha \"tests/_delete.js\" && mocha \"tests/discovery_delete_test.js\" && mocha \"tests/discovery_test.js\" ",
         "docs": "./node_modules/.bin/jsdoc -c jsdoc.json"
     },
     "repository": {
