@@ -20,6 +20,8 @@ module.exports = function(RED) {
 
 
 
+
+
             detect(portfix, (err, _port) => {
                 if (err) {
                     console.log(err);
@@ -60,12 +62,8 @@ module.exports = function(RED) {
 
 
                             var iframe_snip = '';
-                            fs.readFile(filePath, function(err, buf) {
-                                var htmlString = buf.toString();
-                                iframe_snip = htmlString.replace("<!--the_url_of_the_chatbot-->", public_url);
-                                msg.payload = "<!--append this code to your website-->\n\n" + iframe_snip;
+                                msg.payload = public_url;
                                 node.send(msg);
-                            });
 
                             console.log("The link to your chatbot is, " + url + "     (please make sure to select the correct instance before chatting)")
                             console.log('widget insert:  passed as payload');
@@ -112,12 +110,8 @@ module.exports = function(RED) {
 
 
                         var iframe_snip = '';
-                        fs.readFile(filePath, function(err, buf) {
-                            var htmlString = buf.toString();
-                            iframe_snip = htmlString.replace("<!--the_url_of_the_chatbot-->", public_url);
-                            msg.payload = "<!--append this code to your website-->\n\n" + iframe_snip;
-                            node.send(msg);
-                        });
+                            msg.payload = public_url;
+                            node.send(msg)
 
                         console.log("The link to your chatbot is, " + url + "     (please make sure to select the correct instance before chatting)")
                         console.log('widget insert:  passed as payload');
