@@ -64,7 +64,15 @@ in the system. Detailed instruction can be seen in each nodes page. The minimum 
  6) You now have a running chatbot.
 
 ## Basic Overview 
+The Internet is connecting everyone. Therefore, business owners regularly use the Internet as a tool to promote their businesses to the rest of the world. As the number of customers increases, the harder it gets for companies to hire employees simply to answer common questions that customers might have. Thus, there is a growing need for a virtual assistant that can provide customers with instant responses and is available every hour of the day. Many users choose to use IBM's Watson Assistant to build, train, and deploy conversational interactions into their applications. However, to create a Watson Assistant Chatbot, our target
 
+users must go through a series of complicated tutorials and move between different tools before they can design the chatbot they need on the IBM Cloud.
+
+The purpose of the project titled "Watson Designer" is to provide a one-stop site to create a Watson Chatbot, that is more user-friendly than the original Watson Assistant Design System. We used Node-RED as the framework for our web application because of its flow-based programming, well designed GUI, and drag & drop interaction. We believe that creating the conversational interaction as a flow of nodes is more intuitive than connecting separate dialog through abstract keywords. Moreover, our project also implements Watson Discovery into our web application to help our target users create a more powerful Chatbot which could retrieve responses from a large dataset.
+
+Our project uses Agile and Test-Driven Development (TDD) as our software development methodology to make sure we could get feedback in every small iteration and respond to new requirements swiftly. The team hosts a daily stand-up meeting online to track everyone's progress, a face-to-face SCRUM meeting every week to assign the user-stories and a review meeting every two weeks to communicate with our client from IBM.
+
+The following sections of this report will introduce the tools we used, the work we have done, the architecture of our web application, and how we verify and validate our product. Finally, the report will also discuss the potential future developments of Watson Designer.
 ## Instruction for each node
 There are __ main components of the system, to access the documentation for each of these click
 the following the links below: 
@@ -78,13 +86,14 @@ the following the links below:
 * [DeleteDiscovery Node](/nodes/deleteDiscovery)
 * [Discovery Documents Node](/nodes/discoveryDocuments)
 
-## Video
+## Tutorial Video
+Coming soon
 
-## Support
- 
-## Road-map
+## Wiki
+In an attempt to create a wiki we have used JSDoc to comment our functions to create the wiki. Unfortunately, this does not work with
+Node-REDs structure and thus only JS docs are included in the wiki. This can be found [here](/docs/index.html)
 
-## Contributing
+## Contributing and Support
 Original contributions were made by a team of UCL Students. However after completion of the project and 
 publication to open source. This project will be taken over by the IBM Node-RED development team for 
 open source management.  Hence, contributions should follow Node-RED guidelines.

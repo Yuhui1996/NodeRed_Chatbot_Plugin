@@ -656,6 +656,7 @@
         showEntity(data, choice);
 
         $("#create-entity").show();
+        $("#delete_entity_button").hide();
         $("#node-button-create-entity").hide();
         $("#node-button-edit-entity").hide();
     }
@@ -698,6 +699,7 @@
         });
 
         $("#create-entity").show();
+        $("#delete_entity_button").show();
         $("#node-button-create-entity").hide();
         $("#node-button-edit-entity").hide();
 
@@ -970,7 +972,7 @@
         delete_entity.control = "remove";
         delete_entity.type = "entity";
 
-        $.post("/global_data", new_entity)
+        $.post("/global_data", delete_entity)
             .done(function (data) {
                 alert("Data Loaded: " + data);
             });
@@ -1043,9 +1045,7 @@
                     {
                         responseType: "",
                         responseContent: ""
-                    }],
-                required:true,
-                validate: RED.validators.regex(/^(?!\s*$).{1,1024}$/)
+                    }]
             },
             condition: {
                 value: ""
@@ -1545,7 +1545,7 @@
 
             <div class="form-row" style="margin-bottom: 10px;">
                 <button onclick="createEntity()">Save entity</button>
-                <button onclick="deleteEntitiy()">Delete entity</button>
+                <button  id="delete_entity_button" onclick="deleteEntitiy()">Delete entity</button>
                 <button onclick="cancelEntity()">Cancel</button>
             </div>
             <legend></legend>
