@@ -5,16 +5,35 @@ let fs = require('fs');
 let path = require('path');
 
 
+
+/*
+* @class createDiscovery
+* @in this class it allows the user to create the important component for discovery,
+* the environment, configuration and collection.
+* in this class, it checks whatever the environment the user want to create already exist, if does remove old and create
+* new one based on the the current nodes.
+*
+*
+* @param RED, nodered object
+* */
 module.exports = function(RED) {
+    //json response from the ap calls
     let jsonObject;
     let enviroment_id;
     let configuration_id;
     let collection_id;
+    //store api key from previous node
     let discovery_api_key;
-
     let dialog_discovery_map;
     let dialog_discovery_map_json_file_path = path.join(__dirname, '/../hostbot/dialog_discovery_map.json');
 
+
+    /*
+    * @function writedata
+    * @memberOf createDiscovery
+    * @description this function is required by the chatbot, to find out which discovery environment is assosicated with the dialog response
+    * in this function it write the required data into a json file and store it for chatbot to accesse.
+    */
     function writeData(){
 
         try {
@@ -27,6 +46,13 @@ module.exports = function(RED) {
             console.log("createDiscovery.js writeData() : failed to save data");
         }
     }
+
+    /*
+    * @function readdata
+    * @memberOf createDiscovery
+    * @description this function works with the writedata function,
+    * it reads what been wrote to the json file, and edit it to make it up to date.
+    *  */
 
     function readData(){
         try{
@@ -44,6 +70,13 @@ module.exports = function(RED) {
         }
 
     }
+        /*
+        * @function updatedata
+        * @memberOf createDiscovery
+        * @description this function update the data, work with read data function,
+        * @param {string} dialog_id
+        * @param {string} discovery_id
+        *  */
 
     function updateData(dialog_id, discovery_id) {
         if (dialog_id != undefined && discovery_id != undefined){
@@ -58,17 +91,28 @@ module.exports = function(RED) {
         }
     }
 
-
+    /*
+    * @function discoveryNode
+    * @memberOf createDiscovery
+    * @description this function is needed for create the createDiscovery node, it first takes data from the metadata
+    * node and, then use the discoveryname user entered for name of the enviroment, collection and configuration
+    * @param node_data, inputs from user
+    * */
     function discoveryNode(node_data) {
 
+        //create node
         RED.nodes.createNode(this,node_data);
+        //boolean for check if enviorment is created
         var created = false;
         var node = this
         var enviromentMap = new Map();
+
+        //node main function stored here
         node.on("input", function(msg){
 
             let dialog_node_ID = msg.payload.nodeID;
 
+            //create discovery object
             const discovery = new DiscoveryV1({
                 version: '2020-02-10',
                 authenticator: new IamAuthenticator({
@@ -76,6 +120,7 @@ module.exports = function(RED) {
                 }),
                 url: msg.payload.discoveryUrl
             });
+            //required param for api call
             const createParams = {
                 name: node_data.discoveryname,
                 description: 'My environment',
@@ -86,6 +131,15 @@ module.exports = function(RED) {
                 return new Promise(resolve => setTimeout(resolve, time))
             }
 
+
+            /*
+            * @inner main function for createDiscovery
+            * first it check exisitence of the enviroment, delete if it does exist
+            * regardless whether it exist or not, create a new enviroment with colletion and configuration using the name
+            * user entered on the front-end node
+            * node.send(msg) this allows the node to pass data to next node, also enable debugging when there is error on
+            * api calls
+            *  */
             discovery.listEnvironments()
                 .then(listEnvironmentsResponse => {
 
